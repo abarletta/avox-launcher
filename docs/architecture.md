@@ -16,68 +16,85 @@ A-Launcher is a single-purpose Android home launcher.
 The system must remain minimal:
 
 - One launcher entry point
-- One primary screen
-- One vertical list of launchable apps
-- One favorites section at the top
-- One search trigger using a system intent
+- One primary screen with vertical app list
+- Favorites at top, remaining apps below
+- Widget host on home screen
+- Full settings activity for customization
+- Notification listener for badges and text
+- Alphabet sidebar with multiple animation styles
 
 The product is apps-first, not widget-first.
-It reduces navigation friction and does not introduce new surfaces.
 
 ## Current Implementation Shape
 
-The current app already follows the intended minimal shape:
+### Source files
 
-- `MainActivity.kt` owns the launcher screen behavior
-- `activity_main.xml` defines the single screen layout
-- The app uses AppCompat and XML views
-- The project has one Android app module only
+- `MainActivity.kt` — launcher screen, app list adapter, widget lifecycle, wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup
+- `SettingsActivity.kt` — all preference controls: theme, wallpaper effects, font, font size, icon size, icon pack, nerd fonts, spacing, notifications, swipe toggle, animations, alignment, margins, block count, favorites, widgets
+- `AlphabetSidebar.kt` — custom View with wave/highlight/fade animation styles and configurable intensity/radius
+- `AppActionsSheet.kt` — bottom sheet for long-press actions (app info, Play Store, uninstall, shortcuts)
+- `NotificationService.kt` — NotificationListenerService with per-package dismiss
+- `LauncherApp.kt` — Application subclass for custom font loading
+- `IconPackResolver.kt` — discovers installed icon packs, resolves per-app icons with safe fallback
 
-Copilot should treat this as the default implementation path.
+### Layout files
 
----
+- `activity_main.xml` — FrameLayout with darkOverlay, widgetContainer, appList, searchBar, alphabetSidebar, bottomButton
+- `activity_settings.xml` — ScrollView with all settings controls, wrapped in FrameLayout with wallpaper overlay
+- `item_app.xml` — app row with dynamic icon sizing, name, notification text, badge
+- `sheet_app_actions.xml` — bottom sheet for app actions
+- `item_shortcut.xml` — shortcut row in actions sheet
 
-## v0 Scope
+### Data flow
 
-v0 is strict and minimal.
-
-Allowed:
-
-- Single screen
-- Vertical app list
-- Favorites at top
-- Basic search via system intent
-
-Not allowed:
-
-- Widgets
-- Folders
-- Settings UI
-- Custom animations
-- Gesture systems beyond default launcher behavior
-
----
-
-## Minimal Runtime Responsibilities
-
-The launcher must:
-
-- Read installed launchable apps from Android
-- Display favorites first
-- Display remaining apps below
-- Launch apps
-- Trigger system search
-
-Nothing else.
+- All settings stored in SharedPreferences
+- Widget state managed by AppWidgetHost/AppWidgetManager
+- Notification data flows from NotificationService → NotificationHolder → MainActivity
+- Icon pack resolution is lazy and falls back to system icons
 
 ---
 
 ## Implementation Constraints
 
+- One app module only
+- Kotlin + AppCompat + XML views
+- No fragments, no Compose, no Navigation Component
+- No dependency injection
 - No repository layer
 - No manager classes unless strictly required
-- No service layer
+- No service layer beyond NotificationListenerService
 - No state management framework
+- minSdk 26, targetSdk 34
+
+---
+
+## Feature Boundaries
+
+Implemented:
+
+- Vertical app list with favorites
+- Widget host with add/bind/configure/restore/resize
+- Settings activity with wallpaper-matched background
+- Wallpaper effects: darken, blur (downscale-upscale), color tint
+- Notification badges (count) and inline text
+- Swipe-to-dismiss notifications
+- Three sidebar animation styles with per-style controls
+- Content alignment (left/center), margins, spacing
+- Font selection (system + custom TTF)
+- Icon size control
+- Third-party icon pack support
+- Nerd font icon prefixes
+- App long-press actions (info, store, uninstall, shortcuts)
+- Local search filtering
+
+Not implemented:
+
+- Folders
+- Multiple home screens
+- Gesture navigation beyond swipe-to-dismiss
+- Built-in widgets
+- Feed pages
+- Recommendation systems
 - No background processing unless required for correctness
 - No extra Gradle modules
 - No migration to Compose unless explicitly requested

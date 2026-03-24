@@ -1,53 +1,64 @@
-# Copilot v0 Status
+# Copilot Status
 
 ## Purpose
 
-This artifact checks the current repository state against:
+This artifact records the current implementation state of the repository.
 
-- `docs/copilot_v0_prompt.md`
-- `.github/copilot-instructions.md`
-- `docs/context.md`
-- `docs/architecture.md`
-- `docs/roadmap.md`
-
-Date checked: 2026-03-24
+Date checked: 2025-01-27
 
 ## Overall Result
 
-The current repository appears to satisfy the attached v0 prompt and the repo instructions.
-
-Nothing material looks missing for the stated v0 scope.
-
-The implementation is not just structurally aligned on paper: `./gradlew.bat assembleDebug` completed successfully during this check.
+The repository is post-v0. All originally planned v0 features plus extensive customization work are implemented and building successfully.
 
 ## What Is Present
 
 ### Repo shape
 
-- Single Android app module only: `app`
+- Single Android app module: `app`
 - Kotlin + AppCompat + XML views
-- Single activity implementation in `app/src/main/java/com/alauncher/MainActivity.kt`
-- Single screen layout in `app/src/main/res/layout/activity_main.xml`
-- Strings and theme in `app/src/main/res/values/`
-- No fragments
-- No Compose
-- No Navigation Component
-- No dependency injection
-- No extra Gradle modules
+- Two activities: MainActivity, SettingsActivity
+- Custom view: AlphabetSidebar
+- Bottom sheet: AppActionsSheet
+- Service: NotificationService
+- Application: LauncherApp
+- Helper: IconPackResolver
+- minSdk 26, targetSdk 34, compileSdk 34
+- Dependencies: AppCompat 1.7.0, Material 1.12.0
 
-### v0 launcher behavior
+### Implemented features
 
-- Launcher entry point is configured in `app/src/main/AndroidManifest.xml`
-- One primary screen only
-- One vertical app list using `ListView`
-- Favorites section rendered at the top when installed favorites are present
-- Remaining apps rendered below the favorites section
-- Tapping an app launches it
-- Search button is visible and triggers a system search intent with a platform-first fallback
+- Vertical app list with favorites section
+- Widget host with full lifecycle (add, bind, configure, restore, resize)
+- Settings activity with wallpaper-matched background
+- Wallpaper effects: darken, blur (downscale-upscale), color tint
+- Notification badges (count mode) and inline text (text mode)
+- Swipe-to-dismiss notifications (left swipe) and quick actions (right swipe)
+- Three sidebar animation styles: wave/zoom, highlight, fade
+- Per-style animation controls (wave shift/scale, highlight intensity, fade radius)
+- Content alignment (left/center), horizontal/vertical margins
+- Font selection (system fonts + custom TTF)
+- Font size control
+- Icon size control
+- Third-party icon pack support with safe fallback
+- Nerd font icon prefixes for common apps
+- App long-press actions: info, Play Store, uninstall, shortcuts
+- Local app search filtering
+- Theme selection (light/dark/system)
 
-### v0 scope discipline
+### Resolved issues
 
-The current implementation stays within the requested narrow scope:
+All 10 user-reported issues from `docs/user_reported_issues.md` are resolved:
+
+1. Widget failures — guarded lifecycle, visibility toggle, error logging
+2. Horizontal alignment — proper gravity on text views in weighted layout
+3. Font selector persistence — setupSpinner initialized flag
+4. Uninstall — REQUEST_DELETE_PACKAGES permission, try-catch with feedback
+5. Animation controls — conditional visibility per animation style
+6. Vertical margin — expanded range to 120dp
+7. Wallpaper effects — darken/blur/color with per-effect controls
+8. Notification text — larger, bolder, brighter styling
+9. Icon customization — size control, icon packs, Nerd font prefixes
+10. Settings screen — wallpaper-matched background, full control set
 
 - No widgets
 - No folders

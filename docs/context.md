@@ -38,21 +38,32 @@ The default correction is:
 
 ## Current Codebase State
 
-The repository is no longer docs-only.
+The repository is post-v0 with full customization features.
 
 Current shape:
 
 - One Android app module
-- Kotlin
-- AppCompat
-- XML layout
-- Single activity
-- Minimal dependency set
+- Kotlin + AppCompat + XML views
+- Two activities: MainActivity (launcher) and SettingsActivity
+- Custom views: AlphabetSidebar (letter animations)
+- Bottom sheet: AppActionsSheet (long-press actions)
+- Service: NotificationService (notification listener)
+- Application: LauncherApp (custom font loading)
+- Helper: IconPackResolver (third-party icon pack support)
+- Minimal dependency set (AppCompat 1.7.0, Material 1.12.0)
 
-Current implementation center:
+Current implementation files:
 
-- `app/src/main/java/com/alauncher/MainActivity.kt`
-- `app/src/main/res/layout/activity_main.xml`
+- `app/src/main/java/com/alauncher/MainActivity.kt` — launcher screen, app list, widgets, wallpaper effects, notification data, swipe gestures
+- `app/src/main/java/com/alauncher/SettingsActivity.kt` — all settings controls and preference persistence
+- `app/src/main/java/com/alauncher/AlphabetSidebar.kt` — sidebar with wave/highlight/fade animations
+- `app/src/main/java/com/alauncher/AppActionsSheet.kt` — app info, Play Store, uninstall, shortcuts
+- `app/src/main/java/com/alauncher/NotificationService.kt` — notification listener with swipe-to-dismiss
+- `app/src/main/java/com/alauncher/LauncherApp.kt` — custom font loading
+- `app/src/main/java/com/alauncher/IconPackResolver.kt` — icon pack discovery and resolution
+- `app/src/main/res/layout/activity_main.xml` — launcher layout
+- `app/src/main/res/layout/activity_settings.xml` — settings layout
+- `app/src/main/res/layout/item_app.xml` — app list row
 
 Copilot should treat the existing implementation as the baseline and extend it conservatively.
 

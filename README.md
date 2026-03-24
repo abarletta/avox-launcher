@@ -1,7 +1,19 @@
 # A-Launcher
 
-A-Launcher is a personal Android launcher project built around a Niagara-like idea:
-one screen, a vertical app list, fast access, and hard limits.
+A-Launcher is a personal Android launcher built around a Niagara-like idea:
+one screen, a vertical app list, fast access, and deliberate limits.
+
+## Features
+
+- Vertical app list with favorites at top
+- Widget host on home screen
+- Wallpaper effects: darken, blur, color tint
+- Notification badges and inline text
+- Swipe gestures for notification actions
+- Three sidebar animation styles (wave, highlight, fade)
+- Full customization: fonts, icon size, icon packs, Nerd font prefixes, alignment, margins, spacing
+- Local app search
+- App long-press actions (info, store, uninstall, shortcuts)
 
 ## Philosophy
 
@@ -9,14 +21,13 @@ one screen, a vertical app list, fast access, and hard limits.
 - Vertical, apps-first navigation
 - Fast access with low cognitive load
 - No bloat
-- No unnecessary customization
 
-## Constraint
+## Technical
 
-This is not a general-purpose launcher.
-
-It is a controlled launcher for a specific philosophy:
-simple, fast, quiet, and deliberately limited.
+- Kotlin + AppCompat + XML views
+- Single app module
+- minSdk 26, targetSdk 34
+- Dependencies: AppCompat 1.7.0, Material 1.12.0
 
 ## Project Docs
 
@@ -26,4 +37,3 @@ simple, fast, quiet, and deliberately limited.
 - `docs/roadmap.md`
 - `docs/context.md`
 - `.github/copilot-instructions.md`
-- `docs/copilot_v0_prompt.md`

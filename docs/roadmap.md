@@ -3,7 +3,7 @@
 ## Use This File For
 
 - Scope decisions
-- v0 versus v1 boundaries
+- Current baseline versus future candidates
 - Questions about whether a requested change should be implemented now
 
 Read this after `docs/index.md` when deciding whether a feature belongs in the current scope.
@@ -16,37 +16,42 @@ Every addition must justify its existence.
 
 ## Copilot Interpretation
 
-- Treat unspecified implementation requests as v0 by default
-- Treat v1 as discussion material until a change is explicitly requested
+- Treat the current implementation as the baseline
+- Treat future candidates as discussion material until explicitly requested
 - Do not use the roadmap as permission to pre-build optional systems
 
-## v0
+## Current Baseline
 
-Minimal working launcher.
-Strict scope.
+The launcher is post-v0 with the following implemented features:
 
-- Single home screen
-- Vertical app list
+- Single home screen with vertical app list
 - Favorites at top
-- Launch installed apps
-- Basic search through a system intent
-- Default Android behavior only
-- No widgets
-- No folders
-- No settings UI
-- No custom animation work
+- Widget host (add/bind/configure/restore/resize)
+- Full settings activity
+- Wallpaper effects (darken, blur, color tint)
+- Notification badges and inline text
+- Swipe-to-dismiss notifications
+- Three sidebar animation styles (wave, highlight, fade)
+- Content alignment, margins, spacing controls
+- Font selection (system fonts + custom TTF)
+- Icon size control
+- Third-party icon pack support
+- Nerd font icon prefixes
+- App long-press actions (info, store, uninstall, shortcuts)
+- Local app search
+- Settings screen with wallpaper-matched background
 
-v0 is done when the launcher is usable, stable, and visually sparse.
+All user-reported issues from `docs/user_reported_issues.md` are resolved.
 
-## v1
+## Future Candidates
 
-Optional extensions.
-Not commitments.
+Not commitments. Only consider after real usage proves a need:
 
-Only consider these after v0 is stable and real usage proves a need:
-
-- Simpler favorites management if code-only setup becomes friction
-- Small search improvements if system intent is not enough
-- Minor polish that improves speed or clarity without expanding scope
+- Widget management improvements (reorder, per-widget settings)
+- Additional wallpaper effects
+- Per-app Nerd font glyph customization UI
+- Search improvements beyond local filtering
+- Accessibility improvements
+- Performance profiling and optimization
 
 If an item adds product surface area, it should probably be rejected.

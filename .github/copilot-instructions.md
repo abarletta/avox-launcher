@@ -40,9 +40,15 @@ For the first repository-aware turn, prefer reading the full core docs set above
 
 - One Android app module only: `app`
 - Kotlin + AppCompat + XML views
-- Main implementation lives in `app/src/main/java/com/alauncher/MainActivity.kt`
-- Main screen layout lives in `app/src/main/res/layout/activity_main.xml`
-- Strings and theme live in `app/src/main/res/values/`
+- Main launcher activity: `app/src/main/java/com/alauncher/MainActivity.kt`
+- Settings activity: `app/src/main/java/com/alauncher/SettingsActivity.kt`
+- Custom sidebar view: `app/src/main/java/com/alauncher/AlphabetSidebar.kt`
+- App actions sheet: `app/src/main/java/com/alauncher/AppActionsSheet.kt`
+- Notification service: `app/src/main/java/com/alauncher/NotificationService.kt`
+- Icon pack helper: `app/src/main/java/com/alauncher/IconPackResolver.kt`
+- Application class: `app/src/main/java/com/alauncher/LauncherApp.kt`
+- Layouts in `app/src/main/res/layout/`
+- Strings and theme in `app/src/main/res/values/`
 - No fragments, no Compose, no Navigation Component, no dependency injection, no extra modules
 
 Copilot should preserve this shape unless a change is explicitly requested and justified.
@@ -127,7 +133,7 @@ If unsure, do nothing and ask.
 ## Implementation Rules
 
 - Start with the existing files before creating new ones
-- Prefer changes in `MainActivity.kt`, `activity_main.xml`, `strings.xml`, and `themes.xml`
+- Prefer changes in existing source files over new files
 - Keep app loading, sorting, favorites ordering, and search behavior close to the launcher screen unless complexity forces separation
 - Use direct data flow and the smallest necessary state
 - Do not move to new layers just to make the code look more "architected"
@@ -139,15 +145,15 @@ Stop condition:
 
 ## Architecture Guardrails
 
-- One screen only
+- One home screen
 - Vertical app list
 - Favorites at the top
-- Search uses platform APIs first
+- Widget host on home screen
+- Settings in SettingsActivity
 - Default Android behavior wherever possible
-- No widgets
 - No folders
-- No settings UI
-- No custom animations
+- No multiple home screens
+- No custom navigation framework
 
 ---
 
@@ -193,7 +199,7 @@ If any answer is no, do not add it.
 
 ## Roadmap Context
 
-- Treat v0 as strict scope: single home screen, vertical app list, favorites at top, launch installed apps, basic search through a system intent, default Android behavior only
-- v0 excludes widgets, folders, settings UI, custom animation work, theming systems, feed pages, and recommendation systems
-- v1 items are evaluation candidates, not commitments
+- The launcher is post-v0 with full customization features
+- Treat the current implementation as the baseline
+- Future candidates are not commitments
 - If an item adds product surface area, it should probably be rejected or deferred
