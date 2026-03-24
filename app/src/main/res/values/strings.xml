@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">A-Launcher</string>
+    <string name="search_button_label">Search</string>
+    <string name="favorites_section_title">Favorites</string>
+    <string name="apps_section_title">All Apps</string>
+    <string name="launch_failed">Unable to open app.</string>
+    <string name="search_unavailable">Search is not available on this device.</string>
+</resources>
+
