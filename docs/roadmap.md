@@ -24,7 +24,7 @@ Every addition must justify its existence.
 
 The launcher is post-v0 with the following implemented features:
 
-- Single home screen with vertical app list
+- Single home screen with vertical app list (section headers in expanded view)
 - Favorites at top
 - Widget host (add/bind/configure/restore/resize)
 - Full settings activity
@@ -32,7 +32,8 @@ The launcher is post-v0 with the following implemented features:
 - Notification badges and inline text
 - Swipe-to-dismiss notifications
 - Three sidebar animation styles (wave, highlight, fade)
-- Content alignment, margins, spacing controls
+- Content alignment (entire row), margins (h: 0–120dp), spacing controls
+- Sidebar position synced with app list
 - Font selection (system fonts + custom TTF)
 - Icon size control
 - Third-party icon pack support
@@ -42,6 +43,8 @@ The launcher is post-v0 with the following implemented features:
 - Settings screen with wallpaper-matched background
 
 All user-reported issues from `docs/user_reported_issues.md` are resolved.
+
+Widget management is available both from Settings (primary) and from the home screen via long-press edit mode.
 
 ## Future Candidates
 

@@ -4,7 +4,7 @@
 
 | # | Issue | Severity | Status |
 | --- | --- | --- | --- |
-| [1](#1---widgets-major) | Widgets | Major | Resolved |
+| [1](#1---widgets-major) | Widgets | Major | Unresolved |
 | [2](#2---horizontal-alignment-major) | Horizontal alignment | Major | Resolved |
 | [3](#3---font-selector-major) | Font selector | Major | Resolved |
 | [4](#4---app-controls-on-long-press-medium) | App controls on long-press | Medium | Resolved |
@@ -14,12 +14,12 @@
 | [8](#8---notification-text-minor) | Notification text | Minor | Resolved |
 | [9](#9---app-icon-size-minor) | App icon size | Minor | Resolved |
 | [10](#10---settings-screen-minor) | Settings screen | Minor | Resolved |
+| [11](#11---uiux-polish-minor) | UI/UX polish | Minor | Resolved |
 
 
 ## 1 - Widgets (major)
-1. Widgets continue to not load after being added to the home screen. This is NOT related to notification access, as that is correclty requested and granted. See `docs\screenshots\widget_failure.jpg` for a visual example of the issue.
-2. Widgets should only appear in the home screen. They should not be visible when the app drawer is open. This is major UI/UX issue.
-3. Widget resizing does not work as expected. Long-pressing a widget does not produce any effect. This could be a consequence of the first issue, but it is worth investigating separately.
+1. Widgets continue to not load after being added to the home screen. Only Google widgets work. Non-Google widgets fail to load and display either a "Couldn't add widget" or "Can't show content" error message. 
+2. Widget can be resized from the settings screen, but not via long-press edit mode on the home screen. Even more importantly, clicking on widgets (short or long) does not trigger any action.
 
 ## 2 - Horizontal alignment (major)
 1. Changing horizontal alignment does not produce any visible effect.
@@ -54,3 +54,11 @@
 ## 10 - Settings screen (minor)
 1. The settings screen should have same background as the home and app drawer screens. This should replace the current dark/light background behavior.
 2. The settings screen should present a less rudimentary design, with nicer sliders and fonts matching the home and app drawer screens.
+
+## 11 - UI/UX polish (minor)
+1. The app drawer screen should list the main letter categories (e.g., A, B, C, D, etc.) as section headers to improve navigation and readability. See `docs\screenshots\expanded_view_target.jpg` for a visual example. Note that only the heading letters should be taken as example from the sceenshot, but not the rest of the design which includes displaying apps for other letters, which is not desired.
+2. The vertical alphabet list in the main screen should be made more compact, ideally as tall as the favorites app list, so to give the impression of being a single unified sidebar.   
+3. The horizontal alignment in the home screen only applies to the app labels, but not to the icons, which creates a disjointed visual effect. The horizontal alignment setting should be applied to the entire app row, including both the icon and the label, to create a more cohesive and visually appealing design.
+4. The horizontal margin setting should allow for larger margins (e.g., up to 120dp).
+5. The vertical margin setting seems uneffective when there is a widget in the home screen. Furthermore, when there is a widget, there is a gap between the bottom of the widget and the top of the first app, which creates a disjointed visual effect. This gap should be zero if the vertical margin is set to zero, and should increase/decrease according to the vertical margin setting, so to create a more cohesive and visually appealing design. The issue seems to be related with the fact that resizing a widget modifies the height of the widget container, but the app list does not adjust its position accordingly.
+

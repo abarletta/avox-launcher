@@ -29,8 +29,8 @@ The product is apps-first, not widget-first.
 
 ### Source files
 
-- `MainActivity.kt` — launcher screen, app list adapter, widget lifecycle, wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup
-- `SettingsActivity.kt` — all preference controls: theme, wallpaper effects, font, font size, icon size, icon pack, nerd fonts, spacing, notifications, swipe toggle, animations, alignment, margins, block count, favorites, widgets
+- `MainActivity.kt` — launcher screen, app list adapter, widget lifecycle, wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup, WidgetFrame for long-press detection
+- `SettingsActivity.kt` — all preference controls: theme, wallpaper effects, font, font size, icon size, icon pack, nerd fonts, spacing, notifications, swipe toggle, animations, alignment, margins, block count, favorites, widget management (add, remove, resize)
 - `AlphabetSidebar.kt` — custom View with wave/highlight/fade animation styles and configurable intensity/radius
 - `AppActionsSheet.kt` — bottom sheet for long-press actions (app info, Play Store, uninstall, shortcuts)
 - `NotificationService.kt` — NotificationListenerService with per-package dismiss
@@ -72,14 +72,16 @@ The product is apps-first, not widget-first.
 
 Implemented:
 
-- Vertical app list with favorites
+- Vertical app list with favorites and section headers in expanded view
 - Widget host with add/bind/configure/restore/resize
+- Widget management in SettingsActivity (list, remove, height adjustment)
 - Settings activity with wallpaper-matched background
 - Wallpaper effects: darken, blur (downscale-upscale), color tint
 - Notification badges (count) and inline text
 - Swipe-to-dismiss notifications
 - Three sidebar animation styles with per-style controls
-- Content alignment (left/center), margins, spacing
+- Content alignment (left/center) for entire row (icon+label), margins (h: 0–120dp), spacing
+- Sidebar position synced with app list content area
 - Font selection (system + custom TTF)
 - Icon size control
 - Third-party icon pack support

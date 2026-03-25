@@ -30,6 +30,9 @@
     <string name="widget_bind_failed">Failed to add widget</string>
     <string name="widget_manage_label">Manage Widgets</string>
     <string name="widget_empty_hint">Long-press to add widgets</string>
+    <string name="widget_height_label">Height</string>
+    <string name="widget_remove_label">Remove</string>
+    <string name="widget_none_label">No widgets added</string>
     <string name="animation_style_label">Sidebar Animation</string>
     <string name="wave_shift_label">Wave Shift</string>
     <string name="wave_scale_label">Wave Scale</string>

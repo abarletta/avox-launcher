@@ -54,8 +54,8 @@ Current shape:
 
 Current implementation files:
 
-- `app/src/main/java/com/alauncher/MainActivity.kt` — launcher screen, app list, widgets, wallpaper effects, notification data, swipe gestures
-- `app/src/main/java/com/alauncher/SettingsActivity.kt` — all settings controls and preference persistence
+- `app/src/main/java/com/alauncher/MainActivity.kt` — launcher screen, app list, widgets, wallpaper effects, notification data, swipe gestures, WidgetFrame inner class
+- `app/src/main/java/com/alauncher/SettingsActivity.kt` — all settings controls, preference persistence, widget management (list, remove, resize)
 - `app/src/main/java/com/alauncher/AlphabetSidebar.kt` — sidebar with wave/highlight/fade animations
 - `app/src/main/java/com/alauncher/AppActionsSheet.kt` — app info, Play Store, uninstall, shortcuts
 - `app/src/main/java/com/alauncher/NotificationService.kt` — notification listener with swipe-to-dismiss

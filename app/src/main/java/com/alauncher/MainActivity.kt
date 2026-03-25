@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     // Widget state
     private var widgetsRestored = false
+    private var widgetsDirty = false
 
     // Widget resize drag state
     private var resizingWrapper: View? = null
@@ -130,18 +131,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         appList.setOnItemClickListener { _, _, position, _ ->
-            if (position < displayedApps.size) {
-                try {
-                    startActivity(displayedApps[position].launchIntent)
-                } catch (_: Exception) {
-                    Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
-                }
+            val app = (appList.adapter as? AppListAdapter)?.getAppInfo(position) ?: return@setOnItemClickListener
+            try {
+                startActivity(app.launchIntent)
+            } catch (_: Exception) {
+                Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
             }
         }
 
         appList.setOnItemLongClickListener { _, _, position, _ ->
-            if (position < displayedApps.size) {
-                val app = displayedApps[position]
+            val app = (appList.adapter as? AppListAdapter)?.getAppInfo(position)
+            if (app != null) {
                 AppActionsSheet(this, app.packageName, app.label).show()
             }
             true
@@ -157,8 +157,8 @@ class MainActivity : AppCompatActivity() {
                 val dy = e2.y - e1.y
                 if (kotlin.math.abs(dx) > kotlin.math.abs(dy) && kotlin.math.abs(dx) > 100) {
                     val position = appList.pointToPosition(e1.x.toInt(), e1.y.toInt())
-                    if (position >= 0 && position < displayedApps.size) {
-                        val app = displayedApps[position]
+                    val app = (appList.adapter as? AppListAdapter)?.getAppInfo(position)
+                    if (position >= 0 && app != null) {
                         if (dx < 0) {
                             NotificationHolder.service?.cancelNotificationsForPackage(app.packageName)
                             refreshNotificationData()
@@ -212,11 +212,16 @@ class MainActivity : AppCompatActivity() {
         applyLayoutPrefs()
         updateBottomButton()
 
+        val prefs2 = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        if (prefs2.getBoolean(PREF_WIDGETS_DIRTY, false)) {
+            prefs2.edit().remove(PREF_WIDGETS_DIRTY).apply()
+            widgetsRestored = false
+        }
         if (!widgetsRestored) {
             restoreWidgets()
             widgetsRestored = true
         } else {
-            updateListPaddingForWidgets()
+            refreshWidgetSizes()
         }
 
         // Handle widget picker trigger from settings
@@ -258,12 +263,26 @@ class MainActivity : AppCompatActivity() {
     @Deprecated("Use Activity Result API")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        // Prefer the widget id returned in the result intent (some providers include it)
         val resultWidgetId = data?.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, pendingWidgetId)
             ?: pendingWidgetId
 
         when (requestCode) {
-            REQUEST_BIND_WIDGET, REQUEST_CONFIGURE_WIDGET -> {
+            REQUEST_BIND_WIDGET -> {
+                if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    // After bind permission granted, check if widget needs configuration
+                    val info = appWidgetManager.getAppWidgetInfo(resultWidgetId)
+                    if (info != null) {
+                        onWidgetBound(resultWidgetId, info)
+                    } else {
+                        finalizeWidget(resultWidgetId)
+                    }
+                } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                    try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
+                    pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+                    pendingProvider = null
+                }
+            }
+            REQUEST_CONFIGURE_WIDGET -> {
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     finalizeWidget(resultWidgetId)
                 } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -361,7 +380,8 @@ class MainActivity : AppCompatActivity() {
         appList.adapter = AppListAdapter(
             layoutInflater, displayedApps, typeface, spacing, fontSize,
             notificationData, notifMode, alignment == "center",
-            iconSize, iconPackResolver, nerdTypeface
+            iconSize, iconPackResolver, nerdTypeface,
+            showHeaders = isExpandedView
         )
     }
 
@@ -375,6 +395,7 @@ class MainActivity : AppCompatActivity() {
             bottomButton.contentDescription = getString(R.string.settings_label)
             widgetContainer.visibility = View.VISIBLE
         }
+        updateListPaddingForWidgets()
     }
 
     private fun showSearchBar() {
@@ -484,19 +505,13 @@ class MainActivity : AppCompatActivity() {
     private fun applyLayoutPrefs() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val hMargin = (prefs.getInt(PREF_H_MARGIN, DEFAULT_H_MARGIN) * resources.displayMetrics.density).toInt()
-        val vMargin = (prefs.getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * resources.displayMetrics.density).toInt()
-        val alignment = prefs.getString(PREF_ALIGNMENT, "left") ?: "left"
-        val isCenter = alignment == "center"
 
         // Apply horizontal margin to content containers
         appList.setPadding(hMargin, appList.paddingTop, appList.paddingRight, appList.paddingBottom)
         widgetContainer.setPadding(hMargin, widgetContainer.paddingTop, widgetContainer.paddingRight, widgetContainer.paddingBottom)
 
-        // Apply vertical margin via top padding on the list
-        val baseTopPadding = (160 * resources.displayMetrics.density).toInt()
-        appList.setPadding(appList.paddingLeft, baseTopPadding + vMargin, appList.paddingRight, appList.paddingBottom)
+        // Top padding is managed by updateListPaddingForWidgets()
 
-        // Alignment is handled in the adapter via centered gravity
         // Block count affects widget container max height
         val blockCount = prefs.getInt(PREF_BLOCK_COUNT, DEFAULT_BLOCK_COUNT)
         val screenHeight = resources.displayMetrics.heightPixels
@@ -655,16 +670,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun createWidgetWrapper(widgetId: Int, info: AppWidgetProviderInfo): FrameLayout {
         val density = resources.displayMetrics.density
-        val wrapper = FrameLayout(this)
+        val wrapper = WidgetFrame(this)
         wrapper.tag = widgetId
-        // Try to create the host view; if this fails, propagate exception so caller can cleanup.
-        val hostView = appWidgetHost.createView(this, widgetId, info).also {
-            it.setAppWidget(widgetId, info)
-        }
-
-        if (hostView == null) {
-            throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
-        }
+        // Create the host view; createView() already calls setAppWidget() internally.
+        val hostView = appWidgetHost.createView(this, widgetId, info)
+            ?: throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
 
         wrapper.addView(hostView, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
@@ -714,6 +724,7 @@ class MainActivity : AppCompatActivity() {
         resizeHandle.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    android.util.Log.d("ALauncher", "resize ACTION_DOWN widget=$widgetId y=${event.rawY}")
                     resizingWrapper = wrapper
                     resizeStartY = event.rawY
                     resizeStartHeight = wrapper.height
@@ -721,6 +732,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (resizingWrapper == wrapper) {
+                        android.util.Log.d("ALauncher", "resize ACTION_MOVE widget=$widgetId y=${event.rawY}")
                         val delta = (event.rawY - resizeStartY).toInt()
                         val minH = (MIN_WIDGET_HEIGHT_DP * density).toInt()
                         val maxH = (MAX_WIDGET_HEIGHT_DP * density).toInt()
@@ -733,6 +745,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    android.util.Log.d("ALauncher", "resize ACTION_UP widget=$widgetId height=${wrapper.height}")
                     if (resizingWrapper == wrapper) {
                         setWidgetHeight(widgetId, wrapper.height)
                         resizingWrapper = null
@@ -743,11 +756,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Long-press to enter edit mode; drag to reorder in edit mode
-        wrapper.setOnLongClickListener {
-            if (!isWidgetEditMode) enterWidgetEditMode()
-            true
-        }
+        // Ensure overlay controls receive touch events in edit mode
+        removeBtn.isClickable = true
+        resizeHandle.isClickable = true
 
         // Set height
         val savedHeight = getWidgetHeight(widgetId)
@@ -758,10 +769,16 @@ class MainActivity : AppCompatActivity() {
         ).apply { bottomMargin = (4 * density).toInt() }
         wrapper.layoutParams = wrapperParams
 
+        // Communicate allocated size to the widget provider so it renders correctly
+        val widthDp = (resources.displayMetrics.widthPixels / density).toInt()
+        val heightDp = (heightPx / density).toInt()
+        hostView.updateAppWidgetSize(null, widthDp, heightDp, widthDp, heightDp)
+
         return wrapper
     }
 
     private fun enterWidgetEditMode() {
+        android.util.Log.d("ALauncher", "enterWidgetEditMode called")
         isWidgetEditMode = true
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
@@ -876,16 +893,37 @@ class MainActivity : AppCompatActivity() {
         updateListPaddingForWidgets()
     }
 
+    private fun refreshWidgetSizes() {
+        for (i in 0 until widgetContainer.childCount) {
+            val child = widgetContainer.getChildAt(i)
+            val wId = child.tag as? Int ?: continue
+            val savedHeight = getWidgetHeight(wId)
+            if (savedHeight > 0) {
+                val lp = child.layoutParams as LinearLayout.LayoutParams
+                lp.height = savedHeight
+                child.layoutParams = lp
+            }
+        }
+        updateListPaddingForWidgets()
+    }
+
     private fun updateListPaddingForWidgets() {
         widgetContainer.post {
-            val widgetHeight = widgetContainer.height
             val density = resources.displayMetrics.density
-            val baseTop = (60 * density).toInt()
             val vMargin = (getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                 .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
-            val topPadding = (baseTop + widgetHeight + vMargin).coerceAtLeast(baseTop)
+            val topPadding = if (widgetContainer.visibility == View.VISIBLE && activeWidgetIds.isNotEmpty()) {
+                widgetContainer.height + vMargin
+            } else {
+                (60 * density).toInt() + vMargin
+            }
             appList.setPadding(appList.paddingLeft, topPadding, appList.paddingRight, appList.paddingBottom)
+            updateSidebarPosition()
         }
+    }
+
+    private fun updateSidebarPosition() {
+        sidebar.setPadding(sidebar.paddingLeft, appList.paddingTop, sidebar.paddingRight, appList.paddingBottom)
     }
 
     // --- App loading ---
@@ -936,6 +974,34 @@ class MainActivity : AppCompatActivity() {
         return Typeface.create(fontFamily, Typeface.NORMAL)
     }
 
+    private inner class WidgetFrame(ctx: Context) : FrameLayout(ctx) {
+        private var downX = 0f
+        private var downY = 0f
+        private val longPressRunnable = Runnable {
+            if (!isWidgetEditMode) enterWidgetEditMode()
+        }
+
+        override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+            val slop = android.view.ViewConfiguration.get(context).scaledTouchSlop
+            when (ev.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = ev.x
+                    downY = ev.y
+                    postDelayed(longPressRunnable, android.view.ViewConfiguration.getLongPressTimeout().toLong())
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (kotlin.math.abs(ev.x - downX) > slop || kotlin.math.abs(ev.y - downY) > slop) {
+                        removeCallbacks(longPressRunnable)
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    removeCallbacks(longPressRunnable)
+                }
+            }
+            return false
+        }
+    }
+
     companion object {
         const val PREFS_NAME = "launcher_prefs"
         const val PREF_FONT = "font_family"
@@ -946,6 +1012,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_NOTIF_MODE = "notification_mode"
         const val PREF_WIDGET_ORDER = "widget_order"
         const val PREF_WIDGET_IDS_OLD = "widget_ids"
+        const val PREF_WIDGETS_DIRTY = "widgets_dirty"
         const val PREF_ANIM_STYLE = "anim_style"
         const val PREF_WAVE_SHIFT = "wave_shift"
         const val PREF_WAVE_SCALE = "wave_scale"
@@ -1038,8 +1105,29 @@ private class AppListAdapter(
     private val centerAlign: Boolean,
     private val iconSizeDp: Int = 36,
     private val iconPackResolver: IconPackResolver? = null,
-    private val nerdTypeface: Typeface? = null
+    private val nerdTypeface: Typeface? = null,
+    private val showHeaders: Boolean = false
 ) : BaseAdapter() {
+
+    // Flat list: String (section header) or AppInfo
+    private val displayItems: List<Any> = buildDisplayItems()
+
+    private fun buildDisplayItems(): List<Any> {
+        if (!showHeaders || apps.isEmpty()) return apps
+        val result = mutableListOf<Any>()
+        var lastHeader = ""
+        for (app in apps) {
+            val header = app.label.firstOrNull()?.uppercaseChar()?.toString() ?: "#"
+            if (header != lastHeader) {
+                result.add(header)
+                lastHeader = header
+            }
+            result.add(app)
+        }
+        return result
+    }
+
+    fun getAppInfo(position: Int): AppInfo? = displayItems.getOrNull(position) as? AppInfo
 
     private val nerdGlyphs = mapOf(
         "com.android.chrome" to "\uF268",
@@ -1069,13 +1157,22 @@ private class AppListAdapter(
         "com.google.android.gms" to "\uF1A0"
     )
 
-    override fun getCount(): Int = apps.size
-    override fun getItem(position: Int): AppInfo = apps[position]
+    override fun getCount(): Int = displayItems.size
+    override fun getItem(position: Int): Any = displayItems[position]
     override fun getItemId(position: Int): Long = position.toLong()
+    override fun getViewTypeCount(): Int = if (showHeaders) 2 else 1
+    override fun getItemViewType(position: Int): Int {
+        if (!showHeaders) return 0
+        return if (displayItems[position] is String) 0 else 1
+    }
+    override fun areAllItemsEnabled(): Boolean = !showHeaders
+    override fun isEnabled(position: Int): Boolean = displayItems[position] is AppInfo
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val item = displayItems[position]
+        if (item is String) return getHeaderView(item, convertView, parent)
+        val app = item as AppInfo
         val view = convertView ?: inflater.inflate(R.layout.item_app, parent, false)
-        val app = apps[position]
 
         val iconView = view.findViewById<ImageView>(R.id.appIcon)
         val nameView = view.findViewById<TextView>(R.id.appName)
@@ -1116,15 +1213,27 @@ private class AppListAdapter(
         }
         nameView.typeface = typeface
         nameView.textSize = fontSizeSp.toFloat()
-        nameView.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
 
         val paddingPx = (spacingDp * view.resources.displayMetrics.density).toInt()
         val root = view as ViewGroup
         root.setPadding(root.paddingLeft, paddingPx, root.paddingRight, paddingPx)
 
-        // Center alignment
-        if (root is LinearLayout) {
-            root.gravity = if (centerAlign) Gravity.CENTER else (Gravity.START or Gravity.CENTER_VERTICAL)
+        // Center alignment for entire row (icon + label)
+        val nameContainer = nameView.parent as? LinearLayout
+        if (centerAlign) {
+            nameView.gravity = Gravity.CENTER_HORIZONTAL
+            nameContainer?.let {
+                (it.layoutParams as? LinearLayout.LayoutParams)?.apply { width = LinearLayout.LayoutParams.WRAP_CONTENT; weight = 0f }
+            }
+            nameView.layoutParams?.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            if (root is LinearLayout) root.gravity = Gravity.CENTER
+        } else {
+            nameView.gravity = Gravity.START
+            nameContainer?.let {
+                (it.layoutParams as? LinearLayout.LayoutParams)?.apply { width = 0; weight = 1f }
+            }
+            nameView.layoutParams?.width = LinearLayout.LayoutParams.MATCH_PARENT
+            if (root is LinearLayout) root.gravity = Gravity.START or Gravity.CENTER_VERTICAL
         }
         notifView.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
 
@@ -1152,6 +1261,18 @@ private class AppListAdapter(
             notifView.visibility = View.GONE
         }
 
+        return view
+    }
+
+    private fun getHeaderView(letter: String, convertView: View?, parent: ViewGroup): View {
+        val view = (convertView as? TextView) ?: TextView(parent.context).apply {
+            setTextColor(Color.parseColor("#88FFFFFF"))
+            textSize = 16f
+            setPadding(0, (12 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
+        }
+        view.text = letter
+        view.typeface = typeface
+        view.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
         return view
     }
 }

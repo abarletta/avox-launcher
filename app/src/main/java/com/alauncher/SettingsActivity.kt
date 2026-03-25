@@ -1,14 +1,19 @@
 package com.alauncher
 
+import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetManager
 import android.app.WallpaperManager
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.provider.Settings
+import android.view.Gravity
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
@@ -453,6 +458,121 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
+
+        populateWidgetList()
+    }
+
+    private fun populateWidgetList() {
+        val container = findViewById<LinearLayout>(R.id.widgetManageContainer)
+        container.removeAllViews()
+        val prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE)
+        val orderStr = prefs.getString(MainActivity.PREF_WIDGET_ORDER, null)
+        if (orderStr.isNullOrBlank()) {
+            val hint = TextView(this).apply {
+                text = getString(R.string.widget_none_label)
+                setTextColor(Color.parseColor("#888888"))
+                textSize = 14f
+            }
+            container.addView(hint)
+            return
+        }
+        val ids = orderStr.split(",").mapNotNull { it.toIntOrNull() }
+        if (ids.isEmpty()) return
+        val awm = AppWidgetManager.getInstance(this)
+        val density = resources.displayMetrics.density
+
+        for (widgetId in ids) {
+            val info = awm.getAppWidgetInfo(widgetId) ?: continue
+            val label = info.loadLabel(packageManager) ?: "Widget"
+
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(0, (8 * density).toInt(), 0, (8 * density).toInt())
+            }
+
+            // Header: name + remove
+            val header = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            val nameView = TextView(this).apply {
+                text = label
+                setTextColor(Color.WHITE)
+                textSize = 15f
+            }
+            header.addView(nameView, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            val removeBtn = TextView(this).apply {
+                text = getString(R.string.widget_remove_label)
+                setTextColor(Color.parseColor("#FF6666"))
+                textSize = 14f
+                setPadding((12 * density).toInt(), (4 * density).toInt(), (12 * density).toInt(), (4 * density).toInt())
+                setOnClickListener { removeWidgetFromSettings(widgetId) }
+            }
+            header.addView(removeBtn)
+            row.addView(header)
+
+            // Height slider
+            val heightRow = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, (4 * density).toInt(), 0, 0)
+            }
+            val heightLabel = TextView(this).apply {
+                text = getString(R.string.widget_height_label)
+                setTextColor(Color.parseColor("#AAAAAA"))
+                textSize = 13f
+            }
+            heightRow.addView(heightLabel, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply { marginEnd = (8 * density).toInt() })
+
+            val savedHeightPx = prefs.getInt("widget_h_$widgetId", -1)
+            val currentDp = if (savedHeightPx > 0) (savedHeightPx / density).toInt()
+                            else info.minHeight.coerceAtLeast(MainActivity.MIN_WIDGET_HEIGHT_DP)
+            val heightValue = TextView(this).apply {
+                text = "${currentDp}dp"
+                setTextColor(Color.WHITE)
+                textSize = 13f
+                minWidth = (40 * density).toInt()
+                gravity = Gravity.END
+            }
+            val slider = SeekBar(this).apply {
+                max = MainActivity.MAX_WIDGET_HEIGHT_DP - MainActivity.MIN_WIDGET_HEIGHT_DP
+                progress = (currentDp - MainActivity.MIN_WIDGET_HEIGHT_DP).coerceIn(0, max)
+                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                        val dpVal = progress + MainActivity.MIN_WIDGET_HEIGHT_DP
+                        heightValue.text = "${dpVal}dp"
+                        val px = (dpVal * density).toInt()
+                        prefs.edit()
+                            .putInt("widget_h_$widgetId", px)
+                            .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+                            .apply()
+                    }
+                    override fun onStartTrackingTouch(sb: SeekBar?) {}
+                    override fun onStopTrackingTouch(sb: SeekBar?) {}
+                })
+            }
+            heightRow.addView(slider, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            heightRow.addView(heightValue)
+            row.addView(heightRow)
+
+            container.addView(row)
+        }
+    }
+
+    private fun removeWidgetFromSettings(widgetId: Int) {
+        val prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE)
+        val host = AppWidgetHost(this, MainActivity.APPWIDGET_HOST_ID)
+        try { host.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
+        val order = prefs.getString(MainActivity.PREF_WIDGET_ORDER, "") ?: ""
+        val newIds = order.split(",").mapNotNull { it.toIntOrNull() }.filter { it != widgetId }
+        prefs.edit()
+            .putString(MainActivity.PREF_WIDGET_ORDER, if (newIds.isEmpty()) "" else newIds.joinToString(","))
+            .remove("widget_h_$widgetId")
+            .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+            .apply()
+        populateWidgetList()
     }
 
     private fun showFavoritesPicker() {
