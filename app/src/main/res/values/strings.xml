@@ -64,5 +64,8 @@
     <string name="settings_animations">Animations</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_widgets">Widgets &amp; Home</string>
+    <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
+    <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
+    <string name="hide_status_bar_label">Hide Status Bar</string>
 </resources>
 

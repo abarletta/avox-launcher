@@ -4,7 +4,7 @@
 
 | # | Issue | Severity | Status |
 | --- | --- | --- | --- |
-| [1](#1---widgets-major) | Widgets | Major | Resolved |
+| [1](#1---widgets-major) | Widgets | Major | Partially addressed |
 | [2](#2---horizontal-alignment-major) | Horizontal alignment | Major | Resolved |
 | [3](#3---font-selector-major) | Font selector | Major | Resolved |
 | [4](#4---app-controls-on-long-press-medium) | App controls on long-press | Medium | Resolved |
@@ -21,8 +21,9 @@
 ## 1 - Widgets (major)
 1. Widgets continue to not load after being added to the home screen. Only Google widgets work. Non-Google widgets fail to load and display either a "Couldn't add widget" or "Can't show content" error message. 
 2. Widget can be resized from the settings screen, but not via long-press edit mode on the home screen. Even more importantly, clicking on widgets (short or long) does not trigger any action.
+3. Allow widget reordering from the settings screen. This is a common feature in launchers and it would enhance user customization options.
 
-**Important**: this issue has been around since the initial release and it has survived multiple attempts to fix it. It could be a good idea to search the internet for solutions given that in-house knowledge seems to be insufficient to solve it.
+**Important**: this issue has been around since the initial release and it has survived multiple attempts to fix it. Even consulting the internet and implementing Launcher3 widget management code did not solve the issue. It is possible that the issue is related to a fundamental misunderstanding of the widget system, which may require a more in-depth investigation and potentially a complete refactor of the widget management system. Can it just be related with OEM (Samsung), security or permission issues? The user can confirm that the app is set as default launcher but that no request for permission to create widgets is ever shown.
 
 ## 2 - Horizontal alignment (major)
 1. Changing horizontal alignment does not produce any visible effect.
@@ -43,7 +44,7 @@
 1. Vertical margins work as expected but more gap should be allowed (currently only 0-48dp).
 
 ## 7 - Missing wallpaper overlay effects (minor)
-1. Wallpaper overlay effects other than darkening are not implemented. Blur and color filters should be added as per initial design specifications. When they are selected, the controls for the "darken" effect should be hidden, and the relevant controls for the selected effect should be displayed instead.
+1. Wallpaper overlay effects other than darkening do not work. Setting effects to blur or color filters does not produce any visible effect on the home screen.
 
 ## 8 - Notification text (minor)
 1. This is just a UI/UX issue. When the "Show notification text" option is enabled, the text is displayed in a small and dimmed font, which is difficult to read. The text should be made larger and more prominent (e.g., bold) to improve readability.
@@ -59,11 +60,11 @@
 2. The settings screen should present a less rudimentary design, with nicer sliders and fonts matching the home and app drawer screens.
 
 ## 11 - UI/UX polish (minor)
-1. The heading letters in the app drawer should transition with an animation when scrolling through the app list. Furthermore, they should be slightly larger and brighter/bolder than they currently are, to make them more visually distinct and easier to read.
-2. The height of the vertical alphabet list is correctly synced with the height of the favorites app list. However, this is done by downsizing the alphabet list font size instead of adjusting the vertical spacing between letters. This could be particularly noticeable when the favorites list is very short. This should be fixed by keeping the font size constant and adjusting the vertical spacing between letters to fit the available height.
-3. When Nerd icons are enabled, the regular icons should be hidden to avoid visual clutter and confusion. Otherwise, a double icon would be displayed for each app (the regular icon and the Nerd font icon). Ideally, the user should be able to choose between three options: regular icons only, Nerd font icons only, or no icon. Furthermore, the icon size parameter should control the size of both regular and Nerd font icons to maintain visual consistency.
-5. The vertical margin setting seems uneffective when there is a widget in the home screen. Furthermore, when there is a widget, there is a gap between the bottom of the widget and the top of the first app, which creates a disjointed visual effect. This gap should be zero if the vertical margin is set to zero, and should increase/decrease according to the vertical margin setting, so to create a more cohesive and visually appealing design. The issue seems to be related with the fact that resizing a widget modifies the height of the widget container, but the app list does not adjust its position accordingly.
-6. Animations when transitioning between home and app drawers (both ways) would create a smoother and more polished user experience. For example, a fade or slide animation (or both, up to the user) could be implemented to make the transition less abrupt and more visually appealing.
+1. The transition when scrolling through the alphabet letters in the app drawer should be animated (as currently implemented) but instantaneous. Transition to next list should happen as soon as the user scrolls to the next letter, without any delay. The current implementation awaits that the user releases the touch after scrolling to the next letter, which creates a sluggish and unresponsive feeling. The animation should be triggered immediately when the user scrolls to the next letter, and it should not be interrupted by touch events until it completes.
+2. The height of the vertical alphabet list is correctly synced with the height of the favorites app list and by the right approach. However, when switching to the app drawer, the alphabet list height is not updated on the first user interaction. It requires two interactions to be correctly synced. The app drawer should be rendered full height at the first touch (without requiring two touches and without even awaiting releasing the touch).
+3. When using Nerd icons, additional spacing should be added between the icon and the app name.
+4. If not too difficult, there should be an option to hide the status bar on the home screen. It too complex, leave it for a future release.
+5. In the settings main screen, icons should be added to each card to make it more visually appealing and easier to navigate.
 
 ## 12 - Settings menu refactor (minor)
 1. The settings menu is currently implemented as a single activity with a long list of controls. This is not very scalable and it makes the codebase difficult to maintain. It would be better to refactor the settings menu into multiple fragments, each responsible for a specific category of settings (e.g., appearance, behavior, notifications, etc.).

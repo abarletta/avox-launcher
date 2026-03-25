@@ -64,6 +64,9 @@ class MainActivity : AppCompatActivity() {
     private var widgetsDirty = false
     private var pendingFinalizeWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
+    // Sidebar state for instant letter switching
+    private var currentSidebarLetter: String? = null
+
     // Widget resize drag state
     private var resizingWrapper: View? = null
     private var resizeStartY = 0f
@@ -110,23 +113,37 @@ class MainActivity : AppCompatActivity() {
         }
 
         sidebar.onLetterSelected = { letter ->
-            hideSearchBar()
-            if (isWidgetEditMode) exitWidgetEditMode()
-            when (letter) {
-                SIDEBAR_FAVORITES -> {
-                    isExpandedView = false
-                    showFavorites()
-                    updateBottomButton()
-                }
-                SIDEBAR_OTHER -> {
-                    isExpandedView = true
-                    showNonAlphaApps()
-                    updateBottomButton()
-                }
-                else -> {
-                    isExpandedView = true
-                    showAppsForLetter(letter)
-                    updateBottomButton()
+            if (letter != currentSidebarLetter) {
+                currentSidebarLetter = letter
+                hideSearchBar()
+                if (isWidgetEditMode) exitWidgetEditMode()
+                when (letter) {
+                    SIDEBAR_FAVORITES -> {
+                        isExpandedView = false
+                        displayedApps.clear()
+                        displayedApps.addAll(allApps.filter { getFavoritePackages().contains(it.packageName) })
+                        refreshList()
+                        updateBottomButton()
+                    }
+                    SIDEBAR_OTHER -> {
+                        isExpandedView = true
+                        displayedApps.clear()
+                        displayedApps.addAll(allApps.filter {
+                            val first = it.label.firstOrNull()
+                            first != null && !first.isLetter()
+                        })
+                        refreshList()
+                        updateBottomButtonImmediate()
+                    }
+                    else -> {
+                        isExpandedView = true
+                        displayedApps.clear()
+                        displayedApps.addAll(allApps.filter {
+                            it.label.startsWith(letter, ignoreCase = true)
+                        })
+                        refreshList()
+                        updateBottomButtonImmediate()
+                    }
                 }
             }
         }
@@ -206,6 +223,7 @@ class MainActivity : AppCompatActivity() {
         setupSidebar()
         applySettings()
         applyLayoutPrefs()
+        applyStatusBarPref()
         updateBottomButton()
 
         val prefs2 = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -258,6 +276,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (isExpandedView) {
             isExpandedView = false
+            currentSidebarLetter = null
             showFavorites()
             updateBottomButton()
             return
@@ -272,8 +291,8 @@ class MainActivity : AppCompatActivity() {
 
         when (requestCode) {
             REQUEST_BIND_WIDGET -> {
+                android.util.Log.d("ALauncher", "REQUEST_BIND_WIDGET result=$resultCode widgetId=$resultWidgetId")
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    // After bind permission granted, check if widget needs configuration
                     val info = appWidgetManager.getAppWidgetInfo(resultWidgetId)
                     if (info != null && info.configure != null) {
                         pendingWidgetId = resultWidgetId
@@ -286,21 +305,28 @@ class MainActivity : AppCompatActivity() {
                             REQUEST_CONFIGURE_WIDGET
                         )
                     } else {
-                        // Defer finalization to onResume where the host is fully active
                         pendingFinalizeWidgetId = resultWidgetId
                     }
-                } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
+                } else {
+                    android.util.Log.w("ALauncher", "Widget bind denied or canceled: result=$resultCode")
+                    if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                        try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
+                    }
+                    Toast.makeText(this, R.string.widget_bind_denied, Toast.LENGTH_LONG).show()
                     pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
                     pendingProvider = null
                 }
             }
             REQUEST_CONFIGURE_WIDGET -> {
+                android.util.Log.d("ALauncher", "REQUEST_CONFIGURE_WIDGET result=$resultCode widgetId=$resultWidgetId")
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    // Defer finalization to onResume where the host is fully active
                     pendingFinalizeWidgetId = resultWidgetId
-                } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
+                } else {
+                    android.util.Log.w("ALauncher", "Widget configure denied: result=$resultCode")
+                    if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+                        try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
+                    }
+                    Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
                 }
                 pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
                 pendingProvider = null
@@ -428,6 +454,23 @@ class MainActivity : AppCompatActivity() {
         updateListPaddingForWidgets()
     }
 
+    /** Same as updateBottomButton but with immediate widget hide and synchronous padding for expanded view. */
+    private fun updateBottomButtonImmediate() {
+        bottomButton.setImageResource(R.drawable.ic_search)
+        bottomButton.contentDescription = getString(R.string.search_button_label)
+        // Hide widget container immediately (no animation) for instant response
+        widgetContainer.animate().cancel()
+        widgetContainer.visibility = View.GONE
+        widgetContainer.alpha = 1f
+        // Set expanded-view padding synchronously (no widget height to measure)
+        val density = resources.displayMetrics.density
+        val vMargin = (getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
+        val topPad = (60 * density).toInt() + vMargin
+        appList.setPadding(appList.paddingLeft, topPad, appList.paddingRight, appList.paddingBottom)
+        updateSidebarPosition()
+    }
+
     private fun showSearchBar() {
         searchBar.visibility = View.VISIBLE
         searchBar.requestFocus()
@@ -477,26 +520,47 @@ class MainActivity : AppCompatActivity() {
         val effect = prefs.getString(PREF_WALLPAPER_EFFECT, WALLPAPER_EFFECT_DARKEN) ?: WALLPAPER_EFFECT_DARKEN
         val darkness = prefs.getInt(PREF_DARKNESS, DEFAULT_DARKNESS) / 100f
 
+        // Clear system blur-behind when not using blur effect
+        if (effect != WALLPAPER_EFFECT_BLUR && android.os.Build.VERSION.SDK_INT >= 31) {
+            window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+            window.attributes = window.attributes.also { it.blurBehindRadius = 0 }
+        }
+
         when (effect) {
             WALLPAPER_EFFECT_BLUR -> {
                 val radius = prefs.getInt(PREF_BLUR_RADIUS, DEFAULT_BLUR_RADIUS)
-                val blurred = getBlurredWallpaper(radius)
-                if (blurred != null) {
-                    darkOverlay.background = android.graphics.drawable.BitmapDrawable(resources, blurred)
-                    darkOverlay.alpha = 1f
-                } else {
+                if (android.os.Build.VERSION.SDK_INT >= 31) {
+                    // Use system blur-behind for reliable wallpaper blurring
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                    window.attributes = window.attributes.also {
+                        it.blurBehindRadius = (radius * 4).coerceIn(1, 150)
+                    }
                     darkOverlay.setBackgroundColor(Color.BLACK)
-                    darkOverlay.alpha = darkness
+                    darkOverlay.alpha = darkness * 0.6f
+                } else {
+                    // Fallback: downscale-upscale blur
+                    val blurred = getBlurredWallpaper(radius)
+                    if (blurred != null) {
+                        darkOverlay.background = android.graphics.drawable.BitmapDrawable(resources, blurred)
+                        darkOverlay.alpha = 1f
+                    } else {
+                        darkOverlay.setBackgroundColor(Color.BLACK)
+                        darkOverlay.alpha = darkness
+                    }
                 }
             }
             WALLPAPER_EFFECT_COLOR -> {
                 val tintColor = prefs.getString(PREF_COLOR_TINT, DEFAULT_COLOR_TINT) ?: DEFAULT_COLOR_TINT
                 try {
-                    darkOverlay.setBackgroundColor(Color.parseColor(tintColor))
+                    val parsed = Color.parseColor(tintColor)
+                    // Use alpha baked into the color for a more visible tint
+                    val alpha = (darkness.coerceAtLeast(0.35f) * 255).toInt().coerceIn(0, 255)
+                    darkOverlay.setBackgroundColor(Color.argb(alpha, Color.red(parsed), Color.green(parsed), Color.blue(parsed)))
+                    darkOverlay.alpha = 1f
                 } catch (_: Exception) {
                     darkOverlay.setBackgroundColor(Color.BLACK)
+                    darkOverlay.alpha = darkness
                 }
-                darkOverlay.alpha = darkness
             }
             else -> {
                 darkOverlay.setBackgroundColor(Color.BLACK)
@@ -554,6 +618,32 @@ class MainActivity : AppCompatActivity() {
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
             widgetContainer.layoutParams = params
+        }
+    }
+
+    private fun applyStatusBarPref() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val hide = prefs.getBoolean(PREF_HIDE_STATUS_BAR, false)
+        if (android.os.Build.VERSION.SDK_INT >= 30) {
+            val controller = window.insetsController
+            if (hide) {
+                controller?.hide(android.view.WindowInsets.Type.statusBars())
+                controller?.systemBarsBehavior =
+                    android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            } else {
+                controller?.show(android.view.WindowInsets.Type.statusBars())
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            if (hide) {
+                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+                    android.view.View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            } else {
+                window.decorView.systemUiVisibility = window.decorView.systemUiVisibility and
+                    (android.view.View.SYSTEM_UI_FLAG_FULLSCREEN or
+                     android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY).inv()
+            }
         }
     }
 
@@ -625,9 +715,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindWidget(provider: AppWidgetProviderInfo) {
         val widgetId = appWidgetHost.allocateAppWidgetId()
+        android.util.Log.d("ALauncher", "bindWidget: allocated id=$widgetId provider=${provider.provider}")
 
         // If already allowed, proceed directly
-        if (appWidgetManager.bindAppWidgetIdIfAllowed(widgetId, provider.provider)) {
+        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(widgetId, provider.provider)
+        android.util.Log.d("ALauncher", "bindWidget: bindIfAllowed=$allowed")
+        if (allowed) {
             onWidgetBound(widgetId, provider)
             return
         }
@@ -639,6 +732,16 @@ class MainActivity : AppCompatActivity() {
         val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
+        }
+
+        // Check if the system can handle the bind intent
+        if (bindIntent.resolveActivity(packageManager) == null) {
+            android.util.Log.e("ALauncher", "bindWidget: no activity to handle ACTION_APPWIDGET_BIND")
+            try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
+            pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+            pendingProvider = null
+            Toast.makeText(this, R.string.widget_bind_not_supported, Toast.LENGTH_LONG).show()
+            return
         }
 
         try {
@@ -678,15 +781,19 @@ class MainActivity : AppCompatActivity() {
         if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) return
         val info = appWidgetManager.getAppWidgetInfo(widgetId)
         if (info == null) {
+            android.util.Log.e("ALauncher", "finalizeWidget: getAppWidgetInfo returned null for $widgetId")
             appWidgetHost.deleteAppWidgetId(widgetId)
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
             return
         }
+        android.util.Log.d("ALauncher", "finalizeWidget: id=$widgetId provider=${info.provider}")
         try {
             val wrapper = createWidgetWrapper(widgetId, info)
             widgetContainer.addView(wrapper)
             activeWidgetIds.add(widgetId)
             saveWidgetOrder()
+            // Re-register all views for updates after adding a new one
+            try { appWidgetHost.startListening() } catch (_: Exception) {}
             updateListPaddingForWidgets()
         } catch (e: Exception) {
             android.util.Log.e("ALauncher", "Failed to create widget view for $widgetId: ${e.message}", e)
@@ -800,8 +907,12 @@ class MainActivity : AppCompatActivity() {
         wrapper.layoutParams = wrapperParams
 
         // Communicate allocated size to the widget provider so it renders correctly
-        val widthDp = (resources.displayMetrics.widthPixels / density).toInt()
-        val heightDp = (heightPx / density).toInt()
+        val containerWidthPx = resources.displayMetrics.widthPixels -
+            widgetContainer.paddingLeft - widgetContainer.paddingRight -
+            (48 * density).toInt()  // sidebar margin
+        val widthDp = (containerWidthPx / density).toInt().coerceAtLeast(1)
+        val heightDp = (heightPx / density).toInt().coerceAtLeast(1)
+        @Suppress("DEPRECATION")
         hostView.updateAppWidgetSize(null, widthDp, heightDp, widthDp, heightDp)
 
         return wrapper
@@ -920,6 +1031,8 @@ class MainActivity : AppCompatActivity() {
         }
         // Clean up stale IDs
         if (activeWidgetIds.size != ids.size) saveWidgetOrder()
+        // Re-register all views for updates
+        try { appWidgetHost.startListening() } catch (_: Exception) {}
         updateListPaddingForWidgets()
     }
 
@@ -1077,6 +1190,7 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_ICON_SIZE = 36
         const val PREF_ICON_PACK = "icon_pack"
         const val PREF_NERD_FONT = "nerd_font_enabled"
+        const val PREF_HIDE_STATUS_BAR = "hide_status_bar"
         const val PREF_ICON_MODE = "icon_mode"
         const val ICON_MODE_REGULAR = "regular"
         const val ICON_MODE_NERD = "nerd"
@@ -1248,7 +1362,8 @@ private class AppListAdapter(
         // Nerd font prefix (only in nerd mode)
         val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) nerdGlyphs[app.packageName] else null
         if (glyph != null) {
-            val spannable = android.text.SpannableString("$glyph ${app.label}")
+            val separator = "\u2003" // em-space for visual separation
+            val spannable = android.text.SpannableString("$glyph$separator${app.label}")
             spannable.setSpan(
                 NerdFontSpan(nerdTypeface!!),
                 0, glyph.length,

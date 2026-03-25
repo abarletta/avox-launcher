@@ -135,7 +135,7 @@ class SettingsSystemFragment : Fragment() {
         val awm = AppWidgetManager.getInstance(requireContext())
         val density = resources.displayMetrics.density
 
-        for (widgetId in ids) {
+        for ((index, widgetId) in ids.withIndex()) {
             val info = awm.getAppWidgetInfo(widgetId) ?: continue
             val label = info.loadLabel(requireContext().packageManager) ?: "Widget"
 
@@ -148,6 +148,25 @@ class SettingsSystemFragment : Fragment() {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
             }
+
+            // Move up/down buttons
+            val moveUpBtn = TextView(requireContext()).apply {
+                text = "▲"
+                setTextColor(if (index > 0) Color.WHITE else Color.parseColor("#444444"))
+                textSize = 14f
+                setPadding((8 * density).toInt(), (4 * density).toInt(), (8 * density).toInt(), (4 * density).toInt())
+                if (index > 0) setOnClickListener { swapWidgets(ids, index, index - 1, view) }
+            }
+            header.addView(moveUpBtn)
+            val moveDownBtn = TextView(requireContext()).apply {
+                text = "▼"
+                setTextColor(if (index < ids.size - 1) Color.WHITE else Color.parseColor("#444444"))
+                textSize = 14f
+                setPadding((8 * density).toInt(), (4 * density).toInt(), (8 * density).toInt(), (4 * density).toInt())
+                if (index < ids.size - 1) setOnClickListener { swapWidgets(ids, index, index + 1, view) }
+            }
+            header.addView(moveDownBtn)
+
             val nameView = TextView(requireContext()).apply {
                 text = label
                 setTextColor(Color.WHITE)
@@ -211,6 +230,19 @@ class SettingsSystemFragment : Fragment() {
 
             container.addView(row)
         }
+    }
+
+    private fun swapWidgets(ids: List<Int>, from: Int, to: Int, rootView: View) {
+        val mutable = ids.toMutableList()
+        val temp = mutable[from]
+        mutable[from] = mutable[to]
+        mutable[to] = temp
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit()
+            .putString(MainActivity.PREF_WIDGET_ORDER, mutable.joinToString(","))
+            .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+            .apply()
+        populateWidgetList(rootView)
     }
 
     private fun removeWidgetFromSettings(widgetId: Int, rootView: View) {

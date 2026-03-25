@@ -211,6 +211,13 @@ class SettingsAppearanceFragment : Fragment() {
         view.findViewById<android.widget.Button>(R.id.nerdFontPickButton).setOnClickListener {
             pickNerdFont.launch("font/*")
         }
+
+        // Hide status bar
+        val hideStatusBarSwitch = view.findViewById<android.widget.Switch>(R.id.hideStatusBarSwitch)
+        hideStatusBarSwitch.isChecked = prefs.getBoolean(MainActivity.PREF_HIDE_STATUS_BAR, false)
+        hideStatusBarSwitch.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean(MainActivity.PREF_HIDE_STATUS_BAR, checked).apply()
+        }
     }
 
     private fun setupSpinner(spinner: Spinner, items: List<String>, selection: Int, onSelected: (Int) -> Unit) {
