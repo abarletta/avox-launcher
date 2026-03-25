@@ -29,8 +29,13 @@ The product is apps-first, not widget-first.
 
 ### Source files
 
-- `MainActivity.kt` — launcher screen, app list adapter, widget lifecycle, wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup, WidgetFrame for long-press detection
-- `SettingsActivity.kt` — all preference controls: theme, wallpaper effects, font, font size, icon size, icon pack, nerd fonts, spacing, notifications, swipe toggle, animations, alignment, margins, block count, favorites, widget management (add, remove, resize)
+- `MainActivity.kt` — launcher screen, app list adapter (with icon mode: regular/nerd/none), widget lifecycle (host stays active, deferred finalization via onResume), wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup, heading letter animation, list/widget transition animations
+- `SettingsActivity.kt` — fragment host activity with back navigation and theme application
+- `SettingsMenuFragment.kt` — top-level menu with category cards (Appearance, Wallpaper, Animations, Notifications, Widgets)
+- `SettingsAppearanceFragment.kt` — font, font size, spacing, alignment, margins, block count, icon mode (regular/nerd/none), icon size, icon pack, nerd font picker
+- `SettingsWallpaperFragment.kt` — theme, wallpaper effects (darken/blur/color), darkness, blur radius, color tint, wallpaper select
+- `SettingsAnimationsFragment.kt` — sidebar animation style with per-style controls (wave/highlight/fade)
+- `SettingsSystemFragment.kt` — notification mode, swipe toggle, favorites picker, widget management (add, remove, resize)
 - `AlphabetSidebar.kt` — custom View with wave/highlight/fade animation styles and configurable intensity/radius
 - `AppActionsSheet.kt` — bottom sheet for long-press actions (app info, Play Store, uninstall, shortcuts)
 - `NotificationService.kt` — NotificationListenerService with per-package dismiss
@@ -40,7 +45,12 @@ The product is apps-first, not widget-first.
 ### Layout files
 
 - `activity_main.xml` — FrameLayout with darkOverlay, widgetContainer, appList, searchBar, alphabetSidebar, bottomButton
-- `activity_settings.xml` — ScrollView with all settings controls, wrapped in FrameLayout with wallpaper overlay
+- `activity_settings.xml` — FrameLayout with wallpaper overlay and fragment container
+- `fragment_settings_menu.xml` — category cards for settings navigation
+- `fragment_settings_appearance.xml` — appearance controls layout
+- `fragment_settings_wallpaper.xml` — wallpaper controls layout
+- `fragment_settings_animations.xml` — animation controls layout
+- `fragment_settings_system.xml` — system/notifications/widgets layout
 - `item_app.xml` — app row with dynamic icon sizing, name, notification text, badge
 - `sheet_app_actions.xml` — bottom sheet for app actions
 - `item_shortcut.xml` — shortcut row in actions sheet
@@ -58,7 +68,7 @@ The product is apps-first, not widget-first.
 
 - One app module only
 - Kotlin + AppCompat + XML views
-- No fragments, no Compose, no Navigation Component
+- Fragments used only in SettingsActivity, no Compose, no Navigation Component
 - No dependency injection
 - No repository layer
 - No manager classes unless strictly required

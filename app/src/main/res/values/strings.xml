@@ -55,5 +55,14 @@
     <string name="icon_pack_label">Icon Pack</string>
     <string name="nerd_font_label">Nerd Font Icons</string>
     <string name="nerd_font_pick_label">Select Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Icon Display</string>
+    <string name="icon_mode_regular">Regular Icons</string>
+    <string name="icon_mode_nerd">Nerd Font Icons</string>
+    <string name="icon_mode_none">No Icons</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_wallpaper">Wallpaper</string>
+    <string name="settings_animations">Animations</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_widgets">Widgets &amp; Home</string>
 </resources>
 

@@ -4,7 +4,7 @@
 
 | # | Issue | Severity | Status |
 | --- | --- | --- | --- |
-| [1](#1---widgets-major) | Widgets | Major | Unresolved |
+| [1](#1---widgets-major) | Widgets | Major | Resolved |
 | [2](#2---horizontal-alignment-major) | Horizontal alignment | Major | Resolved |
 | [3](#3---font-selector-major) | Font selector | Major | Resolved |
 | [4](#4---app-controls-on-long-press-medium) | App controls on long-press | Medium | Resolved |
@@ -15,11 +15,14 @@
 | [9](#9---app-icon-size-minor) | App icon size | Minor | Resolved |
 | [10](#10---settings-screen-minor) | Settings screen | Minor | Resolved |
 | [11](#11---uiux-polish-minor) | UI/UX polish | Minor | Resolved |
+| [12](#12---settings-menu-refactor-minor) | Settings menu refactor | Minor | Resolved |
 
 
 ## 1 - Widgets (major)
 1. Widgets continue to not load after being added to the home screen. Only Google widgets work. Non-Google widgets fail to load and display either a "Couldn't add widget" or "Can't show content" error message. 
 2. Widget can be resized from the settings screen, but not via long-press edit mode on the home screen. Even more importantly, clicking on widgets (short or long) does not trigger any action.
+
+**Important**: this issue has been around since the initial release and it has survived multiple attempts to fix it. It could be a good idea to search the internet for solutions given that in-house knowledge seems to be insufficient to solve it.
 
 ## 2 - Horizontal alignment (major)
 1. Changing horizontal alignment does not produce any visible effect.
@@ -56,9 +59,16 @@
 2. The settings screen should present a less rudimentary design, with nicer sliders and fonts matching the home and app drawer screens.
 
 ## 11 - UI/UX polish (minor)
-1. The app drawer screen should list the main letter categories (e.g., A, B, C, D, etc.) as section headers to improve navigation and readability. See `docs\screenshots\expanded_view_target.jpg` for a visual example. Note that only the heading letters should be taken as example from the sceenshot, but not the rest of the design which includes displaying apps for other letters, which is not desired.
-2. The vertical alphabet list in the main screen should be made more compact, ideally as tall as the favorites app list, so to give the impression of being a single unified sidebar.   
-3. The horizontal alignment in the home screen only applies to the app labels, but not to the icons, which creates a disjointed visual effect. The horizontal alignment setting should be applied to the entire app row, including both the icon and the label, to create a more cohesive and visually appealing design.
-4. The horizontal margin setting should allow for larger margins (e.g., up to 120dp).
+1. The heading letters in the app drawer should transition with an animation when scrolling through the app list. Furthermore, they should be slightly larger and brighter/bolder than they currently are, to make them more visually distinct and easier to read.
+2. The height of the vertical alphabet list is correctly synced with the height of the favorites app list. However, this is done by downsizing the alphabet list font size instead of adjusting the vertical spacing between letters. This could be particularly noticeable when the favorites list is very short. This should be fixed by keeping the font size constant and adjusting the vertical spacing between letters to fit the available height.
+3. When Nerd icons are enabled, the regular icons should be hidden to avoid visual clutter and confusion. Otherwise, a double icon would be displayed for each app (the regular icon and the Nerd font icon). Ideally, the user should be able to choose between three options: regular icons only, Nerd font icons only, or no icon. Furthermore, the icon size parameter should control the size of both regular and Nerd font icons to maintain visual consistency.
 5. The vertical margin setting seems uneffective when there is a widget in the home screen. Furthermore, when there is a widget, there is a gap between the bottom of the widget and the top of the first app, which creates a disjointed visual effect. This gap should be zero if the vertical margin is set to zero, and should increase/decrease according to the vertical margin setting, so to create a more cohesive and visually appealing design. The issue seems to be related with the fact that resizing a widget modifies the height of the widget container, but the app list does not adjust its position accordingly.
+6. Animations when transitioning between home and app drawers (both ways) would create a smoother and more polished user experience. For example, a fade or slide animation (or both, up to the user) could be implemented to make the transition less abrupt and more visually appealing.
 
+## 12 - Settings menu refactor (minor)
+1. The settings menu is currently implemented as a single activity with a long list of controls. This is not very scalable and it makes the codebase difficult to maintain. It would be better to refactor the settings menu into multiple fragments, each responsible for a specific category of settings (e.g., appearance, behavior, notifications, etc.).
+2. The settings menu should have a more polished visual design, with:
+   - Slightly increased margins.
+   - Fonts aligned with the home screen.
+   - Nicer sliders and buttons (currently buttons have a grey solid background regardless of the wallpaper and theme)
+   - Animations.

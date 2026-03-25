@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
     // Widget state
     private var widgetsRestored = false
     private var widgetsDirty = false
+    private var pendingFinalizeWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
     // Widget resize drag state
     private var resizingWrapper: View? = null
@@ -197,11 +198,6 @@ class MainActivity : AppCompatActivity() {
         appWidgetHost.startListening()
     }
 
-    override fun onStop() {
-        super.onStop()
-        appWidgetHost.stopListening()
-    }
-
     override fun onResume() {
         super.onResume()
         allApps = loadLaunchableApps()
@@ -229,6 +225,13 @@ class MainActivity : AppCompatActivity() {
             intent.removeExtra("open_widget_picker")
             widgetContainer.post { selectWidget() }
         }
+
+        // Finalize any widget deferred from onActivityResult
+        if (pendingFinalizeWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            val wId = pendingFinalizeWidgetId
+            pendingFinalizeWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+            finalizeWidget(wId)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -238,6 +241,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        try { appWidgetHost.stopListening() } catch (_: Exception) {}
         try { unregisterReceiver(notificationReceiver) } catch (_: Exception) {}
     }
 
@@ -271,10 +275,19 @@ class MainActivity : AppCompatActivity() {
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     // After bind permission granted, check if widget needs configuration
                     val info = appWidgetManager.getAppWidgetInfo(resultWidgetId)
-                    if (info != null) {
-                        onWidgetBound(resultWidgetId, info)
+                    if (info != null && info.configure != null) {
+                        pendingWidgetId = resultWidgetId
+                        @Suppress("DEPRECATION")
+                        startActivityForResult(
+                            Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
+                                component = info.configure
+                                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, resultWidgetId)
+                            },
+                            REQUEST_CONFIGURE_WIDGET
+                        )
                     } else {
-                        finalizeWidget(resultWidgetId)
+                        // Defer finalization to onResume where the host is fully active
+                        pendingFinalizeWidgetId = resultWidgetId
                     }
                 } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
@@ -284,7 +297,8 @@ class MainActivity : AppCompatActivity() {
             }
             REQUEST_CONFIGURE_WIDGET -> {
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    finalizeWidget(resultWidgetId)
+                    // Defer finalization to onResume where the host is fully active
+                    pendingFinalizeWidgetId = resultWidgetId
                 } else if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                     try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
                 }
@@ -309,7 +323,7 @@ class MainActivity : AppCompatActivity() {
         val favorites = getFavoritePackages()
         displayedApps.clear()
         displayedApps.addAll(allApps.filter { favorites.contains(it.packageName) })
-        refreshList()
+        animateListTransition()
     }
 
     private fun showAppsForLetter(letter: String) {
@@ -317,7 +331,7 @@ class MainActivity : AppCompatActivity() {
         displayedApps.addAll(allApps.filter {
             it.label.startsWith(letter, ignoreCase = true)
         })
-        refreshList()
+        animateListTransition()
     }
 
     private fun showNonAlphaApps() {
@@ -326,7 +340,14 @@ class MainActivity : AppCompatActivity() {
             val first = it.label.firstOrNull()
             first != null && !first.isLetter()
         })
-        refreshList()
+        animateListTransition()
+    }
+
+    private fun animateListTransition() {
+        appList.animate().alpha(0f).setDuration(120).withEndAction {
+            refreshList()
+            appList.animate().alpha(1f).setDuration(180).start()
+        }.start()
     }
 
     private fun filterApps(query: String) {
@@ -369,9 +390,10 @@ class MainActivity : AppCompatActivity() {
             iconPackResolver = null
         }
 
-        // Nerd font
-        val nerdEnabled = prefs.getBoolean(PREF_NERD_FONT, false)
-        val nerdTypeface = if (nerdEnabled) {
+        // Nerd font / icon mode
+        val iconMode = prefs.getString(PREF_ICON_MODE, null)
+            ?: if (prefs.getBoolean(PREF_NERD_FONT, false)) ICON_MODE_NERD else ICON_MODE_REGULAR
+        val nerdTypeface = if (iconMode == ICON_MODE_NERD) {
             val nerdFile = java.io.File(filesDir, "nerd_font.ttf")
             if (nerdFile.exists()) try { Typeface.createFromFile(nerdFile) } catch (_: Exception) { null }
             else null
@@ -380,7 +402,7 @@ class MainActivity : AppCompatActivity() {
         appList.adapter = AppListAdapter(
             layoutInflater, displayedApps, typeface, spacing, fontSize,
             notificationData, notifMode, alignment == "center",
-            iconSize, iconPackResolver, nerdTypeface,
+            iconSize, iconPackResolver, nerdTypeface, iconMode,
             showHeaders = isExpandedView
         )
     }
@@ -389,11 +411,19 @@ class MainActivity : AppCompatActivity() {
         if (isExpandedView) {
             bottomButton.setImageResource(R.drawable.ic_search)
             bottomButton.contentDescription = getString(R.string.search_button_label)
-            widgetContainer.visibility = View.GONE
+            if (widgetContainer.visibility == View.VISIBLE) {
+                widgetContainer.animate().alpha(0f).setDuration(150).withEndAction {
+                    widgetContainer.visibility = View.GONE
+                }.start()
+            }
         } else {
             bottomButton.setImageResource(R.drawable.ic_settings)
             bottomButton.contentDescription = getString(R.string.settings_label)
-            widgetContainer.visibility = View.VISIBLE
+            if (widgetContainer.visibility != View.VISIBLE) {
+                widgetContainer.alpha = 0f
+                widgetContainer.visibility = View.VISIBLE
+                widgetContainer.animate().alpha(1f).setDuration(150).start()
+            }
         }
         updateListPaddingForWidgets()
     }
@@ -908,17 +938,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateListPaddingForWidgets() {
+        // Double-post to ensure we read the height after any pending layout changes
         widgetContainer.post {
-            val density = resources.displayMetrics.density
-            val vMargin = (getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
-            val topPadding = if (widgetContainer.visibility == View.VISIBLE && activeWidgetIds.isNotEmpty()) {
-                widgetContainer.height + vMargin
-            } else {
-                (60 * density).toInt() + vMargin
+            widgetContainer.post {
+                val density = resources.displayMetrics.density
+                val vMargin = (getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
+                val topPadding = if (widgetContainer.visibility == View.VISIBLE && activeWidgetIds.isNotEmpty()) {
+                    widgetContainer.height + vMargin
+                } else {
+                    (60 * density).toInt() + vMargin
+                }
+                appList.setPadding(appList.paddingLeft, topPadding, appList.paddingRight, appList.paddingBottom)
+                updateSidebarPosition()
             }
-            appList.setPadding(appList.paddingLeft, topPadding, appList.paddingRight, appList.paddingBottom)
-            updateSidebarPosition()
         }
     }
 
@@ -1044,6 +1077,10 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_ICON_SIZE = 36
         const val PREF_ICON_PACK = "icon_pack"
         const val PREF_NERD_FONT = "nerd_font_enabled"
+        const val PREF_ICON_MODE = "icon_mode"
+        const val ICON_MODE_REGULAR = "regular"
+        const val ICON_MODE_NERD = "nerd"
+        const val ICON_MODE_NONE = "none"
         const val DEFAULT_H_MARGIN = 24
         const val DEFAULT_V_MARGIN = 0
         const val DEFAULT_BLOCK_COUNT = 2
@@ -1106,6 +1143,7 @@ private class AppListAdapter(
     private val iconSizeDp: Int = 36,
     private val iconPackResolver: IconPackResolver? = null,
     private val nerdTypeface: Typeface? = null,
+    private val iconMode: String = MainActivity.ICON_MODE_REGULAR,
     private val showHeaders: Boolean = false
 ) : BaseAdapter() {
 
@@ -1180,12 +1218,14 @@ private class AppListAdapter(
         val badgeView = view.findViewById<TextView>(R.id.notifBadge)
 
         // Icon pack or default icon
-        val packIcon = iconPackResolver?.resolve(app.packageName)
-        val displayIcon = packIcon ?: app.icon
+        val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
+        val packIcon = if (showRegularIcon) iconPackResolver?.resolve(app.packageName) else null
+        val displayIcon = if (showRegularIcon) (packIcon ?: app.icon) else null
         if (displayIcon != null) {
             iconView.setImageDrawable(displayIcon)
             iconView.visibility = View.VISIBLE
         } else {
+            iconView.setImageDrawable(null)
             iconView.visibility = View.GONE
         }
 
@@ -1193,17 +1233,31 @@ private class AppListAdapter(
         val density = view.resources.displayMetrics.density
         val sizePx = (iconSizeDp * density).toInt()
         val iconFrame = iconView.parent as? FrameLayout
-        iconFrame?.layoutParams?.width = sizePx
-        iconFrame?.layoutParams?.height = sizePx
-        iconView.layoutParams?.width = sizePx
-        iconView.layoutParams?.height = sizePx
+        if (showRegularIcon) {
+            iconFrame?.layoutParams?.width = sizePx
+            iconFrame?.layoutParams?.height = sizePx
+            iconView.layoutParams?.width = sizePx
+            iconView.layoutParams?.height = sizePx
+            iconFrame?.visibility = View.VISIBLE
+        } else {
+            iconFrame?.layoutParams?.width = 0
+            iconFrame?.layoutParams?.height = 0
+            iconFrame?.visibility = View.GONE
+        }
 
-        // Nerd font prefix
-        val glyph = if (nerdTypeface != null) nerdGlyphs[app.packageName] else null
+        // Nerd font prefix (only in nerd mode)
+        val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) nerdGlyphs[app.packageName] else null
         if (glyph != null) {
             val spannable = android.text.SpannableString("$glyph ${app.label}")
             spannable.setSpan(
                 NerdFontSpan(nerdTypeface!!),
+                0, glyph.length,
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // Scale nerd glyph to match icon size parameter
+            val glyphScale = iconSizeDp.toFloat() / fontSizeSp.coerceAtLeast(1)
+            spannable.setSpan(
+                android.text.style.RelativeSizeSpan(glyphScale.coerceIn(0.5f, 3f)),
                 0, glyph.length,
                 android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -1266,12 +1320,17 @@ private class AppListAdapter(
 
     private fun getHeaderView(letter: String, convertView: View?, parent: ViewGroup): View {
         val view = (convertView as? TextView) ?: TextView(parent.context).apply {
-            setTextColor(Color.parseColor("#88FFFFFF"))
-            textSize = 16f
-            setPadding(0, (12 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
+            setTextColor(Color.parseColor("#CCFFFFFF"))
+            textSize = 20f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding(0, (16 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
         }
-        view.text = letter
-        view.typeface = typeface
+        if (view.text != letter) {
+            view.text = letter
+            view.alpha = 0f
+            view.animate().alpha(1f).setDuration(200).start()
+        }
+        view.typeface = android.graphics.Typeface.create(typeface, android.graphics.Typeface.BOLD)
         view.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
         return view
     }

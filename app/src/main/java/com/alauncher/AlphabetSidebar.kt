@@ -104,7 +104,7 @@ class AlphabetSidebar @JvmOverloads constructor(
         val availableHeight = (height - paddingTop - paddingBottom).toFloat()
         val itemHeight = availableHeight / items.size
         @Suppress("DEPRECATION")
-        val baseTextSize = (itemHeight * 0.65f).coerceAtMost(16f * resources.displayMetrics.scaledDensity)
+        val baseTextSize = 14f * resources.displayMetrics.scaledDensity
         val typeface = Typeface.create(fontFamily, Typeface.NORMAL)
         val baseX = width / 2f
         val touchIndex = getTouchIndex(availableHeight)
