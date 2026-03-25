@@ -2,6 +2,7 @@ package com.alauncher
 
 import android.app.SearchManager
 import android.appwidget.AppWidgetHost
+import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProviderInfo
 import android.content.BroadcastReceiver
@@ -19,6 +20,7 @@ import android.service.notification.StatusBarNotification
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -52,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appWidgetHost: AppWidgetHost
     private lateinit var appWidgetManager: AppWidgetManager
+    private lateinit var widgetHostContext: Context
 
     // Widget edit mode
     private var isWidgetEditMode = false
@@ -91,7 +94,16 @@ class MainActivity : AppCompatActivity() {
         widgetContainer = findViewById(R.id.widgetContainer)
 
         appWidgetManager = AppWidgetManager.getInstance(this)
-        appWidgetHost = AppWidgetHost(this, APPWIDGET_HOST_ID)
+        widgetHostContext = createWidgetHostContext()
+        appWidgetHost = object : AppWidgetHost(this, APPWIDGET_HOST_ID) {
+            override fun onCreateView(
+                context: Context,
+                appWidgetId: Int,
+                appWidget: AppWidgetProviderInfo
+            ): AppWidgetHostView {
+                return AppWidgetHostView(widgetHostContext)
+            }
+        }
 
         bottomButton.setOnClickListener {
             if (isWidgetEditMode) {
@@ -305,7 +317,7 @@ class MainActivity : AppCompatActivity() {
                             REQUEST_CONFIGURE_WIDGET
                         )
                     } else {
-                        pendingFinalizeWidgetId = resultWidgetId
+                        finalizeWidget(resultWidgetId)
                     }
                 } else {
                     android.util.Log.w("ALauncher", "Widget bind denied or canceled: result=$resultCode")
@@ -320,7 +332,7 @@ class MainActivity : AppCompatActivity() {
             REQUEST_CONFIGURE_WIDGET -> {
                 android.util.Log.d("ALauncher", "REQUEST_CONFIGURE_WIDGET result=$resultCode widgetId=$resultWidgetId")
                 if (resultCode == RESULT_OK && resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
-                    pendingFinalizeWidgetId = resultWidgetId
+                    finalizeWidget(resultWidgetId)
                 } else {
                     android.util.Log.w("ALauncher", "Widget configure denied: result=$resultCode")
                     if (resultWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -715,10 +727,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindWidget(provider: AppWidgetProviderInfo) {
         val widgetId = appWidgetHost.allocateAppWidgetId()
+        val bindOptions = buildWidgetOptions(getDefaultWidgetHeightPx(provider))
         android.util.Log.d("ALauncher", "bindWidget: allocated id=$widgetId provider=${provider.provider}")
 
         // If already allowed, proceed directly
-        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(widgetId, provider.provider)
+        val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(widgetId, provider.provider, bindOptions)
         android.util.Log.d("ALauncher", "bindWidget: bindIfAllowed=$allowed")
         if (allowed) {
             onWidgetBound(widgetId, provider)
@@ -732,6 +745,7 @@ class MainActivity : AppCompatActivity() {
         val bindIntent = Intent(AppWidgetManager.ACTION_APPWIDGET_BIND).apply {
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
             putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, provider.provider)
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, bindOptions)
         }
 
         // Check if the system can handle the bind intent
@@ -810,8 +824,9 @@ class MainActivity : AppCompatActivity() {
         val wrapper = WidgetFrame(this)
         wrapper.tag = widgetId
         // Create the host view; createView() already calls setAppWidget() internally.
-        val hostView = appWidgetHost.createView(this, widgetId, info)
+        val hostView = appWidgetHost.createView(widgetHostContext, widgetId, info)
             ?: throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
+        hostView.setPadding(0, 0, 0, 0)
 
         wrapper.addView(hostView, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
@@ -877,6 +892,7 @@ class MainActivity : AppCompatActivity() {
                         val lp = wrapper.layoutParams as LinearLayout.LayoutParams
                         lp.height = newHeight
                         wrapper.layoutParams = lp
+                        applyWidgetSize(hostView, widgetId, newHeight)
                         updateListPaddingForWidgets()
                     }
                     true
@@ -906,14 +922,7 @@ class MainActivity : AppCompatActivity() {
         ).apply { bottomMargin = (4 * density).toInt() }
         wrapper.layoutParams = wrapperParams
 
-        // Communicate allocated size to the widget provider so it renders correctly
-        val containerWidthPx = resources.displayMetrics.widthPixels -
-            widgetContainer.paddingLeft - widgetContainer.paddingRight -
-            (48 * density).toInt()  // sidebar margin
-        val widthDp = (containerWidthPx / density).toInt().coerceAtLeast(1)
-        val heightDp = (heightPx / density).toInt().coerceAtLeast(1)
-        @Suppress("DEPRECATION")
-        hostView.updateAppWidgetSize(null, widthDp, heightDp, widthDp, heightDp)
+        applyWidgetSize(hostView, widgetId, heightPx)
 
         return wrapper
     }
@@ -1045,9 +1054,67 @@ class MainActivity : AppCompatActivity() {
                 val lp = child.layoutParams as LinearLayout.LayoutParams
                 lp.height = savedHeight
                 child.layoutParams = lp
+                val hostView = (child as? ViewGroup)?.getChildAt(0) as? AppWidgetHostView
+                if (hostView != null) {
+                    applyWidgetSize(hostView, wId, savedHeight)
+                }
             }
         }
         updateListPaddingForWidgets()
+    }
+
+    private fun createWidgetHostContext(): Context {
+        val baseContext = applicationContext
+        val themeResId = applicationInfo.theme.takeIf { it != 0 } ?: android.R.style.Theme_DeviceDefault
+        return object : ContextThemeWrapper(baseContext, themeResId) {
+            private val remoteViewsInflater by lazy {
+                LayoutInflater.from(baseContext).cloneInContext(this)
+            }
+
+            override fun getSystemService(name: String): Any? {
+                if (Context.LAYOUT_INFLATER_SERVICE == name) {
+                    return remoteViewsInflater
+                }
+                return super.getSystemService(name)
+            }
+        }
+    }
+
+    private fun getWidgetContainerWidthPx(): Int {
+        val density = resources.displayMetrics.density
+        return resources.displayMetrics.widthPixels -
+            widgetContainer.paddingLeft - widgetContainer.paddingRight -
+            (48 * density).toInt()
+    }
+
+    private fun getDefaultWidgetHeightPx(info: AppWidgetProviderInfo): Int {
+        val density = resources.displayMetrics.density
+        return (info.minHeight * density).toInt().coerceAtLeast((MIN_WIDGET_HEIGHT_DP * density).toInt())
+    }
+
+    private fun buildWidgetOptions(heightPx: Int): Bundle {
+        val density = resources.displayMetrics.density
+        val widthDp = (getWidgetContainerWidthPx() / density).toInt().coerceAtLeast(1)
+        val heightDp = (heightPx / density).toInt().coerceAtLeast(1)
+        return Bundle().apply {
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, widthDp)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, widthDp)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, heightDp)
+            putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, heightDp)
+            putInt(
+                AppWidgetManager.OPTION_APPWIDGET_HOST_CATEGORY,
+                AppWidgetProviderInfo.WIDGET_CATEGORY_HOME_SCREEN
+            )
+        }
+    }
+
+    private fun applyWidgetSize(hostView: AppWidgetHostView, widgetId: Int, heightPx: Int) {
+        val options = buildWidgetOptions(heightPx)
+        val widthDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
+        val heightDp = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+        appWidgetManager.updateAppWidgetOptions(widgetId, options)
+        @Suppress("DEPRECATION")
+        hostView.updateAppWidgetSize(options, widthDp, heightDp, widthDp, heightDp)
     }
 
     private fun updateListPaddingForWidgets() {
