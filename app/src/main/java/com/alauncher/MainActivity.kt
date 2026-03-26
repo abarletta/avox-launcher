@@ -162,6 +162,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        widgetContainer.setOnTouchListener { _, event ->
+            handleHomeWidgetEmptySpaceTouch(event)
+            false
+        }
+
         sidebar.onLetterSelected = { letter ->
             if (letter != currentSidebarLetter) {
                 currentSidebarLetter = letter
@@ -840,15 +845,7 @@ class MainActivity : AppCompatActivity() {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 if (appList.pointToPosition(event.x.toInt(), event.y.toInt()) == AdapterView.INVALID_POSITION) {
-                    homeLongPressTriggered = false
-                    homeLongPressTarget = appList
-                    homeLongPressStartX = event.rawX
-                    homeLongPressStartY = event.rawY
-                    appList.removeCallbacks(homeLongPressRunnable)
-                    appList.postDelayed(
-                        homeLongPressRunnable,
-                        android.view.ViewConfiguration.getLongPressTimeout().toLong()
-                    )
+                    scheduleHomeLongPress(appList, event)
                 } else {
                     cancelHomeLongPress()
                 }
@@ -863,6 +860,57 @@ class MainActivity : AppCompatActivity() {
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelHomeLongPress()
         }
+    }
+
+    private fun handleHomeWidgetEmptySpaceTouch(event: MotionEvent) {
+        if (!canOpenHomeSettingsFromLongPress()) {
+            cancelHomeLongPress()
+            return
+        }
+
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                if (isTouchInsideWidgetChild(event)) {
+                    cancelHomeLongPress()
+                } else {
+                    scheduleHomeLongPress(widgetContainer, event)
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val movedTooFar = kotlin.math.abs(event.rawX - homeLongPressStartX) > homeTouchSlop ||
+                    kotlin.math.abs(event.rawY - homeLongPressStartY) > homeTouchSlop
+                if (movedTooFar || isTouchInsideWidgetChild(event)) {
+                    cancelHomeLongPress()
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelHomeLongPress()
+        }
+    }
+
+    private fun scheduleHomeLongPress(target: View, event: MotionEvent) {
+        homeLongPressTriggered = false
+        homeLongPressTarget = target
+        homeLongPressStartX = event.rawX
+        homeLongPressStartY = event.rawY
+        target.removeCallbacks(homeLongPressRunnable)
+        target.postDelayed(
+            homeLongPressRunnable,
+            android.view.ViewConfiguration.getLongPressTimeout().toLong()
+        )
+    }
+
+    private fun isTouchInsideWidgetChild(event: MotionEvent): Boolean {
+        val x = event.x.toInt()
+        val y = event.y.toInt()
+        for (index in 0 until widgetContainer.childCount) {
+            val child = widgetContainer.getChildAt(index)
+            if (child.visibility == View.VISIBLE &&
+                x >= child.left && x < child.right &&
+                y >= child.top && y < child.bottom) {
+                return true
+            }
+        }
+        return false
     }
 
     private fun cancelHomeLongPress() {
