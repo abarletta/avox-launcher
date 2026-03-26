@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- dashed horizontal stroke centered vertically -->
+    <item android:gravity="center_vertical">
+        <shape android:shape="rectangle">
+            <size android:height="2dp" />
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="2dp"
+                android:color="#B3FFFFFF"
+                android:dashWidth="6dp"
+                android:dashGap="6dp" />
+        </shape>
+    </item>
+
+    <!-- left up/down arrows (use the same arrow drawable twice) -->
+    <item android:drawable="@drawable/arrow_up_down" android:gravity="left|center_vertical"
+          android:width="16dp" android:height="16dp" />
+
+    <item android:drawable="@drawable/arrow_up_down" android:gravity="right|center_vertical"
+          android:width="16dp" android:height="16dp" />
+
+</layer-list>

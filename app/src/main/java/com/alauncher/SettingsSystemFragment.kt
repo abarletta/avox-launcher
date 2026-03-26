@@ -17,11 +17,15 @@ import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 
 class SettingsSystemFragment : Fragment() {
+
+    private var screenMode: String = MODE_WIDGETS_HOME
 
     private val notifOptions = listOf(
         MainActivity.NOTIF_MODE_COUNT to "Badge Count",
@@ -29,50 +33,65 @@ class SettingsSystemFragment : Fragment() {
         MainActivity.NOTIF_MODE_NONE to "Off"
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        screenMode = arguments?.getString(ARG_MODE, MODE_WIDGETS_HOME) ?: MODE_WIDGETS_HOME
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_settings_system, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val notificationsSection = view.findViewById<View>(R.id.notificationsSection)
+        val homeSection = view.findViewById<View>(R.id.homeSection)
+        val descriptionView = view.findViewById<TextView>(R.id.systemDescription)
+        val titleView = view.findViewById<TextView>(R.id.systemTitle)
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
 
-        // Notification mode
-        setupSpinner(
-            view.findViewById(R.id.notifModeSpinner), notifOptions.map { it.second },
-            notifOptions.indexOfFirst { it.first == (prefs.getString(MainActivity.PREF_NOTIF_MODE, MainActivity.NOTIF_MODE_COUNT) ?: MainActivity.NOTIF_MODE_COUNT) }
-                .coerceAtLeast(0)
-        ) { pos ->
-            val mode = notifOptions[pos].first
-            prefs.edit().putString(MainActivity.PREF_NOTIF_MODE, mode).apply()
-            if (mode != MainActivity.NOTIF_MODE_NONE && !isNotificationListenerEnabled()) {
-                promptNotificationAccess()
+        val showNotifications = screenMode == MODE_NOTIFICATIONS
+        titleView.setText(if (showNotifications) R.string.settings_notifications else R.string.settings_widgets)
+        descriptionView.setText(if (showNotifications) R.string.settings_notifications_hint else R.string.settings_widgets_hint)
+        notificationsSection.visibility = if (showNotifications) View.VISIBLE else View.GONE
+        homeSection.visibility = if (showNotifications) View.GONE else View.VISIBLE
+
+        if (showNotifications) {
+            setupSpinner(
+                view.findViewById(R.id.notifModeSpinner), notifOptions.map { it.second },
+                notifOptions.indexOfFirst { it.first == (prefs.getString(MainActivity.PREF_NOTIF_MODE, MainActivity.NOTIF_MODE_COUNT) ?: MainActivity.NOTIF_MODE_COUNT) }
+                    .coerceAtLeast(0)
+            ) { pos ->
+                val mode = notifOptions[pos].first
+                prefs.edit().putString(MainActivity.PREF_NOTIF_MODE, mode).apply()
+                if (mode != MainActivity.NOTIF_MODE_NONE && !isNotificationListenerEnabled()) {
+                    promptNotificationAccess()
+                }
+            }
+
+            @Suppress("UseSwitchCompatOrMaterialCode")
+            val swipeSwitch = view.findViewById<android.widget.Switch>(R.id.notifSwipeSwitch)
+            swipeSwitch.isChecked = prefs.getBoolean(MainActivity.PREF_NOTIF_SWIPE, false)
+            swipeSwitch.setOnCheckedChangeListener { _, isChecked ->
+                prefs.edit().putBoolean(MainActivity.PREF_NOTIF_SWIPE, isChecked).apply()
             }
         }
 
-        // Notification swipe
-        @Suppress("UseSwitchCompatOrMaterialCode")
-        val swipeSwitch = view.findViewById<android.widget.Switch>(R.id.notifSwipeSwitch)
-        swipeSwitch.isChecked = prefs.getBoolean(MainActivity.PREF_NOTIF_SWIPE, false)
-        swipeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean(MainActivity.PREF_NOTIF_SWIPE, isChecked).apply()
-        }
-
-        // Favorites picker
-        view.findViewById<android.widget.Button>(R.id.favoritesButton).setOnClickListener {
-            showFavoritesPicker()
-        }
-
-        // Add widget button
-        view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
-            requireActivity().finish()
-            val intent = Intent(requireContext(), MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                putExtra("open_widget_picker", true)
+        if (!showNotifications) {
+            view.findViewById<android.widget.Button>(R.id.favoritesButton).setOnClickListener {
+                showFavoritesPicker()
             }
-            startActivity(intent)
-        }
 
-        populateWidgetList(view)
+            view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
+                requireActivity().finish()
+                val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    putExtra("open_widget_picker", true)
+                }
+                startActivity(intent)
+            }
+
+            populateWidgetList(view)
+        }
     }
 
     private fun showFavoritesPicker() {
@@ -183,6 +202,39 @@ class SettingsSystemFragment : Fragment() {
             header.addView(removeBtn)
             row.addView(header)
 
+            val controlsRow = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(0, (4 * density).toInt(), 0, 0)
+            }
+
+            val fullWidthSwitch = Switch(requireContext()).apply {
+                text = getString(R.string.widget_full_width_label)
+                isChecked = prefs.getBoolean("widget_fw_$widgetId", false)
+                setTextColor(Color.WHITE)
+                setOnCheckedChangeListener { _, isChecked ->
+                    prefs.edit()
+                        .putBoolean("widget_fw_$widgetId", isChecked)
+                        .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+                        .apply()
+                }
+            }
+            controlsRow.addView(fullWidthSwitch, LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+            ))
+
+            if (info.configure != null) {
+                val configureBtn = TextView(requireContext()).apply {
+                    text = getString(R.string.widget_controls_label)
+                    setTextColor(Color.WHITE)
+                    textSize = 13f
+                    setPadding((12 * density).toInt(), (4 * density).toInt(), (12 * density).toInt(), (4 * density).toInt())
+                    setOnClickListener { openWidgetControls(widgetId) }
+                }
+                controlsRow.addView(configureBtn)
+            }
+            row.addView(controlsRow)
+
             val heightRow = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
@@ -259,6 +311,24 @@ class SettingsSystemFragment : Fragment() {
         populateWidgetList(rootView)
     }
 
+    private fun openWidgetControls(widgetId: Int) {
+        val awm = AppWidgetManager.getInstance(requireContext())
+        val info = awm.getAppWidgetInfo(widgetId)
+        val configureComponent = info?.configure
+        if (configureComponent == null) {
+            Toast.makeText(requireContext(), R.string.widget_controls_unavailable, Toast.LENGTH_SHORT).show()
+            return
+        }
+        try {
+            startActivity(Intent(AppWidgetManager.ACTION_APPWIDGET_CONFIGURE).apply {
+                component = configureComponent
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            })
+        } catch (_: Exception) {
+            Toast.makeText(requireContext(), R.string.widget_controls_unavailable, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun isNotificationListenerEnabled(): Boolean {
         val flat = Settings.Secure.getString(requireContext().contentResolver, "enabled_notification_listeners") ?: return false
         val component = ComponentName(requireContext(), NotificationService::class.java)
@@ -289,6 +359,20 @@ class SettingsSystemFragment : Fragment() {
                     onSelected(position)
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
+    }
+
+    companion object {
+        private const val ARG_MODE = "mode"
+        const val MODE_NOTIFICATIONS = "notifications"
+        const val MODE_WIDGETS_HOME = "widgets_home"
+
+        fun newInstance(mode: String): SettingsSystemFragment {
+            return SettingsSystemFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_MODE, mode)
+                }
             }
         }
     }

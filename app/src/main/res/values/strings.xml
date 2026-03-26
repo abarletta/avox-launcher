@@ -33,6 +33,10 @@
     <string name="widget_height_label">Height</string>
     <string name="widget_remove_label">Remove</string>
     <string name="widget_none_label">No widgets added</string>
+    <string name="widget_full_width_label">Full width</string>
+    <string name="widget_settings_shortcut_label">Widget settings</string>
+    <string name="widget_controls_label">Controls</string>
+    <string name="widget_controls_unavailable">This widget does not expose extra controls.</string>
     <string name="animation_style_label">Sidebar Animation</string>
     <string name="wave_shift_label">Wave Shift</string>
     <string name="wave_scale_label">Wave Scale</string>
@@ -64,6 +68,8 @@
     <string name="settings_animations">Animations</string>
     <string name="settings_notifications">Notifications</string>
     <string name="settings_widgets">Widgets &amp; Home</string>
+    <string name="settings_notifications_hint">Badge counts and notification text are configured here. Reopen notification access from this screen if updates stop.</string>
+    <string name="settings_widgets_hint">Manage favorites, widget order, widget size, and add new home widgets from here.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
     <string name="hide_status_bar_label">Hide Status Bar</string>

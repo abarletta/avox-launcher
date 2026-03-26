@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 appWidgetId: Int,
                 appWidget: AppWidgetProviderInfo
             ): AppWidgetHostView {
-                return AppWidgetHostView(widgetHostContext)
+                return LauncherWidgetHostView(widgetHostContext)
             }
         }
 
@@ -823,25 +823,20 @@ class MainActivity : AppCompatActivity() {
         val density = resources.displayMetrics.density
         val wrapper = WidgetFrame(this)
         wrapper.tag = widgetId
+        wrapper.isClickable = true
+        wrapper.isLongClickable = true
+        wrapper.setOnLongClickListener {
+            if (!isWidgetEditMode) {
+                enterWidgetEditMode()
+            }
+            true
+        }
         // Create the host view; createView() already calls setAppWidget() internally.
         val hostView = appWidgetHost.createView(widgetHostContext, widgetId, info)
             ?: throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
         hostView.setPadding(0, 0, 0, 0)
 
         wrapper.addView(hostView, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
-        ))
-
-        // Border overlay (edit mode)
-        val border = View(this).apply {
-            background = GradientDrawable().apply {
-                setStroke((2 * density).toInt(), Color.parseColor("#6699FF"))
-                setColor(Color.TRANSPARENT)
-            }
-            visibility = View.GONE
-            tag = "border"
-        }
-        wrapper.addView(border, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
         ))
 
@@ -861,11 +856,40 @@ class MainActivity : AppCompatActivity() {
         }
         wrapper.addView(removeBtn, removeLp)
 
+        val settingsBtn = ImageButton(this).apply {
+            setImageResource(R.drawable.ic_settings)
+            setBackgroundResource(R.drawable.circle_dark_bg)
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            setPadding((4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt())
+            visibility = View.GONE
+            tag = "settings"
+            contentDescription = getString(R.string.widget_settings_shortcut_label)
+            setOnClickListener {
+                exitWidgetEditMode()
+                openWidgetSettingsMenu()
+            }
+        }
+        val settingsLp = FrameLayout.LayoutParams((28 * density).toInt(), (28 * density).toInt()).apply {
+            gravity = Gravity.TOP or Gravity.END
+            setMargins((4 * density).toInt(), (4 * density).toInt(), (36 * density).toInt(), 0)
+        }
+        wrapper.addView(settingsBtn, settingsLp)
+
         // Resize handle (edit mode)
         val resizeHandle = View(this).apply {
-            setBackgroundColor(Color.parseColor("#886699FF"))
+            // Use semi-transparent dark color so the foreground line is visible
+            setBackgroundColor(Color.TRANSPARENT)
+            
+            // Add a visible indicator for the resize handle (a thin line) using a foreground drawable
+            foreground = resources.getDrawable(R.drawable.resize_handle_foreground, null)
             visibility = View.GONE
             tag = "resize"
+            
+            // Ensure it has dimensions to be visible
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                48 // Height for the touch target area
+            )
         }
         val resizeLp = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, (10 * density).toInt()
@@ -919,7 +943,12 @@ class MainActivity : AppCompatActivity() {
                         else (info.minHeight * density).toInt().coerceAtLeast((MIN_WIDGET_HEIGHT_DP * density).toInt())
         val wrapperParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, heightPx
-        ).apply { bottomMargin = (4 * density).toInt() }
+        ).apply {
+            bottomMargin = (4 * density).toInt()
+            if (isWidgetFullWidth(widgetId)) {
+                marginStart = -widgetContainer.paddingStart
+            }
+        }
         wrapper.layoutParams = wrapperParams
 
         applyWidgetSize(hostView, widgetId, heightPx)
@@ -928,13 +957,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun enterWidgetEditMode() {
-        android.util.Log.d("ALauncher", "enterWidgetEditMode called")
         isWidgetEditMode = true
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
             if (child.tag is Int) {
-                child.findViewWithTag<View>("border")?.visibility = View.VISIBLE
                 child.findViewWithTag<View>("remove")?.visibility = View.VISIBLE
+                child.findViewWithTag<View>("settings")?.visibility = View.VISIBLE
                 child.findViewWithTag<View>("resize")?.visibility = View.VISIBLE
             }
         }
@@ -960,8 +988,8 @@ class MainActivity : AppCompatActivity() {
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
             if (child.tag is Int) {
-                child.findViewWithTag<View>("border")?.visibility = View.GONE
                 child.findViewWithTag<View>("remove")?.visibility = View.GONE
+                child.findViewWithTag<View>("settings")?.visibility = View.GONE
                 child.findViewWithTag<View>("resize")?.visibility = View.GONE
             }
         }
@@ -1005,8 +1033,21 @@ class MainActivity : AppCompatActivity() {
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().putInt("widget_h_$widgetId", height).apply()
     }
 
+    private fun isWidgetFullWidth(widgetId: Int): Boolean {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE).getBoolean("widget_fw_$widgetId", false)
+    }
+
+    private fun openWidgetSettingsMenu() {
+        startActivity(Intent(this, SettingsActivity::class.java).apply {
+            putExtra(SettingsActivity.EXTRA_OPEN_SCREEN, SettingsSystemFragment.MODE_WIDGETS_HOME)
+        })
+    }
+
     private fun clearWidgetHeight(widgetId: Int) {
-        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit().remove("widget_h_$widgetId").apply()
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit()
+            .remove("widget_h_$widgetId")
+            .remove("widget_fw_$widgetId")
+            .apply()
     }
 
     private fun restoreWidgets() {
@@ -1190,20 +1231,27 @@ class MainActivity : AppCompatActivity() {
     private inner class WidgetFrame(ctx: Context) : FrameLayout(ctx) {
         private var downX = 0f
         private var downY = 0f
+        private var longPressTriggered = false
+        private val touchSlop = android.view.ViewConfiguration.get(context).scaledTouchSlop
         private val longPressRunnable = Runnable {
-            if (!isWidgetEditMode) enterWidgetEditMode()
+            if (!isWidgetEditMode) {
+                longPressTriggered = true
+                performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                enterWidgetEditMode()
+            }
         }
 
-        override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-            val slop = android.view.ViewConfiguration.get(context).scaledTouchSlop
+        override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
             when (ev.action) {
                 MotionEvent.ACTION_DOWN -> {
+                    longPressTriggered = false
                     downX = ev.x
                     downY = ev.y
+                    removeCallbacks(longPressRunnable)
                     postDelayed(longPressRunnable, android.view.ViewConfiguration.getLongPressTimeout().toLong())
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if (kotlin.math.abs(ev.x - downX) > slop || kotlin.math.abs(ev.y - downY) > slop) {
+                    if (kotlin.math.abs(ev.x - downX) > touchSlop || kotlin.math.abs(ev.y - downY) > touchSlop) {
                         removeCallbacks(longPressRunnable)
                     }
                 }
@@ -1211,7 +1259,55 @@ class MainActivity : AppCompatActivity() {
                     removeCallbacks(longPressRunnable)
                 }
             }
-            return false
+
+            if (longPressTriggered) {
+                return true
+            }
+            return super.dispatchTouchEvent(ev)
+        }
+    }
+
+    private inner class LauncherWidgetHostView(ctx: Context) : AppWidgetHostView(ctx) {
+        private var downX = 0f
+        private var downY = 0f
+        private var longPressTriggered = false
+        private val touchSlop = android.view.ViewConfiguration.get(ctx).scaledTouchSlop
+        private val triggerEditMode = Runnable {
+            if (!isWidgetEditMode) {
+                longPressTriggered = true
+                performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                enterWidgetEditMode()
+            }
+        }
+
+        override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+            when (ev.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    longPressTriggered = false
+                    downX = ev.rawX
+                    downY = ev.rawY
+                    removeCallbacks(triggerEditMode)
+                    if (!isWidgetEditMode) {
+                        postDelayed(
+                            triggerEditMode,
+                            android.view.ViewConfiguration.getLongPressTimeout().toLong()
+                        )
+                    }
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    if (kotlin.math.abs(ev.rawX - downX) > touchSlop ||
+                        kotlin.math.abs(ev.rawY - downY) > touchSlop
+                    ) {
+                        removeCallbacks(triggerEditMode)
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> removeCallbacks(triggerEditMode)
+            }
+
+            if (longPressTriggered) {
+                return true
+            }
+            return super.dispatchTouchEvent(ev)
         }
     }
 

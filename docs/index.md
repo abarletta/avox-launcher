@@ -36,6 +36,10 @@ Its purpose is to tell Copilot exactly where to look in `docs/` before answering
   - Detailed model capabilities, tags, context limits, and quota categories
   - Use when model selection needs concrete detail instead of the summary in `docs/ai_roles.md`
 
+- `docs/visual_code_map.md`
+  - Visual ownership map for the launcher UI
+  - Use when changing layout, icons, typography, widget chrome, settings screen visuals, or animations
+
 ## Required Read Sets
 
 - For repository context or loaded-context questions:

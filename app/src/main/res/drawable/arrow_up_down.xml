@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+
+    <!-- up triangle (top center) -->
+    <path
+        android:fillColor="#B3FFFFFF"
+        android:pathData="M8,3 L4,7 L12,7 Z" />
+
+    <!-- down triangle (bottom center) -->
+    <path
+        android:fillColor="#B3FFFFFF"
+        android:pathData="M8,13 L4,9 L12,9 Z" />
+
+</vector>

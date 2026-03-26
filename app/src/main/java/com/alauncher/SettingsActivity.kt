@@ -8,6 +8,10 @@ import androidx.fragment.app.Fragment
 
 class SettingsActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_OPEN_SCREEN = "open_screen"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         applyThemeFromPrefs()
         super.onCreate(savedInstanceState)
@@ -18,8 +22,13 @@ class SettingsActivity : AppCompatActivity() {
             prefs.getInt(MainActivity.PREF_DARKNESS, MainActivity.DEFAULT_DARKNESS) / 100f
 
         if (savedInstanceState == null) {
+            val initialFragment = when (intent.getStringExtra(EXTRA_OPEN_SCREEN)) {
+                SettingsSystemFragment.MODE_WIDGETS_HOME -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS_HOME)
+                SettingsSystemFragment.MODE_NOTIFICATIONS -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_NOTIFICATIONS)
+                else -> SettingsMenuFragment()
+            }
             supportFragmentManager.beginTransaction()
-                .replace(R.id.settingsContainer, SettingsMenuFragment())
+                .replace(R.id.settingsContainer, initialFragment)
                 .commit()
         }
     }

@@ -16,7 +16,11 @@ class SettingsMenuFragment : Fragment() {
         view.findViewById<View>(R.id.cardAppearance).setOnClickListener { activity.showFragment(SettingsAppearanceFragment()) }
         view.findViewById<View>(R.id.cardWallpaper).setOnClickListener { activity.showFragment(SettingsWallpaperFragment()) }
         view.findViewById<View>(R.id.cardAnimations).setOnClickListener { activity.showFragment(SettingsAnimationsFragment()) }
-        view.findViewById<View>(R.id.cardNotifications).setOnClickListener { activity.showFragment(SettingsSystemFragment()) }
-        view.findViewById<View>(R.id.cardWidgets).setOnClickListener { activity.showFragment(SettingsSystemFragment()) }
+        view.findViewById<View>(R.id.cardNotifications).setOnClickListener {
+            activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_NOTIFICATIONS))
+        }
+        view.findViewById<View>(R.id.cardWidgets).setOnClickListener {
+            activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS_HOME))
+        }
     }
 }
