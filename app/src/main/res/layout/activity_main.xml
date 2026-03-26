@@ -66,8 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="56dp"
         android:layout_marginBottom="20dp"
         android:gravity="center"
         android:orientation="horizontal"

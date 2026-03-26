@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var footerActionsContainer: LinearLayout
     private lateinit var searchBar: EditText
     private lateinit var widgetContainer: LinearLayout
+    private var loadedIconPackPackage: String? = null
 
     private lateinit var appWidgetHost: AppWidgetHost
     private lateinit var appWidgetManager: AppWidgetManager
@@ -462,25 +463,9 @@ class MainActivity : AppCompatActivity() {
         val iconSize = prefs.getInt(PREF_ICON_SIZE, DEFAULT_ICON_SIZE)
         val typeface = resolveTypeface(fontFamily)
 
-        // Icon pack
-        val iconPack = prefs.getString(PREF_ICON_PACK, "") ?: ""
-        if (iconPack.isNotEmpty()) {
-            if (iconPackResolver == null || iconPackResolver?.let { true } == true) {
-                iconPackResolver = IconPackResolver(this)
-                iconPackResolver?.load(iconPack)
-            }
-        } else {
-            iconPackResolver = null
-        }
-
-        // Nerd font / icon mode
-        val iconMode = prefs.getString(PREF_ICON_MODE, null)
-            ?: if (prefs.getBoolean(PREF_NERD_FONT, false)) ICON_MODE_NERD else ICON_MODE_REGULAR
-        val nerdTypeface = if (iconMode == ICON_MODE_NERD) {
-            val nerdFile = java.io.File(filesDir, "nerd_font.ttf")
-            if (nerdFile.exists()) try { Typeface.createFromFile(nerdFile) } catch (_: Exception) { null }
-            else null
-        } else null
+        updateIconPackResolver(prefs)
+        val iconMode = resolveIconMode(prefs)
+        val nerdTypeface = resolveNerdTypeface(iconMode)
 
         appList.adapter = AppListAdapter(
             layoutInflater, displayedApps, typeface, spacing, fontSize,
@@ -718,8 +703,14 @@ class MainActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val footerNotifMode = prefs.getString(PREF_FOOTER_NOTIF_MODE, NOTIF_MODE_NONE) ?: NOTIF_MODE_NONE
+        val footerShowLabels = prefs.getBoolean(PREF_FOOTER_SHOW_LABELS, false)
+        val footerTypeface = resolveTypeface(prefs.getString(PREF_FONT, DEFAULT_FONT) ?: DEFAULT_FONT)
+        val iconMode = resolveIconMode(prefs)
+        val iconSize = prefs.getInt(PREF_ICON_SIZE, DEFAULT_ICON_SIZE)
+        val nerdTypeface = resolveNerdTypeface(iconMode)
+        updateIconPackResolver(prefs)
         val actions = (0 until LauncherQuickActions.SLOT_COUNT).mapNotNull { index ->
-            LauncherQuickActions.resolveAction(this, LauncherQuickActions.getSpec(prefs, index))
+            LauncherQuickActions.resolveAction(this, LauncherQuickActions.getSpec(prefs, index))?.let { index to it }
         }
 
         if (actions.isEmpty()) {
@@ -729,13 +720,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         val density = resources.displayMetrics.density
-        actions.forEachIndexed { index, action ->
-            val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+        actions.forEachIndexed { index, (slotIndex, action) ->
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
                 if (index < actions.lastIndex) {
                     marginEnd = (12 * density).toInt()
                 }
             }
-            footerActionsContainer.addView(createFooterActionView(action, footerNotifMode), params)
+            footerActionsContainer.addView(
+                createFooterActionView(
+                    slotIndex,
+                    action,
+                    footerNotifMode,
+                    footerShowLabels,
+                    iconMode,
+                    iconSize,
+                    nerdTypeface,
+                    footerTypeface
+                ),
+                params
+            )
         }
 
         if (footerActionsContainer.visibility != View.VISIBLE) {
@@ -745,51 +751,102 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun createFooterActionView(action: FooterQuickAction, footerNotifMode: String): View {
+    private fun createFooterActionView(
+        slotIndex: Int,
+        action: FooterQuickAction,
+        footerNotifMode: String,
+        footerShowLabels: Boolean,
+        iconMode: String,
+        iconSizeDp: Int,
+        nerdTypeface: Typeface?,
+        footerTypeface: Typeface
+    ): View {
         val density = resources.displayMetrics.density
         val notification = action.packageName?.let { notificationData[it] }
+        val iconVisual = resolveFooterActionIcon(action, iconMode, nerdTypeface)
+        val hasIcon = iconVisual.drawable != null || iconVisual.glyph != null
+        val footerText = when {
+            footerNotifMode == NOTIF_MODE_TEXT && !notification?.latestText.isNullOrBlank() -> notification.latestText
+            footerShowLabels || !hasIcon -> action.label
+            else -> null
+        }
 
         val root = FrameLayout(this).apply {
             isClickable = true
             isFocusable = true
             contentDescription = action.label
+            minimumWidth = (48 * density).toInt()
+            setPadding((6 * density).toInt(), 0, (6 * density).toInt(), 0)
             setOnClickListener { launchFooterAction(action) }
+            setOnLongClickListener {
+                performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+                openFooterActionSettings(slotIndex)
+                true
+            }
         }
 
         val content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
-            setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
+            setPadding((4 * density).toInt(), 0, (4 * density).toInt(), 0)
         }
 
-        val iconButton = ImageButton(this).apply {
-            background = getDrawable(R.drawable.circle_dark_bg)
-            scaleType = ImageView.ScaleType.CENTER_INSIDE
-            setPadding((12 * density).toInt(), (12 * density).toInt(), (12 * density).toInt(), (12 * density).toInt())
-            setImageDrawable(action.icon ?: getDrawable(R.drawable.ic_settings))
-            isClickable = false
-            isFocusable = false
-            contentDescription = action.label
+        if (hasIcon) {
+            val iconFrame = FrameLayout(this)
+            val iconSizePx = (iconSizeDp * density).toInt()
+            val frameSizePx = iconSizePx.coerceAtLeast((36 * density).toInt())
+            val iconView = ImageView(this).apply {
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                isClickable = false
+                isFocusable = false
+                visibility = if (iconVisual.drawable != null) View.VISIBLE else View.GONE
+                contentDescription = action.label
+            }
+            if (iconVisual.drawable != null) {
+                iconView.setImageDrawable(iconVisual.drawable)
+            }
+            iconFrame.addView(
+                iconView,
+                FrameLayout.LayoutParams(iconSizePx, iconSizePx).apply {
+                    gravity = Gravity.CENTER
+                }
+            )
+
+            val glyphView = TextView(this).apply {
+                visibility = if (iconVisual.glyph != null) View.VISIBLE else View.GONE
+                setTextColor(Color.WHITE)
+                gravity = Gravity.CENTER
+                typeface = nerdTypeface
+                textSize = (iconSizeDp * 0.8f).coerceAtLeast(18f)
+                text = iconVisual.glyph
+            }
+            iconFrame.addView(
+                glyphView,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    gravity = Gravity.CENTER
+                }
+            )
+
+            content.addView(iconFrame, LinearLayout.LayoutParams(frameSizePx, frameSizePx))
         }
-        content.addView(iconButton, LinearLayout.LayoutParams(
-            (48 * density).toInt(),
-            (48 * density).toInt()
-        ))
 
         val labelView = TextView(this).apply {
             setTextColor(Color.WHITE)
             textSize = 11f
             gravity = Gravity.CENTER
             maxLines = 2
+            maxWidth = (120 * density).toInt()
             ellipsize = TextUtils.TruncateAt.END
+            typeface = footerTypeface
             setPadding(0, (6 * density).toInt(), 0, 0)
+            visibility = if (footerText.isNullOrBlank()) View.GONE else View.VISIBLE
         }
-        labelView.text = when {
-            footerNotifMode == NOTIF_MODE_TEXT && !notification?.latestText.isNullOrBlank() -> notification?.latestText
-            else -> action.label
-        }
+        labelView.text = footerText
         content.addView(labelView, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         ))
         root.addView(content)
@@ -828,8 +885,73 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun openFooterActionSettings(slotIndex: Int) {
+        startActivity(Intent(this, SettingsActivity::class.java).apply {
+            putExtra(SettingsActivity.EXTRA_OPEN_SCREEN, SettingsSystemFragment.MODE_HOME)
+            putExtra(SettingsActivity.EXTRA_FOOTER_SLOT_INDEX, slotIndex)
+        })
+    }
+
     private fun openLauncherSettings() {
         startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
+    private fun updateIconPackResolver(prefs: android.content.SharedPreferences) {
+        val iconPack = prefs.getString(PREF_ICON_PACK, "") ?: ""
+        if (iconPack.isBlank()) {
+            iconPackResolver = null
+            loadedIconPackPackage = null
+            return
+        }
+        if (iconPackResolver == null || loadedIconPackPackage != iconPack) {
+            iconPackResolver = IconPackResolver(this).apply { load(iconPack) }
+            loadedIconPackPackage = iconPack
+        }
+    }
+
+    private fun resolveIconMode(prefs: android.content.SharedPreferences): String {
+        return prefs.getString(PREF_ICON_MODE, null)
+            ?: if (prefs.getBoolean(PREF_NERD_FONT, false)) ICON_MODE_NERD else ICON_MODE_REGULAR
+    }
+
+    private fun resolveNerdTypeface(iconMode: String): Typeface? {
+        if (iconMode != ICON_MODE_NERD) return null
+        val nerdFile = java.io.File(filesDir, "nerd_font.ttf")
+        return if (nerdFile.exists()) {
+            try {
+                Typeface.createFromFile(nerdFile)
+            } catch (_: Exception) {
+                null
+            }
+        } else {
+            null
+        }
+    }
+
+    private fun resolveFooterActionIcon(
+        action: FooterQuickAction,
+        iconMode: String,
+        nerdTypeface: Typeface?
+    ): FooterActionIconVisual {
+        return when (iconMode) {
+            ICON_MODE_REGULAR -> {
+                val drawable = if (action.packageName != null) {
+                    iconPackResolver?.resolve(action.packageName) ?: action.icon
+                } else {
+                    action.icon
+                }
+                FooterActionIconVisual(drawable = drawable)
+            }
+            ICON_MODE_NERD -> {
+                val glyph = if (nerdTypeface != null) {
+                    action.packageName?.let { launcherNerdGlyphs[it] } ?: footerQuickActionNerdGlyphs[action.spec]
+                } else {
+                    null
+                }
+                FooterActionIconVisual(glyph = glyph)
+            }
+            else -> FooterActionIconVisual()
+        }
     }
 
     private fun canOpenHomeSettingsFromLongPress(): Boolean {
@@ -1299,7 +1421,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openWidgetSettingsMenu() {
         startActivity(Intent(this, SettingsActivity::class.java).apply {
-            putExtra(SettingsActivity.EXTRA_OPEN_SCREEN, SettingsSystemFragment.MODE_WIDGETS_HOME)
+            putExtra(SettingsActivity.EXTRA_OPEN_SCREEN, SettingsSystemFragment.MODE_WIDGETS)
         })
     }
 
@@ -1615,6 +1737,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_NERD_FONT = "nerd_font_enabled"
         const val PREF_HIDE_STATUS_BAR = "hide_status_bar"
         const val PREF_FOOTER_NOTIF_MODE = "footer_notification_mode"
+        const val PREF_FOOTER_SHOW_LABELS = "footer_show_labels"
         const val PREF_ICON_MODE = "icon_mode"
         const val ICON_MODE_REGULAR = "regular"
         const val ICON_MODE_NERD = "nerd"
@@ -1658,6 +1781,48 @@ data class AppInfo(
     val packageName: String,
     val launchIntent: Intent,
     val icon: Drawable? = null
+)
+
+private data class FooterActionIconVisual(
+    val drawable: Drawable? = null,
+    val glyph: String? = null
+)
+
+private val launcherNerdGlyphs = mapOf(
+    "com.android.chrome" to "\uF268",
+    "com.google.android.gm" to "\uF0E0",
+    "com.google.android.youtube" to "\uF167",
+    "com.google.android.apps.maps" to "\uF279",
+    "com.android.settings" to "\uF013",
+    "com.google.android.dialer" to "\uF095",
+    "com.android.dialer" to "\uF095",
+    "com.google.android.apps.messaging" to "\uF075",
+    "com.android.mms" to "\uF075",
+    "com.google.android.calendar" to "\uF073",
+    "com.google.android.deskclock" to "\uF017",
+    "com.android.camera" to "\uF030",
+    "com.google.android.camera" to "\uF030",
+    "com.google.android.apps.photos" to "\uF03E",
+    "com.android.vending" to "\uF3A5",
+    "com.google.android.music" to "\uF001",
+    "com.spotify.music" to "\uF1BC",
+    "com.whatsapp" to "\uF232",
+    "com.twitter.android" to "\uF099",
+    "com.instagram.android" to "\uF16D",
+    "com.facebook.katana" to "\uF09A",
+    "com.slack" to "\uF198",
+    "org.telegram.messenger" to "\uF2C6",
+    "com.google.android.apps.docs" to "\uF15C",
+    "com.google.android.gms" to "\uF1A0"
+)
+
+private val footerQuickActionNerdGlyphs = mapOf(
+    LauncherQuickActions.SPEC_LAUNCHER_SETTINGS to "\uF013",
+    LauncherQuickActions.SPEC_SYSTEM_SETTINGS to "\uF013",
+    LauncherQuickActions.SPEC_WIFI_SETTINGS to "\uF1EB",
+    LauncherQuickActions.SPEC_BLUETOOTH_SETTINGS to "\uF293",
+    LauncherQuickActions.SPEC_DISPLAY_SETTINGS to "\uF108",
+    LauncherQuickActions.SPEC_APPLICATION_SETTINGS to "\uF013"
 )
 
 private class NerdFontSpan(private val typeface: Typeface) : android.text.style.MetricAffectingSpan() {
@@ -1704,34 +1869,6 @@ private class AppListAdapter(
     }
 
     fun getAppInfo(position: Int): AppInfo? = displayItems.getOrNull(position) as? AppInfo
-
-    private val nerdGlyphs = mapOf(
-        "com.android.chrome" to "\uF268",
-        "com.google.android.gm" to "\uF0E0",
-        "com.google.android.youtube" to "\uF167",
-        "com.google.android.apps.maps" to "\uF279",
-        "com.android.settings" to "\uF013",
-        "com.google.android.dialer" to "\uF095",
-        "com.android.dialer" to "\uF095",
-        "com.google.android.apps.messaging" to "\uF075",
-        "com.android.mms" to "\uF075",
-        "com.google.android.calendar" to "\uF073",
-        "com.google.android.deskclock" to "\uF017",
-        "com.android.camera" to "\uF030",
-        "com.google.android.camera" to "\uF030",
-        "com.google.android.apps.photos" to "\uF03E",
-        "com.android.vending" to "\uF3A5",
-        "com.google.android.music" to "\uF001",
-        "com.spotify.music" to "\uF1BC",
-        "com.whatsapp" to "\uF232",
-        "com.twitter.android" to "\uF099",
-        "com.instagram.android" to "\uF16D",
-        "com.facebook.katana" to "\uF09A",
-        "com.slack" to "\uF198",
-        "org.telegram.messenger" to "\uF2C6",
-        "com.google.android.apps.docs" to "\uF15C",
-        "com.google.android.gms" to "\uF1A0"
-    )
 
     override fun getCount(): Int = displayItems.size
     override fun getItem(position: Int): Any = displayItems[position]
@@ -1784,7 +1921,7 @@ private class AppListAdapter(
         }
 
         // Nerd font prefix (only in nerd mode)
-        val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) nerdGlyphs[app.packageName] else null
+        val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) launcherNerdGlyphs[app.packageName] else null
         if (glyph != null) {
             val separator = "\u2003" // em-space for visual separation
             val spannable = android.text.SpannableString("$glyph$separator${app.label}")

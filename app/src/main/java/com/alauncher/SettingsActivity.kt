@@ -10,6 +10,7 @@ class SettingsActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_OPEN_SCREEN = "open_screen"
+        const val EXTRA_FOOTER_SLOT_INDEX = "footer_slot_index"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +24,9 @@ class SettingsActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             val initialFragment = when (intent.getStringExtra(EXTRA_OPEN_SCREEN)) {
-                SettingsSystemFragment.MODE_WIDGETS_HOME -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS_HOME)
+                SettingsSystemFragment.MODE_HOME,
+                SettingsSystemFragment.MODE_WIDGETS_HOME -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_HOME)
+                SettingsSystemFragment.MODE_WIDGETS -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS)
                 SettingsSystemFragment.MODE_NOTIFICATIONS -> SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_NOTIFICATIONS)
                 else -> SettingsMenuFragment()
             }

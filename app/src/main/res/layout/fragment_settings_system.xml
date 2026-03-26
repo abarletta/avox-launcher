@@ -14,7 +14,7 @@
             android:id="@+id/systemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Widgets &amp; Home"
+            android:text="Home"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -24,7 +24,7 @@
             android:id="@+id/systemDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Manage favorites, widget order, size, and home screen entry points from here."
+            android:text="Manage favorites, footer actions, and backups from here."
             android:textColor="#AAAAAA"
             android:textSize="14sp"
             android:layout_marginBottom="24dp" />
@@ -77,13 +77,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#33FFFFFF"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
-
             <Button
                 android:id="@+id/favoritesButton"
                 android:layout_width="wrap_content"
@@ -109,7 +102,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Choose up to three footer icons for the home screen. Long-press empty home space to open launcher settings even if all slots are cleared."
+                android:text="Choose up to three footer icons for the home screen. Long-press a footer icon to reconfigure its slot, or long-press empty home space to open launcher settings when all slots are cleared."
                 android:textColor="#AAAAAA"
                 android:textSize="13sp"
                 android:layout_marginBottom="12dp" />
@@ -129,39 +122,31 @@
                 android:layout_marginBottom="16dp" />
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Show Footer Labels"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <Switch
+                    android:id="@+id/footerLabelsSwitch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/footerQuickActionsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="24dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#33FFFFFF"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manage Widgets"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp" />
-
-            <LinearLayout
-                android:id="@+id/widgetManageContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="24dp" />
-
-            <Button
-                android:id="@+id/addWidgetButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Widget"
                 android:layout_marginBottom="24dp" />
 
             <View
@@ -199,6 +184,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Restore Settings"
+                android:layout_marginBottom="24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widgetsSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Widgets"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:id="@+id/widgetManageContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/addWidgetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Widget"
                 android:layout_marginBottom="24dp" />
         </LinearLayout>
 

@@ -19,8 +19,11 @@ class SettingsMenuFragment : Fragment() {
         view.findViewById<View>(R.id.cardNotifications).setOnClickListener {
             activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_NOTIFICATIONS))
         }
+        view.findViewById<View>(R.id.cardHome).setOnClickListener {
+            activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_HOME))
+        }
         view.findViewById<View>(R.id.cardWidgets).setOnClickListener {
-            activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS_HOME))
+            activity.showFragment(SettingsSystemFragment.newInstance(SettingsSystemFragment.MODE_WIDGETS))
         }
     }
 }

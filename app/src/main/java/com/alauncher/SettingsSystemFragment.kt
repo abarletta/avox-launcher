@@ -31,7 +31,7 @@ import org.json.JSONObject
 
 class SettingsSystemFragment : Fragment() {
 
-    private var screenMode: String = MODE_WIDGETS_HOME
+    private var screenMode: String = MODE_HOME
 
     private val notifOptions = listOf(
         MainActivity.NOTIF_MODE_COUNT to "Badge Count",
@@ -57,7 +57,7 @@ class SettingsSystemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        screenMode = arguments?.getString(ARG_MODE, MODE_WIDGETS_HOME) ?: MODE_WIDGETS_HOME
+        screenMode = arguments?.getString(ARG_MODE, MODE_HOME) ?: MODE_HOME
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -67,15 +67,30 @@ class SettingsSystemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val notificationsSection = view.findViewById<View>(R.id.notificationsSection)
         val homeSection = view.findViewById<View>(R.id.homeSection)
+        val widgetsSection = view.findViewById<View>(R.id.widgetsSection)
         val descriptionView = view.findViewById<TextView>(R.id.systemDescription)
         val titleView = view.findViewById<TextView>(R.id.systemTitle)
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
 
         val showNotifications = screenMode == MODE_NOTIFICATIONS
-        titleView.setText(if (showNotifications) R.string.settings_notifications else R.string.settings_widgets)
-        descriptionView.setText(if (showNotifications) R.string.settings_notifications_hint else R.string.settings_widgets_hint)
+        val showWidgets = screenMode == MODE_WIDGETS
+        titleView.setText(
+            when {
+                showNotifications -> R.string.settings_notifications
+                showWidgets -> R.string.settings_widgets
+                else -> R.string.settings_home
+            }
+        )
+        descriptionView.setText(
+            when {
+                showNotifications -> R.string.settings_notifications_hint
+                showWidgets -> R.string.settings_widgets_hint
+                else -> R.string.settings_home_hint
+            }
+        )
         notificationsSection.visibility = if (showNotifications) View.VISIBLE else View.GONE
-        homeSection.visibility = if (showNotifications) View.GONE else View.VISIBLE
+        homeSection.visibility = if (!showNotifications && !showWidgets) View.VISIBLE else View.GONE
+        widgetsSection.visibility = if (showWidgets) View.VISIBLE else View.GONE
 
         if (showNotifications) {
             setupSpinner(
@@ -98,7 +113,7 @@ class SettingsSystemFragment : Fragment() {
             }
         }
 
-        if (!showNotifications) {
+        if (!showNotifications && !showWidgets) {
             view.findViewById<android.widget.Button>(R.id.favoritesButton).setOnClickListener {
                 showFavoritesPicker()
             }
@@ -118,15 +133,19 @@ class SettingsSystemFragment : Fragment() {
                 }
             }
 
+            @Suppress("UseSwitchCompatOrMaterialCode")
+            val footerLabelsSwitch = view.findViewById<android.widget.Switch>(R.id.footerLabelsSwitch)
+            footerLabelsSwitch.isChecked = prefs.getBoolean(MainActivity.PREF_FOOTER_SHOW_LABELS, false)
+            footerLabelsSwitch.setOnCheckedChangeListener { _, isChecked ->
+                prefs.edit().putBoolean(MainActivity.PREF_FOOTER_SHOW_LABELS, isChecked).apply()
+            }
+
             populateFooterActionRows(view)
 
-            view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
-                requireActivity().finish()
-                val intent = Intent(requireContext(), MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    putExtra("open_widget_picker", true)
-                }
-                startActivity(intent)
+            val requestedFooterSlot = requireActivity().intent.getIntExtra(SettingsActivity.EXTRA_FOOTER_SLOT_INDEX, -1)
+            if (requestedFooterSlot in 0 until LauncherQuickActions.SLOT_COUNT) {
+                requireActivity().intent.removeExtra(SettingsActivity.EXTRA_FOOTER_SLOT_INDEX)
+                view.post { showFooterActionPicker(requestedFooterSlot, view) }
             }
 
             view.findViewById<Button>(R.id.backupSettingsButton).setOnClickListener {
@@ -135,6 +154,17 @@ class SettingsSystemFragment : Fragment() {
 
             view.findViewById<Button>(R.id.restoreSettingsButton).setOnClickListener {
                 restoreDocumentLauncher.launch(arrayOf("application/json", "text/plain"))
+            }
+        }
+
+        if (showWidgets) {
+            view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
+                requireActivity().finish()
+                val intent = Intent(requireContext(), MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    putExtra("open_widget_picker", true)
+                }
+                startActivity(intent)
             }
 
             populateWidgetList(view)
@@ -630,7 +660,9 @@ class SettingsSystemFragment : Fragment() {
     companion object {
         private const val ARG_MODE = "mode"
         const val MODE_NOTIFICATIONS = "notifications"
-        const val MODE_WIDGETS_HOME = "widgets_home"
+        const val MODE_HOME = "home"
+        const val MODE_WIDGETS = "widgets"
+        const val MODE_WIDGETS_HOME = MODE_HOME
 
         fun newInstance(mode: String): SettingsSystemFragment {
             return SettingsSystemFragment().apply {

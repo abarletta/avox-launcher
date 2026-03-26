@@ -46,7 +46,10 @@ Add up to 3 customizable quick‑action icons to the home screen footer. Current
 - If phone or messaging apps are selected, notification badges or full‑text notifications should follow the same logic as favorites — but controlled by a separate setting.
 
 ### Status
-Partially implemented in commit [15e8258c01bd3f89d203592dd2066248529f10c4](https://github.com/abarletta/a-launcher/commit/15e8258c01bd3f89d203592dd2066248529f10c4). More details in [Audit report on partial implementation of features A, B, and C](feature_abc_partial_implementation.md).
+Partially implemented in:
+- Commit [15e8258c01bd3f89d203592dd2066248529f10c4](https://github.com/abarletta/a-launcher/commit/15e8258c01bd3f89d203592dd2066248529f10c4). More details in [Audit report on partial implementation of features A, B, and C](feature_abc_partial_implementation.md).
+- Commit [710a44787d11319a8fe5ff31b9bc1761b6515cd6](https://github.com/abarletta/a-launcher/commit/710a44787d11319a8fe5ff31b9bc1761b6515cd6). Add launcher settings and widgets home XML layouts and associated images.
+
 
 ---
 
