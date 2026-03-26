@@ -5,7 +5,9 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
@@ -14,14 +16,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import org.json.JSONArray
+import org.json.JSONObject
 
 class SettingsSystemFragment : Fragment() {
 
@@ -32,6 +38,22 @@ class SettingsSystemFragment : Fragment() {
         MainActivity.NOTIF_MODE_TEXT to "Notification Text",
         MainActivity.NOTIF_MODE_NONE to "Off"
     )
+
+    private val backupDocumentLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            saveSettingsBackup(uri)
+        }
+    }
+
+    private val restoreDocumentLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            restoreSettingsBackup(uri)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +103,23 @@ class SettingsSystemFragment : Fragment() {
                 showFavoritesPicker()
             }
 
+            setupSpinner(
+                view.findViewById(R.id.footerNotifModeSpinner),
+                notifOptions.map { it.second },
+                notifOptions.indexOfFirst {
+                    it.first == (prefs.getString(MainActivity.PREF_FOOTER_NOTIF_MODE, MainActivity.NOTIF_MODE_NONE)
+                        ?: MainActivity.NOTIF_MODE_NONE)
+                }.coerceAtLeast(0)
+            ) { pos ->
+                val mode = notifOptions[pos].first
+                prefs.edit().putString(MainActivity.PREF_FOOTER_NOTIF_MODE, mode).apply()
+                if (mode != MainActivity.NOTIF_MODE_NONE && !isNotificationListenerEnabled()) {
+                    promptNotificationAccess()
+                }
+            }
+
+            populateFooterActionRows(view)
+
             view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
                 requireActivity().finish()
                 val intent = Intent(requireContext(), MainActivity::class.java).apply {
@@ -90,8 +129,113 @@ class SettingsSystemFragment : Fragment() {
                 startActivity(intent)
             }
 
+            view.findViewById<Button>(R.id.backupSettingsButton).setOnClickListener {
+                backupDocumentLauncher.launch("a-launcher-settings.json")
+            }
+
+            view.findViewById<Button>(R.id.restoreSettingsButton).setOnClickListener {
+                restoreDocumentLauncher.launch(arrayOf("application/json", "text/plain"))
+            }
+
             populateWidgetList(view)
         }
+    }
+
+    private fun populateFooterActionRows(rootView: View) {
+        val container = rootView.findViewById<LinearLayout>(R.id.footerQuickActionsContainer)
+        container.removeAllViews()
+
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val density = resources.displayMetrics.density
+
+        for (index in 0 until LauncherQuickActions.SLOT_COUNT) {
+            val row = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(0, (8 * density).toInt(), 0, (8 * density).toInt())
+            }
+
+            val title = TextView(requireContext()).apply {
+                text = getString(R.string.footer_action_slot_label, index + 1)
+                setTextColor(Color.WHITE)
+                textSize = 14f
+            }
+            row.addView(title)
+
+            val summary = TextView(requireContext()).apply {
+                text = LauncherQuickActions.getDisplayLabel(requireContext(), prefs, index)
+                setTextColor(Color.parseColor("#AAAAAA"))
+                textSize = 13f
+                setPadding(0, (4 * density).toInt(), 0, (8 * density).toInt())
+            }
+            row.addView(summary)
+
+            val buttons = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+
+            val chooseButton = Button(requireContext()).apply {
+                text = getString(R.string.footer_action_choose)
+                setOnClickListener { showFooterActionPicker(index, rootView) }
+            }
+            buttons.addView(chooseButton)
+
+            val clearButton = Button(requireContext()).apply {
+                text = getString(R.string.footer_action_clear)
+                isEnabled = LauncherQuickActions.getSpec(prefs, index) != null
+                setOnClickListener {
+                    LauncherQuickActions.setSpec(prefs, index, null)
+                    populateFooterActionRows(rootView)
+                }
+            }
+            buttons.addView(clearButton, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                marginStart = (8 * density).toInt()
+            })
+
+            row.addView(buttons)
+            container.addView(row)
+        }
+    }
+
+    private fun showFooterActionPicker(slotIndex: Int, rootView: View) {
+        val choices = LauncherQuickActions.getChoices(requireContext())
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.footer_action_pick_title)
+            .setItems(choices.map { it.label }.toTypedArray()) { _, which ->
+                val choice = choices[which]
+                if (choice.spec == LauncherQuickActions.SPEC_PICK_APP) {
+                    showFooterAppPicker(slotIndex, rootView)
+                } else {
+                    val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+                    LauncherQuickActions.setSpec(prefs, slotIndex, choice.spec)
+                    populateFooterActionRows(rootView)
+                }
+            }
+            .show()
+    }
+
+    private fun showFooterAppPicker(slotIndex: Int, rootView: View) {
+        val apps = LauncherQuickActions.loadLaunchableApps(requireContext())
+        if (apps.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.launch_failed, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.footer_action_pick_app_title)
+            .setItems(apps.map { it.second }.toTypedArray()) { _, which ->
+                val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+                LauncherQuickActions.setSpec(
+                    prefs,
+                    slotIndex,
+                    LauncherQuickActions.buildAppSpec(apps[which].first)
+                )
+                populateFooterActionRows(rootView)
+            }
+            .show()
     }
 
     private fun showFavoritesPicker() {
@@ -361,6 +505,126 @@ class SettingsSystemFragment : Fragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
+    }
+
+    private fun saveSettingsBackup(uri: Uri) {
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        try {
+            val payload = buildSettingsBackupJson(prefs).toString(2)
+            requireContext().contentResolver.openOutputStream(uri)?.bufferedWriter(Charsets.UTF_8)?.use { writer ->
+                writer.write(payload)
+            } ?: error("Unable to open backup destination")
+            Toast.makeText(requireContext(), R.string.backup_settings_success, Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(requireContext(), R.string.backup_settings_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun restoreSettingsBackup(uri: Uri) {
+        try {
+            val content = requireContext().contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use {
+                it.readText()
+            } ?: error("Unable to open restore source")
+
+            val root = JSONObject(content)
+            applySettingsBackup(root)
+            Toast.makeText(requireContext(), R.string.restore_settings_success, Toast.LENGTH_SHORT).show()
+            requireActivity().recreate()
+        } catch (_: org.json.JSONException) {
+            Toast.makeText(requireContext(), R.string.restore_settings_invalid, Toast.LENGTH_SHORT).show()
+        } catch (_: IllegalArgumentException) {
+            Toast.makeText(requireContext(), R.string.restore_settings_invalid, Toast.LENGTH_SHORT).show()
+        } catch (_: Exception) {
+            Toast.makeText(requireContext(), R.string.restore_settings_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun buildSettingsBackupJson(prefs: SharedPreferences): JSONObject {
+        val preferencesJson = JSONObject()
+        prefs.all.toSortedMap().forEach { (key, value) ->
+            if (!isRestorablePreferenceKey(key) || value == null) {
+                return@forEach
+            }
+            val entry = JSONObject()
+            when (value) {
+                is Boolean -> {
+                    entry.put("type", "boolean")
+                    entry.put("value", value)
+                }
+                is Int -> {
+                    entry.put("type", "int")
+                    entry.put("value", value)
+                }
+                is Long -> {
+                    entry.put("type", "long")
+                    entry.put("value", value)
+                }
+                is Float -> {
+                    entry.put("type", "float")
+                    entry.put("value", value.toDouble())
+                }
+                is String -> {
+                    entry.put("type", "string")
+                    entry.put("value", value)
+                }
+                is Set<*> -> {
+                    entry.put("type", "string_set")
+                    entry.put(
+                        "value",
+                        JSONArray(value.filterIsInstance<String>().sorted())
+                    )
+                }
+                else -> return@forEach
+            }
+            preferencesJson.put(key, entry)
+        }
+
+        return JSONObject()
+            .put("version", 1)
+            .put("preferences", preferencesJson)
+    }
+
+    private fun applySettingsBackup(root: JSONObject) {
+        val preferencesJson = root.optJSONObject("preferences")
+            ?: throw IllegalArgumentException("Missing preferences payload")
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+
+        prefs.all.keys
+            .filter(::isRestorablePreferenceKey)
+            .forEach { editor.remove(it) }
+
+        val keys = preferencesJson.keys()
+        while (keys.hasNext()) {
+            val key = keys.next()
+            if (!isRestorablePreferenceKey(key)) continue
+            val entry = preferencesJson.optJSONObject(key) ?: continue
+            when (entry.optString("type")) {
+                "boolean" -> editor.putBoolean(key, entry.optBoolean("value"))
+                "int" -> editor.putInt(key, entry.optInt("value"))
+                "long" -> editor.putLong(key, entry.optLong("value"))
+                "float" -> editor.putFloat(key, entry.optDouble("value").toFloat())
+                "string" -> editor.putString(key, entry.optString("value"))
+                "string_set" -> {
+                    val array = entry.optJSONArray("value") ?: JSONArray()
+                    val values = mutableSetOf<String>()
+                    for (index in 0 until array.length()) {
+                        values.add(array.optString(index))
+                    }
+                    editor.putStringSet(key, values)
+                }
+            }
+        }
+
+        editor.apply()
+    }
+
+    private fun isRestorablePreferenceKey(key: String): Boolean {
+        return key != MainActivity.PREF_WIDGET_ORDER &&
+            key != MainActivity.PREF_WIDGET_IDS_OLD &&
+            key != MainActivity.PREF_WIDGETS_DIRTY &&
+            !key.startsWith("widget_h_") &&
+            !key.startsWith("widget_fw_")
     }
 
     companion object {

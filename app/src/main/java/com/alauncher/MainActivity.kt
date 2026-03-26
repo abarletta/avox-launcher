@@ -18,6 +18,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.Gravity
 import android.view.ContextThemeWrapper
@@ -31,6 +32,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
@@ -48,7 +50,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appList: ListView
     private lateinit var sidebar: AlphabetSidebar
     private lateinit var darkOverlay: View
+    private lateinit var rootLayout: FrameLayout
     private lateinit var bottomButton: ImageButton
+    private lateinit var footerActionsContainer: LinearLayout
     private lateinit var searchBar: EditText
     private lateinit var widgetContainer: LinearLayout
 
@@ -75,10 +79,28 @@ class MainActivity : AppCompatActivity() {
     private var resizeStartY = 0f
     private var resizeStartHeight = 0
 
+    // Home long-press state
+    private var homeLongPressTarget: View? = null
+    private var homeLongPressStartX = 0f
+    private var homeLongPressStartY = 0f
+    private var homeLongPressTriggered = false
+    private val homeTouchSlop by lazy {
+        android.view.ViewConfiguration.get(this).scaledTouchSlop
+    }
+    private val homeLongPressRunnable = Runnable {
+        val target = homeLongPressTarget ?: return@Runnable
+        if (canOpenHomeSettingsFromLongPress()) {
+            homeLongPressTriggered = true
+            target.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
+            openLauncherSettings()
+        }
+    }
+
     private val notificationReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             refreshNotificationData()
             refreshList()
+            renderFooterActions()
         }
     }
 
@@ -86,10 +108,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        rootLayout = findViewById(R.id.rootLayout)
         appList = findViewById(R.id.appList)
         sidebar = findViewById(R.id.alphabetSidebar)
         darkOverlay = findViewById(R.id.darkOverlay)
         bottomButton = findViewById(R.id.bottomButton)
+        footerActionsContainer = findViewById(R.id.footerActionsContainer)
         searchBar = findViewById(R.id.searchBar)
         widgetContainer = findViewById(R.id.widgetContainer)
 
@@ -110,18 +134,32 @@ class MainActivity : AppCompatActivity() {
                 exitWidgetEditMode()
             } else if (isExpandedView) {
                 showSearchBar()
-            } else {
-                startActivity(Intent(this, SettingsActivity::class.java))
             }
         }
 
         bottomButton.setOnLongClickListener {
             if (isExpandedView) {
                 openSystemSearch()
-            } else {
-                selectWidget()
             }
             true
+        }
+
+        rootLayout.setOnLongClickListener {
+            if (canOpenHomeSettingsFromLongPress()) {
+                openLauncherSettings()
+                true
+            } else {
+                false
+            }
+        }
+
+        widgetContainer.setOnLongClickListener {
+            if (canOpenHomeSettingsFromLongPress() && widgetContainer.childCount == 0) {
+                openLauncherSettings()
+                true
+            } else {
+                false
+            }
         }
 
         sidebar.onLetterSelected = { letter ->
@@ -204,6 +242,7 @@ class MainActivity : AppCompatActivity() {
         })
         appList.setOnTouchListener { _, event ->
             swipeDetector.onTouchEvent(event)
+            handleHomeEmptySpaceTouch(event)
             false
         }
 
@@ -271,6 +310,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        cancelHomeLongPress()
         try { appWidgetHost.stopListening() } catch (_: Exception) {}
         try { unregisterReceiver(notificationReceiver) } catch (_: Exception) {}
     }
@@ -449,14 +489,18 @@ class MainActivity : AppCompatActivity() {
         if (isExpandedView) {
             bottomButton.setImageResource(R.drawable.ic_search)
             bottomButton.contentDescription = getString(R.string.search_button_label)
+            bottomButton.visibility = View.VISIBLE
+            footerActionsContainer.animate().cancel()
+            footerActionsContainer.visibility = View.GONE
+            footerActionsContainer.alpha = 1f
             if (widgetContainer.visibility == View.VISIBLE) {
                 widgetContainer.animate().alpha(0f).setDuration(150).withEndAction {
                     widgetContainer.visibility = View.GONE
                 }.start()
             }
         } else {
-            bottomButton.setImageResource(R.drawable.ic_settings)
-            bottomButton.contentDescription = getString(R.string.settings_label)
+            bottomButton.visibility = View.GONE
+            renderFooterActions()
             if (widgetContainer.visibility != View.VISIBLE) {
                 widgetContainer.alpha = 0f
                 widgetContainer.visibility = View.VISIBLE
@@ -468,8 +512,12 @@ class MainActivity : AppCompatActivity() {
 
     /** Same as updateBottomButton but with immediate widget hide and synchronous padding for expanded view. */
     private fun updateBottomButtonImmediate() {
+        bottomButton.visibility = View.VISIBLE
         bottomButton.setImageResource(R.drawable.ic_search)
         bottomButton.contentDescription = getString(R.string.search_button_label)
+        footerActionsContainer.animate().cancel()
+        footerActionsContainer.visibility = View.GONE
+        footerActionsContainer.alpha = 1f
         // Hide widget container immediately (no animation) for instant response
         widgetContainer.animate().cancel()
         widgetContainer.visibility = View.GONE
@@ -657,6 +705,170 @@ class MainActivity : AppCompatActivity() {
                      android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY).inv()
             }
         }
+    }
+
+    private fun renderFooterActions() {
+        footerActionsContainer.removeAllViews()
+        if (isExpandedView) return
+
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val footerNotifMode = prefs.getString(PREF_FOOTER_NOTIF_MODE, NOTIF_MODE_NONE) ?: NOTIF_MODE_NONE
+        val actions = (0 until LauncherQuickActions.SLOT_COUNT).mapNotNull { index ->
+            LauncherQuickActions.resolveAction(this, LauncherQuickActions.getSpec(prefs, index))
+        }
+
+        if (actions.isEmpty()) {
+            footerActionsContainer.visibility = View.GONE
+            footerActionsContainer.alpha = 1f
+            return
+        }
+
+        val density = resources.displayMetrics.density
+        actions.forEachIndexed { index, action ->
+            val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                if (index < actions.lastIndex) {
+                    marginEnd = (12 * density).toInt()
+                }
+            }
+            footerActionsContainer.addView(createFooterActionView(action, footerNotifMode), params)
+        }
+
+        if (footerActionsContainer.visibility != View.VISIBLE) {
+            footerActionsContainer.alpha = 0f
+            footerActionsContainer.visibility = View.VISIBLE
+            footerActionsContainer.animate().alpha(1f).setDuration(150).start()
+        }
+    }
+
+    private fun createFooterActionView(action: FooterQuickAction, footerNotifMode: String): View {
+        val density = resources.displayMetrics.density
+        val notification = action.packageName?.let { notificationData[it] }
+
+        val root = FrameLayout(this).apply {
+            isClickable = true
+            isFocusable = true
+            contentDescription = action.label
+            setOnClickListener { launchFooterAction(action) }
+        }
+
+        val content = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding((8 * density).toInt(), 0, (8 * density).toInt(), 0)
+        }
+
+        val iconButton = ImageButton(this).apply {
+            background = getDrawable(R.drawable.circle_dark_bg)
+            scaleType = ImageView.ScaleType.CENTER_INSIDE
+            setPadding((12 * density).toInt(), (12 * density).toInt(), (12 * density).toInt(), (12 * density).toInt())
+            setImageDrawable(action.icon ?: getDrawable(R.drawable.ic_settings))
+            isClickable = false
+            isFocusable = false
+            contentDescription = action.label
+        }
+        content.addView(iconButton, LinearLayout.LayoutParams(
+            (48 * density).toInt(),
+            (48 * density).toInt()
+        ))
+
+        val labelView = TextView(this).apply {
+            setTextColor(Color.WHITE)
+            textSize = 11f
+            gravity = Gravity.CENTER
+            maxLines = 2
+            ellipsize = TextUtils.TruncateAt.END
+            setPadding(0, (6 * density).toInt(), 0, 0)
+        }
+        labelView.text = when {
+            footerNotifMode == NOTIF_MODE_TEXT && !notification?.latestText.isNullOrBlank() -> notification?.latestText
+            else -> action.label
+        }
+        content.addView(labelView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ))
+        root.addView(content)
+
+        if (footerNotifMode == NOTIF_MODE_COUNT && notification != null && notification.count > 0) {
+            val badge = TextView(this).apply {
+                background = getDrawable(R.drawable.badge_bg)
+                setTextColor(Color.WHITE)
+                textSize = 11f
+                gravity = Gravity.CENTER
+                minWidth = (18 * density).toInt()
+                setPadding((4 * density).toInt(), (2 * density).toInt(), (4 * density).toInt(), (2 * density).toInt())
+                text = if (notification.count > 9) {
+                    getString(R.string.footer_badge_overflow)
+                } else {
+                    notification.count.toString()
+                }
+            }
+            val badgeParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = Gravity.TOP or Gravity.END
+            }
+            root.addView(badge, badgeParams)
+        }
+
+        return root
+    }
+
+    private fun launchFooterAction(action: FooterQuickAction) {
+        try {
+            startActivity(action.intent)
+        } catch (_: Exception) {
+            Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun openLauncherSettings() {
+        startActivity(Intent(this, SettingsActivity::class.java))
+    }
+
+    private fun canOpenHomeSettingsFromLongPress(): Boolean {
+        return !isExpandedView && !isWidgetEditMode && searchBar.visibility != View.VISIBLE
+    }
+
+    private fun handleHomeEmptySpaceTouch(event: MotionEvent) {
+        if (!canOpenHomeSettingsFromLongPress()) {
+            cancelHomeLongPress()
+            return
+        }
+
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                if (appList.pointToPosition(event.x.toInt(), event.y.toInt()) == AdapterView.INVALID_POSITION) {
+                    homeLongPressTriggered = false
+                    homeLongPressTarget = appList
+                    homeLongPressStartX = event.rawX
+                    homeLongPressStartY = event.rawY
+                    appList.removeCallbacks(homeLongPressRunnable)
+                    appList.postDelayed(
+                        homeLongPressRunnable,
+                        android.view.ViewConfiguration.getLongPressTimeout().toLong()
+                    )
+                } else {
+                    cancelHomeLongPress()
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                val movedTooFar = kotlin.math.abs(event.rawX - homeLongPressStartX) > homeTouchSlop ||
+                    kotlin.math.abs(event.rawY - homeLongPressStartY) > homeTouchSlop
+                val overItem = appList.pointToPosition(event.x.toInt(), event.y.toInt()) != AdapterView.INVALID_POSITION
+                if (movedTooFar || overItem) {
+                    cancelHomeLongPress()
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelHomeLongPress()
+        }
+    }
+
+    private fun cancelHomeLongPress() {
+        homeLongPressTarget?.removeCallbacks(homeLongPressRunnable)
+        homeLongPressTarget = null
+        homeLongPressTriggered = false
     }
 
     // --- Notifications ---
@@ -1354,6 +1566,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_ICON_PACK = "icon_pack"
         const val PREF_NERD_FONT = "nerd_font_enabled"
         const val PREF_HIDE_STATUS_BAR = "hide_status_bar"
+        const val PREF_FOOTER_NOTIF_MODE = "footer_notification_mode"
         const val PREF_ICON_MODE = "icon_mode"
         const val ICON_MODE_REGULAR = "regular"
         const val ICON_MODE_NERD = "nerd"

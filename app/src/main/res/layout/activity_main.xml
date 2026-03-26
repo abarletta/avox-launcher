@@ -18,7 +18,7 @@
         android:layout_marginEnd="48dp"
         android:paddingStart="24dp"
         android:paddingTop="160dp"
-        android:paddingBottom="80dp"
+        android:paddingBottom="112dp"
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="0dp"
@@ -59,7 +59,19 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:paddingTop="80dp"
-        android:paddingBottom="80dp" />
+        android:paddingBottom="112dp" />
+
+    <LinearLayout
+        android:id="@+id/footerActionsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/bottomButton"

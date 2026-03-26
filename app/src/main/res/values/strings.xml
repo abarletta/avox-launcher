@@ -69,9 +69,29 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_widgets">Widgets &amp; Home</string>
     <string name="settings_notifications_hint">Badge counts and notification text are configured here. Reopen notification access from this screen if updates stop.</string>
-    <string name="settings_widgets_hint">Manage favorites, widget order, widget size, and add new home widgets from here.</string>
+    <string name="settings_widgets_hint">Manage favorites, footer actions, widget order, widget size, and backup from here.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
     <string name="hide_status_bar_label">Hide Status Bar</string>
+    <string name="footer_action_slot_label">Footer action %1$d</string>
+    <string name="footer_action_not_set">Not set</string>
+    <string name="footer_action_unavailable">Unavailable app</string>
+    <string name="footer_action_choose">Choose</string>
+    <string name="footer_action_clear">Clear</string>
+    <string name="footer_action_pick_title">Choose quick action</string>
+    <string name="footer_action_pick_app_title">Choose app</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="quick_action_launcher_settings">Launcher settings</string>
+    <string name="quick_action_system_settings">System settings</string>
+    <string name="quick_action_wifi_settings">Wi-Fi settings</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth settings</string>
+    <string name="quick_action_display_settings">Display settings</string>
+    <string name="quick_action_app_settings">App settings</string>
+    <string name="quick_action_open_app">Open app…</string>
+    <string name="backup_settings_success">Settings backup saved.</string>
+    <string name="backup_settings_failed">Unable to save settings backup.</string>
+    <string name="restore_settings_success">Settings restored.</string>
+    <string name="restore_settings_failed">Unable to restore settings.</string>
+    <string name="restore_settings_invalid">That file is not a valid A-Launcher backup.</string>
 </resources>
 
