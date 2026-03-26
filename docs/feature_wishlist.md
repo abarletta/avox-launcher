@@ -16,6 +16,9 @@ Implement a feature to back up and restore user settings. This allows users to t
 - Restore process should be simple and user‑friendly.
 - *Optional:* Backup file may be human‑readable (e.g., JSON) to allow manual editing.
 
+### Status
+Partially implemented in commit [15e8258c01bd3f89d203592dd2066248529f10c4](https://github.com/abarletta/a-launcher/commit/15e8258c01bd3f89d203592dd2066248529f10c4). More details in [Audit report on partial implementation of features A, B, and C](feature_abc_partial_implementation.md).
+
 ---
 
 ## B — Access Settings via Long‑Press on Home Screen
@@ -25,6 +28,9 @@ Allow users to access the settings menu by long‑pressing on an empty area of t
 
 ### Implementation Details
 None. This is a common launcher feature and improves accessibility.
+
+### Status
+Implemented in commit [216a00269c92037813d7faec7a5f627265ee5a2f](https://github.com/abarletta/a-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f)
 
 ---
 
@@ -39,6 +45,9 @@ Add up to 3 customizable quick‑action icons to the home screen footer. Current
 - Quick actions should be customizable from a list of common actions (e.g., launcher settings, system settings, open app, open system pages).
 - If phone or messaging apps are selected, notification badges or full‑text notifications should follow the same logic as favorites — but controlled by a separate setting.
 
+### Status
+Partially implemented in commit [15e8258c01bd3f89d203592dd2066248529f10c4](https://github.com/abarletta/a-launcher/commit/15e8258c01bd3f89d203592dd2066248529f10c4). More details in [Audit report on partial implementation of features A, B, and C](feature_abc_partial_implementation.md).
+
 ---
 
 ## D — Multi‑Widget Support
@@ -49,6 +58,9 @@ Allow users to add multiple widgets within the same widget slot and switch betwe
 ### Implementation Details
 - Users can add multiple widgets to the same slot and swipe left/right to switch.
 - Requires redesign of widget management and corresponding settings UI.
+
+### Status
+Not started.
 
 ---
 
@@ -63,7 +75,8 @@ Allow users to choose between single‑column or multi‑column layouts for the 
 - Reasonable maximum columns (e.g., 2 on phones, 4 on tablets).
 - More columns allowed in horizontal layout.
 
----
+### Status
+Not started.
 
 ## F — Better Support for Horizontal Layout
 
@@ -75,6 +88,9 @@ Horizontal layout exists but is below acceptable functionality.
 - Widgets must resize to remain fully visible and functional.
 - Additional improvements may include optimizing margins and auto‑adjusting favorites layout.
 - Depends naturally on Feature E (multi‑column favorites).
+
+### Status
+Not started.
 
 ---
 
@@ -94,3 +110,6 @@ General UI/UX improvements to enhance the launcher experience:
 - Visual design should be centralized and modular (CSS‑like structure).
 - Refactor codebase to make UI/UX improvements easy for human developers.
 - Generate documentation explaining where and how to modify animations and styles.
+
+### Status
+Not started.
