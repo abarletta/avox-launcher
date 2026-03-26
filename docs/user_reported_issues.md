@@ -4,7 +4,7 @@
 
 | # | Issue | Severity | Status |
 | --- | --- | --- | --- |
-| [1](#1---widgets-major) | Widgets | Major | Partially addressed |
+| [1](#1---widgets-major) | Widgets | Major | Resolved |
 | [2](#2---horizontal-alignment-major) | Horizontal alignment | Major | Resolved |
 | [3](#3---font-selector-major) | Font selector | Major | Resolved |
 | [4](#4---app-controls-on-long-press-medium) | App controls on long-press | Medium | Resolved |
@@ -23,7 +23,11 @@
 2. Widget can be resized from the settings screen, but not via long-press edit mode on the home screen. Even more importantly, clicking on widgets (short or long) does not trigger any action.
 3. Allow widget reordering from the settings screen. This is a common feature in launchers and it would enhance user customization options.
 
-**Important**: this issue has been around since the initial release and it has survived multiple attempts to fix it. Even consulting the internet and implementing Launcher3 widget management code did not solve the issue. It is possible that the issue is related to a fundamental misunderstanding of the widget system, which may require a more in-depth investigation and potentially a complete refactor of the widget management system. Can it just be related with OEM (Samsung), security or permission issues? The user can confirm that the app is set as default launcher but that no request for permission to create widgets is ever shown.
+**Important**: 
+- This issue has been around since the initial release and it has survived multiple attempts to fix it. 
+- Even consulting the internet and implementing Launcher3 widget management code did not solve the issue.
+- It is possible that the issue is related to a fundamental misunderstanding of the widget system, which may require a more in-depth investigation and potentially a complete refactor of the widget management system. 
+- Can it just be related with OEM (Samsung), security or permission issues? The user can confirm that the app is set as default launcher but that no request for permission to create widgets is ever shown.
 
 ## 2 - Horizontal alignment (major)
 1. Changing horizontal alignment does not produce any visible effect.
