@@ -4,6 +4,18 @@ This is a list of features that the repository owner would like to implement in 
 
 Items are added without any particular order, and without consideration for their complexity or feasibility. The list is meant to be a brainstorming space for potential features, not a roadmap or backlog.
 
+| Feature | Description | Status | Last Commit |
+| --- | --- | --- | --- |
+| [A](#a--settings-backup-and-restore) | Settings Backup and Restore | Implemented | [47f41fc](https://github.com/abarletta/a-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198) |
+| [B](#b--access-settings-via-long-press-on-home-screen) | Access Settings via Long‑Press on Home Screen | Implemented | [216a002](https://github.com/abarletta/a-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f) |
+| [C](#c--add-quick-actions-to-home-footer) | Add Quick Actions to Home Footer | Implemented | [5c69698](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a) |
+| [D](#d--multi-widget-support) | Multi‑Widget Support | Not started | |
+| [E](#e--multi-column-favorites) | Multi‑Column Favorites | Not started | |
+| [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
+| [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
+| [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Not started | |
+| [I](#i--multilangual-support) | Multilangual support | Not started | |  
+
 ---
 
 ## A — Settings Backup and Restore
@@ -98,7 +110,8 @@ Not started.
 
 ### Description
 General UI/UX improvements to enhance the launcher experience:
-- Smoother alphabet scrolling animations.
+- <del>Smoother alphabet scrolling animations.</del>
+  >Implemented in commit [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51)
 - Smoother transitions between home and app drawer (e.g., animated alphabet expansion, fade effects).
 - Wallpaper blur effect should work and be adjustable.
 - Wallpaper tint effect should have proper intensity control.
@@ -116,9 +129,9 @@ General UI/UX improvements to enhance the launcher experience:
 - Generate documentation explaining where and how to modify animations and styles.
 
 ### Status
-Not started.
+In progress.
 
-## H - Advanced controls for favorites and widgets
+## H - Advanced Controls for Favorites and Widgets
 
 ### Description
 Provide more advanced controls for favorites and widgets, such as:
