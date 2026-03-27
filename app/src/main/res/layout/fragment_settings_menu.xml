@@ -13,11 +13,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/app_name"
             android:textColor="#FFFFFF"
-            android:textSize="24sp"
-            android:textStyle="bold"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_menu_title"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="24dp" />
+
 
         <LinearLayout
             android:id="@+id/cardAppearance"
@@ -25,7 +34,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -33,10 +42,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🎨"
-                android:textSize="24sp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
+                android:text="Aa"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -48,7 +61,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Appearance"
+                    android:text="@string/settings_appearance"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -56,7 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Font, size, spacing, alignment, margins"
+                    android:text="@string/settings_appearance_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -68,7 +81,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -76,10 +89,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🖼"
-                android:textSize="24sp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
+                android:text="▣"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -91,7 +108,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wallpaper"
+                    android:text="@string/settings_wallpaper"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -99,7 +116,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Theme, effects, darkness, blur"
+                    android:text="@string/settings_wallpaper_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -111,7 +128,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -119,10 +136,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="✨"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
+                android:text="≈"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -134,7 +155,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Animations"
+                    android:text="@string/settings_animations"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -142,7 +163,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sidebar animation style and controls"
+                    android:text="@string/settings_animations_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -154,7 +175,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -162,10 +183,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔔"
-                android:textSize="24sp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
+                android:text="◔"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -177,7 +202,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Notifications"
+                    android:text="@string/settings_notifications"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -185,7 +210,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Badge mode, swipe gestures"
+                    android:text="@string/settings_notifications_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -197,7 +222,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -205,10 +230,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
                 android:text="⌂"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -220,7 +249,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Home"
+                    android:text="@string/settings_home"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -228,7 +257,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Favorites, footer actions, backup"
+                    android:text="@string/settings_home_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -240,7 +269,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="#22FFFFFF"
+            android:background="#00000000"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
             android:layout_marginBottom="12dp"
@@ -248,10 +277,14 @@
             android:focusable="true">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/circle_dark_bg"
+                android:gravity="center"
                 android:text="⚙"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp"
+                android:textStyle="bold"
                 android:layout_marginEnd="16dp" />
 
             <LinearLayout
@@ -263,7 +296,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Widgets"
+                    android:text="@string/settings_widgets"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -271,11 +304,47 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Widget picker, order, size, controls"
+                    android:text="@string/settings_widgets_summary"
                     android:textColor="#AAAAAA"
                     android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_backup_title"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_backup_summary"
+            android:textColor="#AAAAAA"
+            android:textSize="13sp"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/backupSettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/backup_settings_button"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/restoreSettingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/restore_settings_button"
+            android:layout_marginBottom="24dp" />
 
     </LinearLayout>
 </ScrollView>

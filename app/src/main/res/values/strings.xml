@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">A-Launcher</string>
     <string name="search_button_label">Search</string>
     <string name="search_hint">Search apps…</string>
     <string name="favorites_section_title">Favorites</string>
@@ -20,7 +19,7 @@
     <string name="action_play_store">Play Store</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="notification_access_title">Notification Access</string>
-    <string name="notification_access_message">To show notification badges, A-Launcher needs notification access permission.</string>
+    <string name="notification_access_message">To show notification badges, the launcher needs notification access permission.</string>
     <string name="grant">Grant</string>
     <string name="cancel">Cancel</string>
     <string name="add_widget">Add Widget</string>
@@ -64,13 +63,22 @@
     <string name="icon_mode_nerd">Nerd Font Icons</string>
     <string name="icon_mode_none">No Icons</string>
     <string name="settings_appearance">Appearance</string>
+    <string name="settings_appearance_summary">Font, size, spacing, alignment, margins</string>
     <string name="settings_wallpaper">Wallpaper</string>
+    <string name="settings_wallpaper_summary">Theme, effects, darkness, blur</string>
     <string name="settings_animations">Animations</string>
+    <string name="settings_animations_summary">Sidebar animation style and controls</string>
     <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_summary">Badge mode, swipe gestures</string>
     <string name="settings_home">Home</string>
+    <string name="settings_home_summary">Favorites, footer actions, home entry points</string>
     <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Widget picker, order, size, controls</string>
+    <string name="settings_menu_title">Launcher settings</string>
+    <string name="settings_backup_title">Backup &amp; Restore</string>
+    <string name="settings_backup_summary">Export launcher preferences to a JSON file, or restore them later. Widget placements stay local to this device.</string>
     <string name="settings_notifications_hint">Badge counts and notification text are configured here. Reopen notification access from this screen if updates stop.</string>
-    <string name="settings_home_hint">Manage favorites, footer actions, backups, and home screen entry points from here.</string>
+    <string name="settings_home_hint">Manage favorites, footer actions, and home screen entry points from here.</string>
     <string name="settings_widgets_hint">Manage widget placement, order, size, and widget controls from here.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
@@ -90,10 +98,22 @@
     <string name="quick_action_display_settings">Display settings</string>
     <string name="quick_action_app_settings">App settings</string>
     <string name="quick_action_open_app">Open app…</string>
+    <string name="backup_settings_button">Backup Settings</string>
     <string name="backup_settings_success">Settings backup saved.</string>
     <string name="backup_settings_failed">Unable to save settings backup.</string>
+    <string name="backup_settings_share_title">Backup saved</string>
+    <string name="backup_settings_share_message">Your settings backup is ready. Share it now with the system share sheet if you want to move it to another device.</string>
+    <string name="backup_settings_share_action">Share</string>
+    <string name="backup_settings_share_chooser_title">Share settings backup</string>
+    <string name="backup_settings_share_failed">Backup saved, but sharing is not available on this device.</string>
     <string name="restore_settings_success">Settings restored.</string>
     <string name="restore_settings_failed">Unable to restore settings.</string>
-    <string name="restore_settings_invalid">That file is not a valid A-Launcher backup.</string>
+    <string name="restore_settings_button">Restore Settings</string>
+    <string name="restore_settings_invalid">That file is not a valid launcher backup.</string>
+    <string name="restore_settings_incompatible">That backup was created by an unsupported launcher version.</string>
+    <string name="restore_settings_confirm_title">Restore settings</string>
+    <string name="restore_settings_confirm_message">Restore %2$d settings from %1$s? This replaces your saved launcher preferences, but keeps widget placements on this device.</string>
+    <string name="restore_settings_confirm_action">Restore</string>
+    <string name="restore_settings_selected_file">the selected backup</string>
 </resources>
 

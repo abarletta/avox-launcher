@@ -5,9 +5,7 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
@@ -23,11 +21,8 @@ import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import org.json.JSONArray
-import org.json.JSONObject
 
 class SettingsSystemFragment : Fragment() {
 
@@ -38,22 +33,6 @@ class SettingsSystemFragment : Fragment() {
         MainActivity.NOTIF_MODE_TEXT to "Notification Text",
         MainActivity.NOTIF_MODE_NONE to "Off"
     )
-
-    private val backupDocumentLauncher = registerForActivityResult(
-        ActivityResultContracts.CreateDocument("application/json")
-    ) { uri ->
-        if (uri != null) {
-            saveSettingsBackup(uri)
-        }
-    }
-
-    private val restoreDocumentLauncher = registerForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        if (uri != null) {
-            restoreSettingsBackup(uri)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,14 +125,6 @@ class SettingsSystemFragment : Fragment() {
             if (requestedFooterSlot in 0 until LauncherQuickActions.SLOT_COUNT) {
                 requireActivity().intent.removeExtra(SettingsActivity.EXTRA_FOOTER_SLOT_INDEX)
                 view.post { showFooterActionPicker(requestedFooterSlot, view) }
-            }
-
-            view.findViewById<Button>(R.id.backupSettingsButton).setOnClickListener {
-                backupDocumentLauncher.launch("a-launcher-settings.json")
-            }
-
-            view.findViewById<Button>(R.id.restoreSettingsButton).setOnClickListener {
-                restoreDocumentLauncher.launch(arrayOf("application/json", "text/plain"))
             }
         }
 
@@ -535,126 +506,6 @@ class SettingsSystemFragment : Fragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
-    }
-
-    private fun saveSettingsBackup(uri: Uri) {
-        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        try {
-            val payload = buildSettingsBackupJson(prefs).toString(2)
-            requireContext().contentResolver.openOutputStream(uri)?.bufferedWriter(Charsets.UTF_8)?.use { writer ->
-                writer.write(payload)
-            } ?: error("Unable to open backup destination")
-            Toast.makeText(requireContext(), R.string.backup_settings_success, Toast.LENGTH_SHORT).show()
-        } catch (_: Exception) {
-            Toast.makeText(requireContext(), R.string.backup_settings_failed, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun restoreSettingsBackup(uri: Uri) {
-        try {
-            val content = requireContext().contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use {
-                it.readText()
-            } ?: error("Unable to open restore source")
-
-            val root = JSONObject(content)
-            applySettingsBackup(root)
-            Toast.makeText(requireContext(), R.string.restore_settings_success, Toast.LENGTH_SHORT).show()
-            requireActivity().recreate()
-        } catch (_: org.json.JSONException) {
-            Toast.makeText(requireContext(), R.string.restore_settings_invalid, Toast.LENGTH_SHORT).show()
-        } catch (_: IllegalArgumentException) {
-            Toast.makeText(requireContext(), R.string.restore_settings_invalid, Toast.LENGTH_SHORT).show()
-        } catch (_: Exception) {
-            Toast.makeText(requireContext(), R.string.restore_settings_failed, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun buildSettingsBackupJson(prefs: SharedPreferences): JSONObject {
-        val preferencesJson = JSONObject()
-        prefs.all.toSortedMap().forEach { (key, value) ->
-            if (!isRestorablePreferenceKey(key) || value == null) {
-                return@forEach
-            }
-            val entry = JSONObject()
-            when (value) {
-                is Boolean -> {
-                    entry.put("type", "boolean")
-                    entry.put("value", value)
-                }
-                is Int -> {
-                    entry.put("type", "int")
-                    entry.put("value", value)
-                }
-                is Long -> {
-                    entry.put("type", "long")
-                    entry.put("value", value)
-                }
-                is Float -> {
-                    entry.put("type", "float")
-                    entry.put("value", value.toDouble())
-                }
-                is String -> {
-                    entry.put("type", "string")
-                    entry.put("value", value)
-                }
-                is Set<*> -> {
-                    entry.put("type", "string_set")
-                    entry.put(
-                        "value",
-                        JSONArray(value.filterIsInstance<String>().sorted())
-                    )
-                }
-                else -> return@forEach
-            }
-            preferencesJson.put(key, entry)
-        }
-
-        return JSONObject()
-            .put("version", 1)
-            .put("preferences", preferencesJson)
-    }
-
-    private fun applySettingsBackup(root: JSONObject) {
-        val preferencesJson = root.optJSONObject("preferences")
-            ?: throw IllegalArgumentException("Missing preferences payload")
-        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-
-        prefs.all.keys
-            .filter(::isRestorablePreferenceKey)
-            .forEach { editor.remove(it) }
-
-        val keys = preferencesJson.keys()
-        while (keys.hasNext()) {
-            val key = keys.next()
-            if (!isRestorablePreferenceKey(key)) continue
-            val entry = preferencesJson.optJSONObject(key) ?: continue
-            when (entry.optString("type")) {
-                "boolean" -> editor.putBoolean(key, entry.optBoolean("value"))
-                "int" -> editor.putInt(key, entry.optInt("value"))
-                "long" -> editor.putLong(key, entry.optLong("value"))
-                "float" -> editor.putFloat(key, entry.optDouble("value").toFloat())
-                "string" -> editor.putString(key, entry.optString("value"))
-                "string_set" -> {
-                    val array = entry.optJSONArray("value") ?: JSONArray()
-                    val values = mutableSetOf<String>()
-                    for (index in 0 until array.length()) {
-                        values.add(array.optString(index))
-                    }
-                    editor.putStringSet(key, values)
-                }
-            }
-        }
-
-        editor.apply()
-    }
-
-    private fun isRestorablePreferenceKey(key: String): Boolean {
-        return key != MainActivity.PREF_WIDGET_ORDER &&
-            key != MainActivity.PREF_WIDGET_IDS_OLD &&
-            key != MainActivity.PREF_WIDGETS_DIRTY &&
-            !key.startsWith("widget_h_") &&
-            !key.startsWith("widget_fw_")
     }
 
     companion object {
