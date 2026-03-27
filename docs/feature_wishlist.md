@@ -17,7 +17,7 @@ Implement a feature to back up and restore user settings. This allows users to t
 - *Optional:* Backup file may be human‑readable (e.g., JSON) to allow manual editing.
 
 ### Status
-Partially implemented in commit [15e8258c01bd3f89d203592dd2066248529f10c4](https://github.com/abarletta/a-launcher/commit/15e8258c01bd3f89d203592dd2066248529f10c4). More details in [Audit report on partial implementation of features A, B, and C](feature_abc_partial_implementation.md).
+Implemented in commit [47f41fc1d0ac47db6d59935903f660753f2df198](https://github.com/abarletta/a-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198).
 
 ---
 
@@ -46,7 +46,7 @@ Add up to 3 customizable quick‑action icons to the home screen footer. Current
 - If phone or messaging apps are selected, notification badges or full‑text notifications should follow the same logic as favorites — but controlled by a separate setting.
 
 ### Status
-Completed in commit [5c69698a0f4164f3b284630d0cd73771e269cd8a](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a).
+Implemented in commit [5c69698a0f4164f3b284630d0cd73771e269cd8a](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a).
 
 ---
 
@@ -100,16 +100,38 @@ Not started.
 General UI/UX improvements to enhance the launcher experience:
 - Smoother alphabet scrolling animations.
 - Smoother transitions between home and app drawer (e.g., animated alphabet expansion, fade effects).
-- Settings menu redesign using outline icons and minimal design.
 - Wallpaper blur effect should work and be adjustable.
 - Wallpaper tint effect should have proper intensity control.
-- Favorites and widget selection menus should have improved visual style.
+- Allow users customize icons for individual apps via the long-press menu. These icons should replace the theme icons for those apps everywhere in the launcher (home screen, app drawer, favorites, etc.).
+- Overall visual design in settings, long-press menus, and other UI elements should be polished and consistent, along the following guidelines:
+    - Consistent icon theme (favorites and app drawer icons should be applied everywhere).
+    - Consistent font (font chosen in settings should be applied everywhere).
+    - Consistent color scheme (e.g., for text, icons, backgrounds).
+    - For buttons and interactive elements, prefer text-only design instead of buttons with visible boxes.
 
 ### Implementation Details
 - Animation logic should be refactored for easy modification.
 - Visual design should be centralized and modular (CSS‑like structure).
 - Refactor codebase to make UI/UX improvements easy for human developers.
 - Generate documentation explaining where and how to modify animations and styles.
+
+### Status
+Not started.
+
+## H - Advanced controls for favorites and widgets
+
+### Description
+Provide more advanced controls for favorites and widgets, such as:
+- Seeing actual favorites in the settings menu.
+- Reordering favorites from the settings menu. 
+- Include actual app icons in the favorites picker, instead of just a list of app names.
+- In the widget settings, replace the "Remove" and "Controls" text-based buttons next to each widget with icons.
+- Consider removing the "Home Screen Rows" setting under "Appearance" unless it has an actual effect on the home screen layout. Currently, the setting does not seem to have any effect from a user-facing perspective. The reason why this request is included here is that this setting should be related with widgets.
+- Optionally, favorite and widget reordering may also be allowed via drag‑and‑drop on the home screen.
+
+### Implementation Details
+- Favorites management UI should be redesigned to accommodate these features.
+- Drag‑and‑drop reordering on the home screen should be considered an optional enhancement. As such, it should only be implemented after the core features of favorites management are completed and stable.
 
 ### Status
 Not started.
