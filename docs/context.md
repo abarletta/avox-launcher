@@ -38,7 +38,7 @@ The default correction is:
 
 ## Current Codebase State
 
-The repository is post-v0 with full customization features.
+The repository is post initial scope with full customization features.
 
 Current shape:
 

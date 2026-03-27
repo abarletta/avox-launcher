@@ -22,7 +22,7 @@ Every addition must justify its existence.
 
 ## Current Baseline
 
-The launcher is post-v0 with the following implemented features:
+The launcher is post initial scope with the following implemented features:
 
 - Single home screen with vertical app list (section headers in expanded view)
 - Favorites at top

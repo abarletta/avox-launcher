@@ -28,10 +28,6 @@ Its purpose is to tell Copilot exactly where to look in `docs/` before answering
   - Task-to-model guidance
   - Use when the question is about model choice, reasoning depth, or how Copilot should split work
 
-- `docs/copilot_v0_prompt.md`
-  - Full implementation and review prompt for v0 work
-  - Use when preparing a Copilot prompt or validating whether a v0 task request is framed correctly
-
 - `docs/copilot-models.json`
   - Detailed model capabilities, tags, context limits, and quota categories
   - Use when model selection needs concrete detail instead of the summary in `docs/ai_roles.md`
@@ -55,7 +51,6 @@ Its purpose is to tell Copilot exactly where to look in `docs/` before answering
 
 - For prompt or instruction work:
   - Read `docs/ai_roles.md`
-  - Read `docs/copilot_v0_prompt.md`
   - Read `docs/copilot-models.json` if model specifics matter
 
 ## Disclosure Rule
