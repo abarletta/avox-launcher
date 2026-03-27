@@ -79,6 +79,21 @@ class SettingsAnimationsFragment : Fragment() {
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        // Wave radius
+        val waveRadiusSeekBar = view.findViewById<SeekBar>(R.id.waveRadiusSeekBar)
+        val waveRadiusValue = view.findViewById<TextView>(R.id.waveRadiusValue)
+        val currentRadius = prefs.getInt(MainActivity.PREF_WAVE_RADIUS, MainActivity.DEFAULT_WAVE_RADIUS)
+        waveRadiusSeekBar.progress = currentRadius
+        waveRadiusValue.text = "$currentRadius"
+        waveRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                waveRadiusValue.text = "$progress"
+                prefs.edit().putInt(MainActivity.PREF_WAVE_RADIUS, progress).apply()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
         // Highlight intensity
         val highlightSeekBar = view.findViewById<SeekBar>(R.id.highlightIntensitySeekBar)
         val highlightValue = view.findViewById<TextView>(R.id.highlightIntensityValue)

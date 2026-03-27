@@ -12,6 +12,9 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.math.cos
+import kotlin.math.exp
+import kotlin.math.PI
 
 class AlphabetSidebar @JvmOverloads constructor(
     context: Context,
@@ -82,6 +85,11 @@ class AlphabetSidebar @JvmOverloads constructor(
         invalidate()
     }
 
+    fun setWaveRadius(radius: Int) {
+        waveRadius = radius
+        invalidate()
+    }
+
     fun setHighlightIntensity(intensity: Float) {
         highlightIntensity = intensity
         invalidate()
@@ -126,8 +134,10 @@ class AlphabetSidebar @JvmOverloads constructor(
             if (touchIndex >= 0 && animStrength > 0f) {
                 val dist = abs(i - touchIndex)
                 if (dist <= waveRadius) {
-                    val t = 1f - dist.toFloat() / (waveRadius + 1)
-                    val influence = t * t * animStrength
+                    val h = (i - touchIndex).toDouble()
+                    val t = h / (waveRadius + 1).toDouble() * (PI / 2.0)
+                    val influenceD = cos(t) * exp(-5.0 * t * t) * animStrength.toDouble()
+                    val influence = influenceD.toFloat()
                     scale = 1f + (maxScaleFactor - 1f) * influence
                     shiftX = -maxShiftPx * influence
                 }

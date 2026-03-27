@@ -561,6 +561,7 @@ class MainActivity : AppCompatActivity() {
         sidebar.setAnimationStyle(animStyle)
         sidebar.setWaveShift(prefs.getInt(PREF_WAVE_SHIFT, DEFAULT_WAVE_SHIFT).toFloat())
         sidebar.setWaveScale(1f + prefs.getInt(PREF_WAVE_SCALE, DEFAULT_WAVE_SCALE) / 10f)
+        sidebar.setWaveRadius(prefs.getInt(PREF_WAVE_RADIUS, DEFAULT_WAVE_RADIUS))
         sidebar.setHighlightIntensity(prefs.getInt(PREF_HIGHLIGHT_INTENSITY, DEFAULT_HIGHLIGHT_INTENSITY) / 10f)
         sidebar.setFadeRadius(prefs.getInt(PREF_FADE_RADIUS, DEFAULT_FADE_RADIUS) / 10f)
     }
@@ -1707,6 +1708,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_ANIM_STYLE = "anim_style"
         const val PREF_WAVE_SHIFT = "wave_shift"
         const val PREF_WAVE_SCALE = "wave_scale"
+        const val PREF_WAVE_RADIUS = "wave_radius"
         const val PREF_ALIGNMENT = "alignment"
         const val PREF_H_MARGIN = "h_margin"
         const val PREF_V_MARGIN = "v_margin"
@@ -1718,6 +1720,7 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_FONT_SIZE = 22
         const val DEFAULT_WAVE_SHIFT = 25
         const val DEFAULT_WAVE_SCALE = 8 // represents 1.8x
+        const val DEFAULT_WAVE_RADIUS = 3
         const val PREF_HIGHLIGHT_INTENSITY = "highlight_intensity"
         const val PREF_FADE_RADIUS = "fade_radius"
         const val DEFAULT_HIGHLIGHT_INTENSITY = 5

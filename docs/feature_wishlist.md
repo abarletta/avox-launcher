@@ -135,3 +135,15 @@ Provide more advanced controls for favorites and widgets, such as:
 
 ### Status
 Not started.
+
+## I - Multilangual support
+
+### Description
+Add support for multiple languages in the launcher, allowing users to select their preferred language from the settings menu.
+
+### Implementation Details
+- Start by externalizing all user-facing text into resource files. This will require a deep scan of the codebase to identify and extract hardcoded strings.
+- Implement a language selection option in the settings menu. The default language will be the system language if supported, or English if not. Users can manually select their preferred language from a list of available options.
+- English will be the only language at launch, but the infrastructure should allow for easy addition of new languages in the future.
+- Given the availability of AI, adding languages in the future should be straightforward and not require significant development effort. The main challenge will be ensuring that the UI can accommodate different text lengths and character sets.
+
