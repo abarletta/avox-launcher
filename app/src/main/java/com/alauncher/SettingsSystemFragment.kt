@@ -5,7 +5,9 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Gravity
@@ -14,7 +16,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.Spinner
@@ -27,6 +32,12 @@ import androidx.fragment.app.Fragment
 class SettingsSystemFragment : Fragment() {
 
     private var screenMode: String = MODE_HOME
+
+    private data class LaunchableAppEntry(
+        val packageName: String,
+        val label: String,
+        val icon: Drawable?
+    )
 
     private val notifOptions = listOf(
         MainActivity.NOTIF_MODE_COUNT to "Badge Count",
@@ -94,8 +105,9 @@ class SettingsSystemFragment : Fragment() {
 
         if (!showNotifications && !showWidgets) {
             view.findViewById<android.widget.Button>(R.id.favoritesButton).setOnClickListener {
-                showFavoritesPicker()
+                showAddFavoritePicker(view)
             }
+            populateFavoritesList(view)
 
             setupSpinner(
                 view.findViewById(R.id.footerNotifModeSpinner),
@@ -239,45 +251,238 @@ class SettingsSystemFragment : Fragment() {
             .show()
     }
 
-    private fun showFavoritesPicker() {
-        val pm = requireContext().packageManager
-        val launcherIntent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
-        @Suppress("DEPRECATION")
-        val apps = pm.queryIntentActivities(launcherIntent, 0)
-            .mapNotNull { ri ->
-                val ai = ri.activityInfo ?: return@mapNotNull null
-                ai.packageName to (ri.loadLabel(pm)?.toString() ?: ai.packageName)
-            }
-            .distinctBy { it.first }
-            .sortedBy { it.second.lowercase() }
-
+    private fun populateFavoritesList(rootView: View) {
+        val container = rootView.findViewById<LinearLayout>(R.id.favoritesContainer)
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val currentFavs = (prefs.getString(MainActivity.PREF_FAVORITES, null)
-            ?.split(",")?.filter { it.isNotBlank() }?.toSet()
-            ?: MainActivity.DEFAULT_FAVORITES)
+        val favorites = getFavoritePackages(prefs)
+        val addButton = rootView.findViewById<Button>(R.id.favoritesButton)
+        addButton.isEnabled = favorites.size < MAX_FAVORITES
+        addButton.alpha = if (addButton.isEnabled) 1f else 0.5f
 
-        val labels = apps.map { it.second }.toTypedArray()
-        val checked = BooleanArray(apps.size) { currentFavs.contains(apps[it].first) }
+        container.removeAllViews()
+
+        val appsByPackage = loadLaunchableAppsWithIcons().associateBy { it.packageName }
+        val density = resources.displayMetrics.density
+
+        favorites.forEachIndexed { index, packageName ->
+            val row = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+
+            val appRow = layoutInflater.inflate(R.layout.item_app, row, false)
+            bindLauncherRow(appRow, appsByPackage[packageName], packageName)
+            row.addView(
+                appRow,
+                LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            )
+
+            val actions = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+
+            actions.addView(
+                createMoveButton(
+                    label = "▲",
+                    enabled = index > 0,
+                    description = getString(R.string.move_up_label)
+                ) {
+                    swapFavorites(index, index - 1, rootView)
+                }
+            )
+            actions.addView(
+                createMoveButton(
+                    label = "▼",
+                    enabled = index < favorites.lastIndex,
+                    description = getString(R.string.move_down_label)
+                ) {
+                    swapFavorites(index, index + 1, rootView)
+                }
+            )
+            actions.addView(
+                createIconActionButton(
+                    iconRes = R.drawable.ic_delete,
+                    contentDescription = getString(R.string.remove_favorite_label),
+                    tint = Color.parseColor("#FF6666"),
+                    enabled = favorites.size > MIN_FAVORITES
+                ) {
+                    removeFavorite(packageName, rootView)
+                }
+            )
+
+            row.addView(actions)
+            container.addView(row)
+
+            if (index < favorites.lastIndex) {
+                container.addView(View(requireContext()).apply {
+                    setBackgroundColor(Color.parseColor("#22FFFFFF"))
+                }, LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    1
+                ).apply {
+                    topMargin = (4 * density).toInt()
+                    bottomMargin = (4 * density).toInt()
+                })
+            }
+        }
+    }
+
+    private fun showAddFavoritePicker(rootView: View) {
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val favorites = getFavoritePackages(prefs)
+        if (favorites.size >= MAX_FAVORITES) {
+            Toast.makeText(requireContext(), R.string.favorites_min_max, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val availableApps = loadLaunchableAppsWithIcons()
+            .filterNot { favorites.contains(it.packageName) }
+
+        if (availableApps.isEmpty()) {
+            Toast.makeText(requireContext(), R.string.favorites_picker_empty, Toast.LENGTH_SHORT).show()
+            return
+        }
 
         AlertDialog.Builder(requireContext())
-            .setTitle(R.string.favorites_select_label)
-            .setMultiChoiceItems(labels, checked) { _, which, isChecked ->
-                checked[which] = isChecked
-            }
-            .setPositiveButton(R.string.grant) { _, _ ->
-                val selected = apps.filterIndexed { i, _ -> checked[i] }.map { it.first }
-                if (selected.size < 3) {
-                    AlertDialog.Builder(requireContext())
-                        .setMessage(R.string.favorites_min_max)
-                        .setPositiveButton(R.string.grant, null)
-                        .show()
-                    return@setPositiveButton
-                }
-                val capped = selected.take(10)
-                prefs.edit().putString(MainActivity.PREF_FAVORITES, capped.joinToString(",")).apply()
+            .setTitle(R.string.favorites_add_label)
+            .setAdapter(FavoritesPickerAdapter(availableApps)) { _, which ->
+                val updated = favorites.toMutableList().apply { add(availableApps[which].packageName) }
+                saveFavoritePackages(prefs, updated)
+                populateFavoritesList(rootView)
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    private fun bindLauncherRow(view: View, app: LaunchableAppEntry?, packageName: String) {
+        val iconView = view.findViewById<ImageView>(R.id.appIcon)
+        val badgeView = view.findViewById<TextView>(R.id.notifBadge)
+        val nameView = view.findViewById<TextView>(R.id.appName)
+        val detailView = view.findViewById<TextView>(R.id.notificationText)
+
+        badgeView.visibility = View.GONE
+        nameView.textSize = 16f
+        detailView.textSize = 12f
+
+        if (app != null) {
+            iconView.setImageDrawable(app.icon)
+            nameView.text = app.label
+            detailView.visibility = View.GONE
+        } else {
+            iconView.setImageDrawable(requireContext().packageManager.defaultActivityIcon)
+            nameView.text = getString(R.string.footer_action_unavailable)
+            detailView.text = packageName
+            detailView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun createMoveButton(
+        label: String,
+        enabled: Boolean,
+        description: String,
+        onClick: () -> Unit
+    ): TextView {
+        val density = resources.displayMetrics.density
+        return TextView(requireContext()).apply {
+            text = label
+            contentDescription = description
+            setTextColor(if (enabled) Color.WHITE else Color.parseColor("#444444"))
+            textSize = 14f
+            gravity = Gravity.CENTER
+            setPadding((8 * density).toInt(), (4 * density).toInt(), (8 * density).toInt(), (4 * density).toInt())
+            if (enabled) {
+                setOnClickListener { onClick() }
+            }
+        }
+    }
+
+    private fun createIconActionButton(
+        iconRes: Int,
+        contentDescription: String,
+        tint: Int = Color.WHITE,
+        enabled: Boolean = true,
+        onClick: () -> Unit
+    ): ImageButton {
+        val density = resources.displayMetrics.density
+        return ImageButton(requireContext()).apply {
+            setImageResource(iconRes)
+            background = null
+            imageTintList = ColorStateList.valueOf(tint)
+            this.contentDescription = contentDescription
+            setPadding((8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt(), (8 * density).toInt())
+            isEnabled = enabled
+            alpha = if (enabled) 1f else 0.35f
+            if (enabled) {
+                setOnClickListener { onClick() }
+            }
+        }
+    }
+
+    private fun getFavoritePackages(prefs: android.content.SharedPreferences): MutableList<String> {
+        val saved = prefs.getString(MainActivity.PREF_FAVORITES, null)
+        if (!saved.isNullOrBlank()) {
+            val parsed = saved.split(",")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .distinct()
+            if (parsed.isNotEmpty()) {
+                return parsed.toMutableList()
+            }
+        }
+        return MainActivity.DEFAULT_FAVORITES.toMutableList()
+    }
+
+    private fun saveFavoritePackages(
+        prefs: android.content.SharedPreferences,
+        favoritePackages: List<String>
+    ) {
+        prefs.edit().putString(
+            MainActivity.PREF_FAVORITES,
+            favoritePackages.distinct().take(MAX_FAVORITES).joinToString(",")
+        ).apply()
+    }
+
+    private fun swapFavorites(from: Int, to: Int, rootView: View) {
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val favorites = getFavoritePackages(prefs)
+        if (from !in favorites.indices || to !in favorites.indices) return
+        val moved = favorites.removeAt(from)
+        favorites.add(to, moved)
+        saveFavoritePackages(prefs, favorites)
+        populateFavoritesList(rootView)
+    }
+
+    private fun removeFavorite(packageName: String, rootView: View) {
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val favorites = getFavoritePackages(prefs)
+        if (favorites.size <= MIN_FAVORITES) {
+            Toast.makeText(requireContext(), R.string.favorites_min_max, Toast.LENGTH_SHORT).show()
+            return
+        }
+        favorites.remove(packageName)
+        saveFavoritePackages(prefs, favorites)
+        populateFavoritesList(rootView)
+    }
+
+    private fun loadLaunchableAppsWithIcons(): List<LaunchableAppEntry> {
+        val pm = requireContext().packageManager
+        val launcherIntent = Intent(Intent.ACTION_MAIN).apply { addCategory(Intent.CATEGORY_LAUNCHER) }
+        return pm.queryIntentActivities(launcherIntent, 0)
+            .mapNotNull { resolveInfo ->
+                val activityInfo = resolveInfo.activityInfo ?: return@mapNotNull null
+                LaunchableAppEntry(
+                    packageName = activityInfo.packageName,
+                    label = resolveInfo.loadLabel(pm)?.toString().orEmpty().ifBlank { activityInfo.packageName },
+                    icon = try {
+                        resolveInfo.loadIcon(pm)
+                    } catch (_: Exception) {
+                        null
+                    }
+                )
+            }
+            .distinctBy { it.packageName }
+            .sortedBy { it.label.lowercase() }
     }
 
     private fun populateWidgetList(view: View) {
@@ -337,14 +542,25 @@ class SettingsSystemFragment : Fragment() {
                 textSize = 15f
             }
             header.addView(nameView, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-            val removeBtn = TextView(requireContext()).apply {
-                text = getString(R.string.widget_remove_label)
-                setTextColor(Color.parseColor("#FF6666"))
-                textSize = 14f
-                setPadding((12 * density).toInt(), (4 * density).toInt(), (12 * density).toInt(), (4 * density).toInt())
-                setOnClickListener { removeWidgetFromSettings(widgetId, view) }
+            if (info.configure != null) {
+                header.addView(
+                    createIconActionButton(
+                        iconRes = R.drawable.ic_settings,
+                        contentDescription = getString(R.string.widget_controls_label)
+                    ) {
+                        openWidgetControls(widgetId)
+                    }
+                )
             }
-            header.addView(removeBtn)
+            header.addView(
+                createIconActionButton(
+                    iconRes = R.drawable.ic_delete,
+                    contentDescription = getString(R.string.widget_remove_label),
+                    tint = Color.parseColor("#FF6666")
+                ) {
+                    removeWidgetFromSettings(widgetId, view)
+                }
+            )
             row.addView(header)
 
             val controlsRow = LinearLayout(requireContext()).apply {
@@ -367,17 +583,6 @@ class SettingsSystemFragment : Fragment() {
             controlsRow.addView(fullWidthSwitch, LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
             ))
-
-            if (info.configure != null) {
-                val configureBtn = TextView(requireContext()).apply {
-                    text = getString(R.string.widget_controls_label)
-                    setTextColor(Color.WHITE)
-                    textSize = 13f
-                    setPadding((12 * density).toInt(), (4 * density).toInt(), (12 * density).toInt(), (4 * density).toInt())
-                    setOnClickListener { openWidgetControls(widgetId) }
-                }
-                controlsRow.addView(configureBtn)
-            }
             row.addView(controlsRow)
 
             val heightRow = LinearLayout(requireContext()).apply {
@@ -508,8 +713,27 @@ class SettingsSystemFragment : Fragment() {
         }
     }
 
+    private inner class FavoritesPickerAdapter(
+        private val apps: List<LaunchableAppEntry>
+    ) : BaseAdapter() {
+
+        override fun getCount(): Int = apps.size
+
+        override fun getItem(position: Int): Any = apps[position]
+
+        override fun getItemId(position: Int): Long = apps[position].packageName.hashCode().toLong()
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: layoutInflater.inflate(R.layout.item_app, parent, false)
+            bindLauncherRow(view, apps[position], apps[position].packageName)
+            return view
+        }
+    }
+
     companion object {
         private const val ARG_MODE = "mode"
+        private const val MIN_FAVORITES = 3
+        private const val MAX_FAVORITES = 10
         const val MODE_NOTIFICATIONS = "notifications"
         const val MODE_HOME = "home"
         const val MODE_WIDGETS = "widgets"

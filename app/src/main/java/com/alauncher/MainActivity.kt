@@ -177,7 +177,7 @@ class MainActivity : AppCompatActivity() {
                     SIDEBAR_FAVORITES -> {
                         isExpandedView = false
                         displayedApps.clear()
-                        displayedApps.addAll(allApps.filter { getFavoritePackages().contains(it.packageName) })
+                        displayedApps.addAll(getFavoriteApps())
                         refreshList()
                         updateBottomButton()
                     }
@@ -394,19 +394,26 @@ class MainActivity : AppCompatActivity() {
 
     // --- View state ---
 
-    private fun getFavoritePackages(): Set<String> {
+    private fun getFavoritePackages(): List<String> {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val saved = prefs.getString(PREF_FAVORITES, null)
-        if (saved != null && saved.isNotBlank()) {
-            return saved.split(",").toSet()
+        if (!saved.isNullOrBlank()) {
+            return saved.split(",")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .distinct()
         }
         return DEFAULT_FAVORITES
     }
 
+    private fun getFavoriteApps(): List<AppInfo> {
+        val appsByPackage = allApps.associateBy { it.packageName }
+        return getFavoritePackages().mapNotNull { appsByPackage[it] }
+    }
+
     private fun showFavorites() {
-        val favorites = getFavoritePackages()
         displayedApps.clear()
-        displayedApps.addAll(allApps.filter { favorites.contains(it.packageName) })
+        displayedApps.addAll(getFavoriteApps())
         animateListTransition()
     }
 
@@ -1759,7 +1766,7 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_CONFIGURE_WIDGET = 9002
         const val MIN_WIDGET_HEIGHT_DP = 60
         const val MAX_WIDGET_HEIGHT_DP = 400
-        val DEFAULT_FAVORITES = setOf(
+        val DEFAULT_FAVORITES = listOf(
             "com.android.settings",
             "com.android.chrome",
             "com.google.android.gm",

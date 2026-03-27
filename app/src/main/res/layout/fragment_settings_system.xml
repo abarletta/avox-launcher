@@ -77,11 +77,34 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites_label"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites_manage_hint"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:id="@+id/favoritesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp" />
+
             <Button
                 android:id="@+id/favoritesButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Favorites"
+                android:text="@string/favorites_add_label"
                 android:layout_marginBottom="24dp" />
 
             <View

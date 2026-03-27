@@ -51,7 +51,13 @@
     <string name="block_count_label">Home Screen Rows</string>
     <string name="favorites_label">Favorites</string>
     <string name="favorites_select_label">Select Favorites</string>
+    <string name="favorites_add_label">Add Favorite</string>
+    <string name="favorites_manage_hint">Review the current favorites list here, reorder it directly, and add more apps with their real icons.</string>
     <string name="favorites_min_max">Select 3 to 10 favorites</string>
+    <string name="favorites_picker_empty">No more launchable apps are available to add.</string>
+    <string name="remove_favorite_label">Remove favorite</string>
+    <string name="move_up_label">Move up</string>
+    <string name="move_down_label">Move down</string>
     <string name="notification_not_granted">Notification access not granted. Tap to enable.</string>
     <string name="action_uninstall_failed">Unable to uninstall app.</string>
     <string name="icon_size_label">Icon Size</string>
@@ -116,4 +122,3 @@
     <string name="restore_settings_confirm_action">Restore</string>
     <string name="restore_settings_selected_file">the selected backup</string>
 </resources>
-
