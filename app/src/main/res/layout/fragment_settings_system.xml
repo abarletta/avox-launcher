@@ -93,6 +93,28 @@
                 android:textSize="13sp"
                 android:layout_marginBottom="12dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites_layout_label"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/favorites_layout_hint"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/favoritesLayoutSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
             <LinearLayout
                 android:id="@+id/favoritesContainer"
                 android:layout_width="match_parent"

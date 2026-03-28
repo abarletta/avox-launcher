@@ -119,6 +119,27 @@ class SettingsSystemFragment : Fragment() {
         }
 
         if (!showNotifications && !showWidgets) {
+            val favoritesLayoutOptions = listOf(
+                MainActivity.FAVORITES_LAYOUT_ADAPTIVE to getString(R.string.favorites_layout_adaptive),
+                MainActivity.FAVORITES_LAYOUT_SINGLE to getString(R.string.favorites_layout_single)
+            )
+            setupSpinner(
+                view.findViewById(R.id.favoritesLayoutSpinner),
+                favoritesLayoutOptions.map { it.second },
+                favoritesLayoutOptions.indexOfFirst {
+                    it.first == (
+                        prefs.getString(
+                            MainActivity.PREF_FAVORITES_LAYOUT,
+                            MainActivity.DEFAULT_FAVORITES_LAYOUT
+                        ) ?: MainActivity.DEFAULT_FAVORITES_LAYOUT
+                    )
+                }.coerceAtLeast(0)
+            ) { pos ->
+                prefs.edit()
+                    .putString(MainActivity.PREF_FAVORITES_LAYOUT, favoritesLayoutOptions[pos].first)
+                    .apply()
+            }
+
             view.findViewById<android.widget.Button>(R.id.favoritesButton).setOnClickListener {
                 showAddFavoritePicker(view)
             }

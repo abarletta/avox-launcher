@@ -19,7 +19,8 @@
     <string name="action_play_store">Play Store</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="notification_access_title">Notification Access</string>
-    <string name="notification_access_message">To show notification badges, the launcher needs notification access permission.</string>
+    <string name="notification_access_message">To show notification badges, the launcher needs
+        notification access permission.</string>
     <string name="grant">Grant</string>
     <string name="cancel">Cancel</string>
     <string name="add_widget">Add Widget</string>
@@ -38,7 +39,8 @@
     <string name="widget_controls_unavailable">This widget does not expose extra controls.</string>
     <string name="widget_slot_label">Widget Slot %1$d</string>
     <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
-    <string name="widget_slot_swipe_hint">Swipe left or right on the home screen to switch between the %1$d widgets in this slot.</string>
+    <string name="widget_slot_swipe_hint">Swipe left or right on the home screen to switch between
+        the %1$d widgets in this slot.</string>
     <string name="widget_add_slot_label">Add Widget Slot</string>
     <string name="widget_add_to_slot_label">Add Widget To This Slot</string>
     <string name="widget_slot_indicator_toggle_label">Show Slot Indicator</string>
@@ -58,7 +60,13 @@
     <string name="favorites_label">Favorites</string>
     <string name="favorites_select_label">Select Favorites</string>
     <string name="favorites_add_label">Add Favorite</string>
-    <string name="favorites_manage_hint">Review the current favorites list here, reorder it directly, and add more apps with their real icons.</string>
+    <string name="favorites_manage_hint">Review the current favorites list here, reorder it
+        directly, and add more apps with their real icons.</string>
+    <string name="favorites_layout_label">Favorites Layout</string>
+    <string name="favorites_layout_hint">Adaptive grid uses up to 2 columns on phones in portrait,
+        expands in landscape, and keeps the old single-column layout available.</string>
+    <string name="favorites_layout_adaptive">Adaptive Grid</string>
+    <string name="favorites_layout_single">Single Column</string>
     <string name="favorites_min_max">Select 3 to 10 favorites</string>
     <string name="favorites_picker_empty">No more launchable apps are available to add.</string>
     <string name="remove_favorite_label">Remove favorite</string>
@@ -88,11 +96,16 @@
     <string name="settings_widgets_summary">Widget slots, swipe stacks, size, controls</string>
     <string name="settings_menu_title">Launcher settings</string>
     <string name="settings_backup_title">Backup &amp; Restore</string>
-    <string name="settings_backup_summary">Export launcher preferences to a JSON file, or restore them later. Widget placements stay local to this device.</string>
-    <string name="settings_notifications_hint">Badge counts and notification text are configured here. Reopen notification access from this screen if updates stop.</string>
-    <string name="settings_home_hint">Manage favorites, footer actions, and home screen entry points from here.</string>
-    <string name="settings_widgets_hint">Manage widget slots, add multiple widgets to the same slot, and swipe between stacked widgets from the home screen.</string>
-    <string name="widget_space_hint">This controls how much vertical space widgets may use on the home screen before the app list takes over.</string>
+    <string name="settings_backup_summary">Export launcher preferences to a JSON file, or restore
+        them later. Widget placements stay local to this device.</string>
+    <string name="settings_notifications_hint">Badge counts and notification text are configured
+        here. Reopen notification access from this screen if updates stop.</string>
+    <string name="settings_home_hint">Manage favorites, footer actions, and home screen entry points
+        from here.</string>
+    <string name="settings_widgets_hint">Manage widget slots, add multiple widgets to the same slot,
+        and swipe between stacked widgets from the home screen.</string>
+    <string name="widget_space_hint">This controls how much vertical space widgets may use on the
+        home screen before the app list takes over.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
     <string name="hide_status_bar_label">Hide Status Bar</string>
@@ -115,17 +128,21 @@
     <string name="backup_settings_success">Settings backup saved.</string>
     <string name="backup_settings_failed">Unable to save settings backup.</string>
     <string name="backup_settings_share_title">Backup saved</string>
-    <string name="backup_settings_share_message">Your settings backup is ready. Share it now with the system share sheet if you want to move it to another device.</string>
+    <string name="backup_settings_share_message">Your settings backup is ready. Share it now with
+        the system share sheet if you want to move it to another device.</string>
     <string name="backup_settings_share_action">Share</string>
     <string name="backup_settings_share_chooser_title">Share settings backup</string>
-    <string name="backup_settings_share_failed">Backup saved, but sharing is not available on this device.</string>
+    <string name="backup_settings_share_failed">Backup saved, but sharing is not available on this
+        device.</string>
     <string name="restore_settings_success">Settings restored.</string>
     <string name="restore_settings_failed">Unable to restore settings.</string>
     <string name="restore_settings_button">Restore Settings</string>
     <string name="restore_settings_invalid">That file is not a valid launcher backup.</string>
-    <string name="restore_settings_incompatible">That backup was created by an unsupported launcher version.</string>
+    <string name="restore_settings_incompatible">That backup was created by an unsupported launcher
+        version.</string>
     <string name="restore_settings_confirm_title">Restore settings</string>
-    <string name="restore_settings_confirm_message">Restore %2$d settings from %1$s? This replaces your saved launcher preferences, but keeps widget placements on this device.</string>
+    <string name="restore_settings_confirm_message">Restore %2$d settings from %1$s? This replaces
+        your saved launcher preferences, but keeps widget placements on this device.</string>
     <string name="restore_settings_confirm_action">Restore</string>
     <string name="restore_settings_selected_file">the selected backup</string>
 </resources>

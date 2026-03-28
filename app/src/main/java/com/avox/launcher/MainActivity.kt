@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ActivityNotFoundException
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -27,9 +28,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AbsListView
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.GridView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.AdapterView
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private var notificationData = mapOf<String, NotifInfo>()
 
     private lateinit var appList: ListView
+    private lateinit var favoritesGrid: GridView
     private lateinit var sidebar: AlphabetSidebar
     private lateinit var darkOverlay: View
     private lateinit var rootLayout: FrameLayout
@@ -112,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
         rootLayout = findViewById(R.id.rootLayout)
         appList = findViewById(R.id.appList)
+        favoritesGrid = findViewById(R.id.favoritesGrid)
         sidebar = findViewById(R.id.alphabetSidebar)
         darkOverlay = findViewById(R.id.darkOverlay)
         bottomButton = findViewById(R.id.bottomButton)
@@ -177,28 +182,17 @@ class MainActivity : AppCompatActivity() {
                 when (letter) {
                     SIDEBAR_FAVORITES -> {
                         isExpandedView = false
-                        displayedApps.clear()
-                        displayedApps.addAll(getFavoriteApps())
-                        refreshList()
+                        showFavorites()
                         updateBottomButton()
                     }
                     SIDEBAR_OTHER -> {
                         isExpandedView = true
-                        displayedApps.clear()
-                        displayedApps.addAll(allApps.filter {
-                            val first = it.label.firstOrNull()
-                            first != null && !first.isLetter()
-                        })
-                        refreshList()
+                        showNonAlphaApps()
                         updateBottomButtonImmediate()
                     }
                     else -> {
                         isExpandedView = true
-                        displayedApps.clear()
-                        displayedApps.addAll(allApps.filter {
-                            it.label.startsWith(letter, ignoreCase = true)
-                        })
-                        refreshList()
+                        showAppsForLetter(letter)
                         updateBottomButtonImmediate()
                     }
                 }
@@ -207,11 +201,13 @@ class MainActivity : AppCompatActivity() {
 
         appList.setOnItemClickListener { _, _, position, _ ->
             val app = (appList.adapter as? AppListAdapter)?.getAppInfo(position) ?: return@setOnItemClickListener
-            try {
-                startActivity(app.launchIntent)
-            } catch (_: Exception) {
-                Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
-            }
+            launchApp(app)
+        }
+
+        favoritesGrid.setOnItemClickListener { _, _, position, _ ->
+            val app = (favoritesGrid.adapter as? FavoriteGridAdapter)?.getAppInfo(position)
+                ?: return@setOnItemClickListener
+            launchApp(app)
         }
 
         appList.setOnItemLongClickListener { _, _, position, _ ->
@@ -222,34 +218,32 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // Swipe gestures for notifications
-        val swipeDetector = android.view.GestureDetector(this, object : android.view.GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-                if (e1 == null) return false
-                val swipePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-                if (!swipePrefs.getBoolean(PREF_NOTIF_SWIPE, false)) return false
-                val dx = e2.x - e1.x
-                val dy = e2.y - e1.y
-                if (kotlin.math.abs(dx) > kotlin.math.abs(dy) && kotlin.math.abs(dx) > 100) {
-                    val position = appList.pointToPosition(e1.x.toInt(), e1.y.toInt())
-                    val app = (appList.adapter as? AppListAdapter)?.getAppInfo(position)
-                    if (position >= 0 && app != null) {
-                        if (dx < 0) {
-                            NotificationHolder.service?.cancelNotificationsForPackage(app.packageName)
-                            refreshNotificationData()
-                            refreshList()
-                        } else {
-                            AppActionsSheet(this@MainActivity, app.packageName, app.label).show()
-                        }
-                        return true
-                    }
-                }
-                return false
+        favoritesGrid.setOnItemLongClickListener { _, _, position, _ ->
+            val app = (favoritesGrid.adapter as? FavoriteGridAdapter)?.getAppInfo(position)
+            if (app != null) {
+                AppActionsSheet(this, app.packageName, app.label).show()
             }
-        })
+            true
+        }
+
+        // Swipe gestures for notifications
+        val listSwipeDetector = createNotificationSwipeDetector { x, y ->
+            val position = appList.pointToPosition(x.toInt(), y.toInt())
+            (appList.adapter as? AppListAdapter)?.getAppInfo(position)
+        }
         appList.setOnTouchListener { _, event ->
-            swipeDetector.onTouchEvent(event)
-            handleHomeEmptySpaceTouch(event)
+            listSwipeDetector.onTouchEvent(event)
+            handleHomeAdapterEmptySpaceTouch(appList, event)
+            false
+        }
+
+        val favoritesGridSwipeDetector = createNotificationSwipeDetector { x, y ->
+            val position = favoritesGrid.pointToPosition(x.toInt(), y.toInt())
+            (favoritesGrid.adapter as? FavoriteGridAdapter)?.getAppInfo(position)
+        }
+        favoritesGrid.setOnTouchListener { _, event ->
+            favoritesGridSwipeDetector.onTouchEvent(event)
+            handleHomeAdapterEmptySpaceTouch(favoritesGrid, event)
             false
         }
 
@@ -419,7 +413,7 @@ class MainActivity : AppCompatActivity() {
     private fun showFavorites() {
         displayedApps.clear()
         displayedApps.addAll(getFavoriteApps())
-        animateListTransition()
+        animateAppContentTransition()
     }
 
     private fun showAppsForLetter(letter: String) {
@@ -427,7 +421,7 @@ class MainActivity : AppCompatActivity() {
         displayedApps.addAll(allApps.filter {
             it.label.startsWith(letter, ignoreCase = true)
         })
-        animateListTransition()
+        animateAppContentTransition()
     }
 
     private fun showNonAlphaApps() {
@@ -436,14 +430,21 @@ class MainActivity : AppCompatActivity() {
             val first = it.label.firstOrNull()
             first != null && !first.isLetter()
         })
-        animateListTransition()
+        animateAppContentTransition()
     }
 
-    private fun animateListTransition() {
-        appList.animate().alpha(0f).setDuration(120).withEndAction {
-            refreshList()
-            appList.animate().alpha(1f).setDuration(180).start()
-        }.start()
+    private fun animateAppContentTransition() {
+        appList.animate().cancel()
+        favoritesGrid.animate().cancel()
+        appList.alpha = 1f
+        favoritesGrid.alpha = 1f
+
+        refreshList()
+
+        val incoming = getVisibleAppContentView()
+        if (incoming.visibility != View.VISIBLE) return
+        incoming.alpha = 0.82f
+        incoming.animate().alpha(1f).setDuration(110).start()
     }
 
     private fun filterApps(query: String) {
@@ -478,6 +479,7 @@ class MainActivity : AppCompatActivity() {
         updateIconPackResolver(prefs)
         val iconMode = resolveIconMode(prefs)
         val nerdTypeface = resolveNerdTypeface(iconMode)
+        val showFavoritesGrid = !isExpandedView && isAdaptiveFavoritesLayoutEnabled(prefs)
 
         appList.adapter = AppListAdapter(
             layoutInflater, displayedApps, typeface, spacing, fontSize,
@@ -485,6 +487,28 @@ class MainActivity : AppCompatActivity() {
             iconSize, iconPackResolver, nerdTypeface, iconMode,
             showHeaders = isExpandedView
         )
+
+        if (showFavoritesGrid) {
+            favoritesGrid.numColumns = resolveFavoritesColumnCount()
+            favoritesGrid.adapter = FavoriteGridAdapter(
+                layoutInflater,
+                displayedApps,
+                typeface,
+                spacing,
+                fontSize,
+                notificationData,
+                notifMode,
+                alignment == "center",
+                iconSize,
+                iconPackResolver,
+                nerdTypeface,
+                iconMode
+            )
+        } else {
+            favoritesGrid.adapter = null
+        }
+
+        updateAppContentVisibility(showFavoritesGrid)
     }
 
     private fun updateBottomButton() {
@@ -530,6 +554,7 @@ class MainActivity : AppCompatActivity() {
             .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
         val topPad = (60 * density).toInt() + vMargin
         appList.setPadding(appList.paddingLeft, topPad, appList.paddingRight, appList.paddingBottom)
+        favoritesGrid.setPadding(favoritesGrid.paddingLeft, topPad, favoritesGrid.paddingRight, favoritesGrid.paddingBottom)
         updateSidebarPosition()
     }
 
@@ -665,6 +690,7 @@ class MainActivity : AppCompatActivity() {
 
         // Apply horizontal margin to content containers
         appList.setPadding(hMargin, appList.paddingTop, appList.paddingRight, appList.paddingBottom)
+        favoritesGrid.setPadding(hMargin, favoritesGrid.paddingTop, favoritesGrid.paddingRight, favoritesGrid.paddingBottom)
         widgetContainer.setPadding(hMargin, widgetContainer.paddingTop, widgetContainer.paddingRight, widgetContainer.paddingBottom)
 
         // Top padding is managed by updateListPaddingForWidgets()
@@ -941,6 +967,74 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isAdaptiveFavoritesLayoutEnabled(prefs: android.content.SharedPreferences): Boolean {
+        return (prefs.getString(PREF_FAVORITES_LAYOUT, DEFAULT_FAVORITES_LAYOUT)
+            ?: DEFAULT_FAVORITES_LAYOUT) == FAVORITES_LAYOUT_ADAPTIVE
+    }
+
+    private fun updateAppContentVisibility(showFavoritesGrid: Boolean) {
+        favoritesGrid.visibility = if (showFavoritesGrid) View.VISIBLE else View.GONE
+        appList.visibility = if (showFavoritesGrid) View.GONE else View.VISIBLE
+    }
+
+    private fun resolveFavoritesColumnCount(): Int {
+        val configuration = resources.configuration
+        val isTablet = configuration.smallestScreenWidthDp >= 600
+        val maxColumns = when {
+            configuration.orientation == Configuration.ORIENTATION_LANDSCAPE && isTablet -> 6
+            configuration.orientation == Configuration.ORIENTATION_LANDSCAPE -> 4
+            isTablet -> 4
+            else -> 2
+        }
+        return maxColumns.coerceAtMost(displayedApps.size.coerceAtLeast(1))
+    }
+
+    private fun getVisibleAppContentView(): View {
+        return if (favoritesGrid.visibility == View.VISIBLE) favoritesGrid else appList
+    }
+
+    private fun launchApp(app: AppInfo) {
+        try {
+            startActivity(app.launchIntent)
+        } catch (_: Exception) {
+            Toast.makeText(this, R.string.launch_failed, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun createNotificationSwipeDetector(
+        resolveAppAt: (Float, Float) -> AppInfo?
+    ): android.view.GestureDetector {
+        return android.view.GestureDetector(
+            this,
+            object : android.view.GestureDetector.SimpleOnGestureListener() {
+                override fun onFling(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    velocityX: Float,
+                    velocityY: Float
+                ): Boolean {
+                    if (e1 == null) return false
+                    val swipePrefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                    if (!swipePrefs.getBoolean(PREF_NOTIF_SWIPE, false)) return false
+                    val dx = e2.x - e1.x
+                    val dy = e2.y - e1.y
+                    if (kotlin.math.abs(dx) <= kotlin.math.abs(dy) || kotlin.math.abs(dx) <= 100) {
+                        return false
+                    }
+                    val app = resolveAppAt(e1.x, e1.y) ?: return false
+                    if (dx < 0) {
+                        NotificationHolder.service?.cancelNotificationsForPackage(app.packageName)
+                        refreshNotificationData()
+                        refreshList()
+                    } else {
+                        AppActionsSheet(this@MainActivity, app.packageName, app.label).show()
+                    }
+                    return true
+                }
+            }
+        )
+    }
+
     private fun resolveFooterActionIcon(
         action: FooterQuickAction,
         iconMode: String,
@@ -971,7 +1065,7 @@ class MainActivity : AppCompatActivity() {
         return !isExpandedView && !isWidgetEditMode && searchBar.visibility != View.VISIBLE
     }
 
-    private fun handleHomeEmptySpaceTouch(event: MotionEvent) {
+    private fun handleHomeAdapterEmptySpaceTouch(adapterView: AbsListView, event: MotionEvent) {
         if (!canOpenHomeSettingsFromLongPress()) {
             cancelHomeLongPress()
             return
@@ -979,8 +1073,8 @@ class MainActivity : AppCompatActivity() {
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                if (appList.pointToPosition(event.x.toInt(), event.y.toInt()) == AdapterView.INVALID_POSITION) {
-                    scheduleHomeLongPress(appList, event)
+                if (adapterView.pointToPosition(event.x.toInt(), event.y.toInt()) == AdapterView.INVALID_POSITION) {
+                    scheduleHomeLongPress(adapterView, event)
                 } else {
                     cancelHomeLongPress()
                 }
@@ -988,7 +1082,7 @@ class MainActivity : AppCompatActivity() {
             MotionEvent.ACTION_MOVE -> {
                 val movedTooFar = kotlin.math.abs(event.rawX - homeLongPressStartX) > homeTouchSlop ||
                     kotlin.math.abs(event.rawY - homeLongPressStartY) > homeTouchSlop
-                val overItem = appList.pointToPosition(event.x.toInt(), event.y.toInt()) != AdapterView.INVALID_POSITION
+                val overItem = adapterView.pointToPosition(event.x.toInt(), event.y.toInt()) != AdapterView.INVALID_POSITION
                 if (movedTooFar || overItem) {
                     cancelHomeLongPress()
                 }
@@ -1725,13 +1819,15 @@ class MainActivity : AppCompatActivity() {
                     (60 * density).toInt() + vMargin
                 }
                 appList.setPadding(appList.paddingLeft, topPadding, appList.paddingRight, appList.paddingBottom)
+                favoritesGrid.setPadding(favoritesGrid.paddingLeft, topPadding, favoritesGrid.paddingRight, favoritesGrid.paddingBottom)
                 updateSidebarPosition()
             }
         }
     }
 
     private fun updateSidebarPosition() {
-        sidebar.setPadding(sidebar.paddingLeft, appList.paddingTop, sidebar.paddingRight, appList.paddingBottom)
+        val anchor = getVisibleAppContentView()
+        sidebar.setPadding(sidebar.paddingLeft, anchor.paddingTop, sidebar.paddingRight, anchor.paddingBottom)
     }
 
     // --- App loading ---
@@ -1919,6 +2015,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_V_MARGIN = "v_margin"
         const val PREF_BLOCK_COUNT = "block_count"
         const val PREF_FAVORITES = "favorites"
+        const val PREF_FAVORITES_LAYOUT = "favorites_layout"
         const val DEFAULT_FONT = "sans-serif-light"
         const val DEFAULT_SPACING = 12
         const val DEFAULT_DARKNESS = 40
@@ -1953,6 +2050,9 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_H_MARGIN = 24
         const val DEFAULT_V_MARGIN = 0
         const val DEFAULT_BLOCK_COUNT = 2
+        const val FAVORITES_LAYOUT_SINGLE = "single"
+        const val FAVORITES_LAYOUT_ADAPTIVE = "adaptive"
+        const val DEFAULT_FAVORITES_LAYOUT = FAVORITES_LAYOUT_ADAPTIVE
         const val SIDEBAR_FAVORITES = "★"
         const val SIDEBAR_OTHER = "#"
         const val CUSTOM_FONT_KEY = "_custom_ttf"
@@ -2261,6 +2361,110 @@ private class AppListAdapter(
         }
         view.typeface = android.graphics.Typeface.create(typeface, android.graphics.Typeface.BOLD)
         view.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
+        return view
+    }
+}
+
+private class FavoriteGridAdapter(
+    private val inflater: LayoutInflater,
+    private val apps: List<AppInfo>,
+    private val typeface: Typeface,
+    private val spacingDp: Int,
+    private val fontSizeSp: Int,
+    private val notifData: Map<String, NotifInfo>,
+    private val notifMode: String,
+    private val centerAlign: Boolean,
+    private val iconSizeDp: Int = 36,
+    private val iconPackResolver: IconPackResolver? = null,
+    private val nerdTypeface: Typeface? = null,
+    private val iconMode: String = MainActivity.ICON_MODE_REGULAR
+) : BaseAdapter() {
+
+    fun getAppInfo(position: Int): AppInfo? = apps.getOrNull(position)
+
+    override fun getCount(): Int = apps.size
+    override fun getItem(position: Int): Any = apps[position]
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val app = apps[position]
+        val view = convertView ?: inflater.inflate(R.layout.item_favorite_grid, parent, false)
+
+        val root = view as LinearLayout
+        val iconFrame = view.findViewById<FrameLayout>(R.id.iconFrame)
+        val iconView = view.findViewById<ImageView>(R.id.appIcon)
+        val glyphView = view.findViewById<TextView>(R.id.appGlyph)
+        val nameView = view.findViewById<TextView>(R.id.appName)
+        val notifView = view.findViewById<TextView>(R.id.notificationText)
+        val badgeView = view.findViewById<TextView>(R.id.notifBadge)
+
+        val density = view.resources.displayMetrics.density
+        val paddingPx = (spacingDp * density).toInt().coerceAtLeast((8 * density).toInt())
+        root.setPadding((6 * density).toInt(), paddingPx / 2, (6 * density).toInt(), paddingPx / 2)
+        root.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
+
+        val iconSizePx = (iconSizeDp * density).toInt()
+        (iconFrame.layoutParams as? LinearLayout.LayoutParams)?.apply {
+            width = iconSizePx
+            height = iconSizePx
+            gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
+            iconFrame.layoutParams = this
+        }
+
+        val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
+        val displayIcon = if (showRegularIcon) iconPackResolver?.resolve(app.packageName) ?: app.icon else null
+        val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) {
+            launcherNerdGlyphs[app.packageName]
+        } else {
+            null
+        }
+
+        when {
+            displayIcon != null -> {
+                iconFrame.visibility = View.VISIBLE
+                iconView.visibility = View.VISIBLE
+                iconView.setImageDrawable(displayIcon)
+                glyphView.visibility = View.GONE
+                glyphView.text = null
+            }
+            glyph != null -> {
+                iconFrame.visibility = View.VISIBLE
+                iconView.visibility = View.GONE
+                iconView.setImageDrawable(null)
+                glyphView.visibility = View.VISIBLE
+                glyphView.typeface = nerdTypeface
+                glyphView.text = glyph
+                glyphView.textSize = (iconSizeDp * 0.8f).coerceAtLeast(18f)
+            }
+            else -> {
+                iconFrame.visibility = View.GONE
+                iconView.visibility = View.GONE
+                iconView.setImageDrawable(null)
+                glyphView.visibility = View.GONE
+                glyphView.text = null
+            }
+        }
+
+        nameView.text = app.label
+        nameView.typeface = typeface
+        nameView.textSize = fontSizeSp.toFloat()
+        nameView.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
+
+        notifView.gravity = if (centerAlign) Gravity.CENTER_HORIZONTAL else Gravity.START
+        val notif = notifData[app.packageName]
+        if (notif != null && notifMode == MainActivity.NOTIF_MODE_COUNT && iconFrame.visibility == View.VISIBLE) {
+            badgeView.text = if (notif.count > 99) "99+" else notif.count.toString()
+            badgeView.visibility = View.VISIBLE
+            notifView.visibility = View.GONE
+        } else if (notif != null && notifMode == MainActivity.NOTIF_MODE_TEXT && notif.latestText.isNotBlank()) {
+            badgeView.visibility = View.GONE
+            notifView.text = notif.latestText
+            notifView.visibility = View.VISIBLE
+        } else {
+            badgeView.visibility = View.GONE
+            notifView.visibility = View.GONE
+        }
+
         return view
     }
 }
