@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">A-Launcher</string>
-    <string name="launcher_backup_file_name">a-launcher-settings.json</string>
+    <string name="app_name">Avox</string>
+    <string name="app_name_full">Avox Launcher</string>
+    <string name="launcher_backup_file_name">avox-launcher-settings.json</string>
 </resources>

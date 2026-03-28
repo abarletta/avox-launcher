@@ -6,14 +6,14 @@ Items are added without any particular order, and without consideration for thei
 
 | Feature | Description | Status | Last Commit |
 | --- | --- | --- | --- |
-| [A](#a--settings-backup-and-restore) | Settings Backup and Restore | Implemented | [47f41fc](https://github.com/abarletta/a-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198) |
-| [B](#b--access-settings-via-long-press-on-home-screen) | Access Settings via Long‑Press on Home Screen | Implemented | [216a002](https://github.com/abarletta/a-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f) |
-| [C](#c--add-quick-actions-to-home-footer) | Add Quick Actions to Home Footer | Implemented | [5c69698](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a) |
-| [D](#d--multi-widget-support) | Multi‑Widget Support | Implemented | [9ec62de](https://github.com/abarletta/a-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08) |
+| [A](#a--settings-backup-and-restore) | Settings Backup and Restore | Implemented | [47f41fc](https://github.com/abarletta/avox-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198) |
+| [B](#b--access-settings-via-long-press-on-home-screen) | Access Settings via Long‑Press on Home Screen | Implemented | [216a002](https://github.com/abarletta/avox-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f) |
+| [C](#c--add-quick-actions-to-home-footer) | Add Quick Actions to Home Footer | Implemented | [5c69698](https://github.com/abarletta/avox-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a) |
+| [D](#d--multi-widget-support) | Multi‑Widget Support | Implemented | [9ec62de](https://github.com/abarletta/avox-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08) |
 | [E](#e--multi-column-favorites) | Multi‑Column Favorites | Not started | |
 | [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
-| [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
-| [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/a-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
+| [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/avox-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
+| [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
 | [I](#i--multilangual-support) | Multilangual support | Not started | |  
 
 ---
@@ -29,7 +29,7 @@ Implement a feature to back up and restore user settings. This allows users to t
 - *Optional:* Backup file may be human‑readable (e.g., JSON) to allow manual editing.
 
 ### Status
-Implemented in commit [47f41fc1d0ac47db6d59935903f660753f2df198](https://github.com/abarletta/a-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198).
+Implemented in commit [47f41fc1d0ac47db6d59935903f660753f2df198](https://github.com/abarletta/avox-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198).
 
 ---
 
@@ -42,7 +42,7 @@ Allow users to access the settings menu by long‑pressing on an empty area of t
 None. This is a common launcher feature and improves accessibility.
 
 ### Status
-Implemented in commit [216a00269c92037813d7faec7a5f627265ee5a2f](https://github.com/abarletta/a-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f)
+Implemented in commit [216a00269c92037813d7faec7a5f627265ee5a2f](https://github.com/abarletta/avox-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f)
 
 ---
 
@@ -58,7 +58,7 @@ Add up to 3 customizable quick‑action icons to the home screen footer. Current
 - If phone or messaging apps are selected, notification badges or full‑text notifications should follow the same logic as favorites — but controlled by a separate setting.
 
 ### Status
-Implemented in commit [5c69698a0f4164f3b284630d0cd73771e269cd8a](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a).
+Implemented in commit [5c69698a0f4164f3b284630d0cd73771e269cd8a](https://github.com/abarletta/avox-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a).
 
 ---
 
@@ -72,7 +72,7 @@ Allow users to add multiple widgets within the same widget slot and switch betwe
 - Requires redesign of widget management and corresponding settings UI.
 
 ### Status
-Implemented in commit [9ec62de9dcd5aa615332aefec9ac2368d3d62b08](https://github.com/abarletta/a-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08).
+Implemented in commit [9ec62de9dcd5aa615332aefec9ac2368d3d62b08](https://github.com/abarletta/avox-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08).
 
 ---
 
@@ -85,7 +85,8 @@ Allow users to choose between single‑column or multi‑column layouts for the 
 - Users choose between single‑column and multi‑column layouts.
 - Multi‑column layout should adapt to screen size and orientation.
 - Reasonable maximum columns (e.g., 2 on phones, 4 on tablets).
-- More columns allowed in horizontal layout.
+- Even more maximum columns allowed in horizontal layout.
+- Once multi‑column favorites are implemented, set home screen layout to default to 2 columns in portrait and 4 columns in landscape. The current single-column layout will be available as an option in settings, but it will no longer be the default.
 
 ### Status
 Not started.
@@ -111,13 +112,11 @@ Not started.
 ### Description
 General UI/UX improvements to enhance the launcher experience:
 - <del>Smoother alphabet scrolling animations.</del>
-  >Implemented in commit [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51)
+  >Implemented in commit [9a6b299](https://github.com/abarletta/avox-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51)
 - Smoother transitions between home and app drawer (e.g., animated alphabet expansion, fade effects).
 - Wallpaper blur effect should work and be adjustable.
 - Wallpaper tint effect should have proper intensity control.
-- Allow users customize icons for individual apps via the long-press menu. These icons should replace the theme icons for those apps everywhere in the launcher (home screen, app drawer, favorites, etc.).
 - Overall visual design in settings, long-press menus, and other UI elements should be polished and consistent, along the following guidelines:
-    - Consistent icon theme (favorites and app drawer icons should be applied everywhere).
     - Consistent font (font chosen in settings should be applied everywhere).
     - Consistent color scheme (e.g., for text, icons, backgrounds).
     - For buttons and interactive elements, prefer text-only design instead of buttons with visible boxes.
@@ -125,7 +124,7 @@ General UI/UX improvements to enhance the launcher experience:
 ### Implementation Details
 - Animation logic should be refactored for easy modification.
 - Visual design should be centralized and modular (CSS‑like structure).
-- Refactor codebase to make UI/UX improvements easy for human developers.
+- Refactor coebase to make UI/UX improvements easy for human developers.
 - Generate documentation explaining where and how to modify animations and styles.
 
 ### Status
@@ -147,7 +146,7 @@ Provide more advanced controls for favorites and widgets, such as:
 - Drag‑and‑drop reordering on the home screen should be considered an optional enhancement. As such, it should only be implemented after the core features of favorites management are completed and stable.
 
 ### Status
-Implemented in commit [7848c680a568476774f2f042daebdd82b8625e12](https://github.com/abarletta/a-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12).
+Implemented in commit [7848c680a568476774f2f042daebdd82b8625e12](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12).
 
 ## I - Multilangual support
 
@@ -160,3 +159,50 @@ Add support for multiple languages in the launcher, allowing users to select the
 - English will be the only language at launch, but the infrastructure should allow for easy addition of new languages in the future.
 - Given the availability of AI, adding languages in the future should be straightforward and not require significant development effort. The main challenge will be ensuring that the UI can accommodate different text lengths and character sets.
 
+
+### Status
+Not started.
+
+## J - Better Icon Pack Support
+
+### Description
+The launcher currently supports icon packs and consistently applies them across several areas of the UI. However, no fine control is provided to the user over how icons are applied, and no built-in logic ensures that icons are applied consistently across the entire UI. 
+
+The goal of this feature is to improve icon customization and harmonize it across the entire launcher experience as follows:
+- Allow users customize icons for individual apps via the long-press menu. These icons should replace the theme icons for those apps everywhere in the launcher (home screen, app drawer, favorites, etc.).
+- Consistent icon theme (favorites and app drawer icons should be applied everywhere).
+- Provide a MINIMAL built-in icon packs with a simple, clean design that matches the launcher's aesthetic. This should provide some backup icons for users who cannot find a suitable icon pack, or to fill in missing icons from third-party packs. 
+
+### Implementation Details
+
+This is a two-step implementation workflow:
+
+- Step 1:
+  - Redefine the icon management system to allow for per-app icon overrides.
+  - Implement an internal layer that determines the final icon for each app based on the following priority: user‑customized icon > third‑party icon pack icon > default app icon.
+  - Inspect the codebase to make sure that the final icon is applied consistently across all UI elements (home screen, app drawer, favorites, etc.).
+- Step 2:
+  - Design and implement minimal built-in icon packs. Each pack should match a different style and color scheme. 
+  - The packs should be focused on categorization rather than specific apps, providing a small set of icons that can be used as overrides for any app (e.g., a generic "social media" icon, a generic "productivity" icon, etc.).
+  - Styles: full, outline, rounded, square.
+  - Colors: dark, light, blue, red, green, yellow and violet. Use a palette that matches these colors but fits modern design trends (e.g., pastel or muted tones instead of pure colors).
+  - App categories/icon types for each pack: 
+    - social media-
+    - phone
+    - message
+    - email
+    - shopping
+    - finance
+    - document
+    - calendar
+    - settings
+    - gamepad
+    - tools
+    - health
+    - travel
+    - music
+    - video
+    - fitness
+    - education
+    - gallery
+    - baby

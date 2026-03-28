@@ -1,6 +1,6 @@
-# A-Launcher
+# Avox
 
-A-Launcher is a personal Android launcher built around a Niagara-like idea:
+Avox is a personal Android launcher built around a Niagara-like idea:
 one screen, a vertical app list, fast access, and deliberate limits.
 
 ## Features

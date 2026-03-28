@@ -54,13 +54,13 @@ Current shape:
 
 Current implementation files:
 
-- `app/src/main/java/com/alauncher/MainActivity.kt` — launcher screen, app list, widgets, wallpaper effects, notification data, swipe gestures, WidgetFrame inner class
-- `app/src/main/java/com/alauncher/SettingsActivity.kt` — all settings controls, preference persistence, widget management (list, remove, resize)
-- `app/src/main/java/com/alauncher/AlphabetSidebar.kt` — sidebar with wave/highlight/fade animations
-- `app/src/main/java/com/alauncher/AppActionsSheet.kt` — app info, Play Store, uninstall, shortcuts
-- `app/src/main/java/com/alauncher/NotificationService.kt` — notification listener with swipe-to-dismiss
-- `app/src/main/java/com/alauncher/LauncherApp.kt` — custom font loading
-- `app/src/main/java/com/alauncher/IconPackResolver.kt` — icon pack discovery and resolution
+- `app/src/main/java/com/avox/launcher/MainActivity.kt` — launcher screen, app list, widgets, wallpaper effects, notification data, swipe gestures, WidgetFrame inner class
+- `app/src/main/java/com/avox/launcher/SettingsActivity.kt` — all settings controls, preference persistence, widget management (list, remove, resize)
+- `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt` — sidebar with wave/highlight/fade animations
+- `app/src/main/java/com/avox/launcher/AppActionsSheet.kt` — app info, Play Store, uninstall, shortcuts
+- `app/src/main/java/com/avox/launcher/NotificationService.kt` — notification listener with swipe-to-dismiss
+- `app/src/main/java/com/avox/launcher/LauncherApp.kt` — custom font loading
+- `app/src/main/java/com/avox/launcher/IconPackResolver.kt` — icon pack discovery and resolution
 - `app/src/main/res/layout/activity_main.xml` — launcher layout
 - `app/src/main/res/layout/activity_settings.xml` — settings layout
 - `app/src/main/res/layout/item_app.xml` — app list row

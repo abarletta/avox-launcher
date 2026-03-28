@@ -1,4 +1,4 @@
-# A-Launcher Copilot Instructions
+# Avox Copilot Instructions
 
 ## Objective
 
@@ -40,13 +40,13 @@ For the first repository-aware turn, prefer reading the full core docs set above
 
 - One Android app module only: `app`
 - Kotlin + AppCompat + XML views
-- Main launcher activity: `app/src/main/java/com/alauncher/MainActivity.kt`
-- Settings activity: `app/src/main/java/com/alauncher/SettingsActivity.kt`
-- Custom sidebar view: `app/src/main/java/com/alauncher/AlphabetSidebar.kt`
-- App actions sheet: `app/src/main/java/com/alauncher/AppActionsSheet.kt`
-- Notification service: `app/src/main/java/com/alauncher/NotificationService.kt`
-- Icon pack helper: `app/src/main/java/com/alauncher/IconPackResolver.kt`
-- Application class: `app/src/main/java/com/alauncher/LauncherApp.kt`
+- Main launcher activity: `app/src/main/java/com/avox/launcher/MainActivity.kt`
+- Settings activity: `app/src/main/java/com/avox/launcher/SettingsActivity.kt`
+- Custom sidebar view: `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt`
+- App actions sheet: `app/src/main/java/com/avox/launcher/AppActionsSheet.kt`
+- Notification service: `app/src/main/java/com/avox/launcher/NotificationService.kt`
+- Icon pack helper: `app/src/main/java/com/avox/launcher/IconPackResolver.kt`
+- Application class: `app/src/main/java/com/avox/launcher/LauncherApp.kt`
 - Layouts in `app/src/main/res/layout/`
 - Strings and theme in `app/src/main/res/values/`
 - No fragments, no Compose, no Navigation Component, no dependency injection, no extra modules

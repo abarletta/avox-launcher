@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.alauncher"
+    namespace = "com.avox.launcher"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.alauncher"
+        applicationId = "com.avox.launcher"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

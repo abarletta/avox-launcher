@@ -17,6 +17,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "A-Launcher"
+rootProject.name = "Avox"
 include(":app")
 

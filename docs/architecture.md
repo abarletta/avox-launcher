@@ -11,7 +11,7 @@ Read this after `docs/index.md` before making code changes or answering architec
 
 ## High-Level System
 
-A-Launcher is a single-purpose Android home launcher.
+Avox is a single-purpose Android home launcher.
 
 The system must remain minimal:
 
