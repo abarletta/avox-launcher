@@ -44,6 +44,8 @@
     <string name="widget_add_slot_label">Add Widget Slot</string>
     <string name="widget_add_to_slot_label">Add Widget To This Slot</string>
     <string name="widget_slot_indicator_toggle_label">Show Slot Indicator</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
     <string name="animation_style_label">Sidebar Animation</string>
     <string name="wave_shift_label">Wave Shift</string>
     <string name="wave_scale_label">Wave Scale</string>

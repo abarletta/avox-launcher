@@ -1216,18 +1216,38 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val labels = providers.map { prov ->
-            val appLabel = try {
-                val appInfo = packageManager.getApplicationInfo(prov.provider.packageName, 0)
-                packageManager.getApplicationLabel(appInfo).toString()
-            } catch (_: Exception) { prov.provider.packageName }
-            "${prov.loadLabel(packageManager)} ($appLabel)"
-        }
+        val pickerEntries = providers
+            .map { provider ->
+                val appLabel = try {
+                    val appInfo = packageManager.getApplicationInfo(provider.provider.packageName, 0)
+                    packageManager.getApplicationLabel(appInfo).toString()
+                } catch (_: Exception) {
+                    provider.provider.packageName
+                }
+                val appIcon = try {
+                    val appInfo = packageManager.getApplicationInfo(provider.provider.packageName, 0)
+                    packageManager.getApplicationIcon(appInfo)
+                } catch (_: Exception) {
+                    packageManager.defaultActivityIcon
+                }
+                WidgetPickerEntry(
+                    providerInfo = provider,
+                    appLabel = appLabel,
+                    widgetLabel = provider.loadLabel(packageManager)?.toString().orEmpty()
+                        .ifBlank { provider.provider.className.substringAfterLast('.') },
+                    appIcon = appIcon
+                )
+            }
+            .sortedWith(
+                compareBy<WidgetPickerEntry> { it.appLabel.lowercase() }
+                    .thenBy { it.widgetLabel.lowercase() }
+            )
+        val adapter = WidgetPickerAdapter(layoutInflater, pickerEntries)
 
         AlertDialog.Builder(this)
             .setTitle(R.string.widget_pick_title)
-            .setItems(labels.toTypedArray()) { _, which ->
-                bindWidget(providers[which], targetSlotIndex)
+            .setAdapter(adapter) { _, which ->
+                adapter.getProviderInfo(which)?.let { bindWidget(it, targetSlotIndex) }
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
@@ -2318,6 +2338,13 @@ private data class FooterActionIconVisual(
     val glyph: String? = null
 )
 
+private data class WidgetPickerEntry(
+    val providerInfo: AppWidgetProviderInfo,
+    val appLabel: String,
+    val widgetLabel: String,
+    val appIcon: Drawable
+)
+
 val launcherNerdGlyphs = mapOf(
     "com.android.chrome" to "\uF268",
     "com.google.android.gm" to "\uF0E0",
@@ -2640,6 +2667,92 @@ private class FavoriteGridAdapter(
         } else {
             badgeView.visibility = View.GONE
             notifView.visibility = View.GONE
+        }
+
+        return view
+    }
+}
+
+private class WidgetPickerAdapter(
+    private val inflater: LayoutInflater,
+    entries: List<WidgetPickerEntry>
+) : BaseAdapter(), android.widget.ListAdapter {
+
+    private val displayItems: List<Any> = buildList {
+        var lastHeader: String? = null
+        entries.forEach { entry ->
+            if (entry.appLabel != lastHeader) {
+                add(entry.appLabel)
+                lastHeader = entry.appLabel
+            }
+            add(entry)
+        }
+    }
+
+    fun getProviderInfo(position: Int): AppWidgetProviderInfo? {
+        return (displayItems.getOrNull(position) as? WidgetPickerEntry)?.providerInfo
+    }
+
+    override fun getCount(): Int = displayItems.size
+
+    override fun getItem(position: Int): Any = displayItems[position]
+
+    override fun getItemId(position: Int): Long = position.toLong()
+
+    override fun getViewTypeCount(): Int = 2
+
+    override fun getItemViewType(position: Int): Int {
+        return if (displayItems[position] is String) 0 else 1
+    }
+
+    override fun areAllItemsEnabled(): Boolean = false
+
+    override fun isEnabled(position: Int): Boolean = displayItems[position] is WidgetPickerEntry
+
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val item = displayItems[position]
+        return if (item is String) {
+            val view = convertView ?: inflater.inflate(R.layout.item_widget_picker_header, parent, false)
+            (view as TextView).text = item
+            view
+        } else {
+            bindWidgetEntryView(convertView, parent, item as WidgetPickerEntry)
+        }
+    }
+
+    private fun bindWidgetEntryView(convertView: View?, parent: ViewGroup, entry: WidgetPickerEntry): View {
+        val view = convertView ?: inflater.inflate(R.layout.item_widget_picker, parent, false)
+        val previewView = view.findViewById<ImageView>(R.id.widgetPreview)
+        val widgetName = view.findViewById<TextView>(R.id.widgetName)
+        val widgetDetails = view.findViewById<TextView>(R.id.widgetDetails)
+        val context = parent.context
+        val densityDpi = context.resources.displayMetrics.densityDpi
+
+        val preview = try {
+            entry.providerInfo.loadPreviewImage(context, densityDpi)
+        } catch (_: Exception) {
+            null
+        }
+        val fallbackIcon = try {
+            entry.providerInfo.loadIcon(context, densityDpi)
+        } catch (_: Exception) {
+            null
+        }
+
+        previewView.setImageDrawable(preview ?: fallbackIcon ?: entry.appIcon)
+        widgetName.text = entry.widgetLabel
+
+        val minWidthDp = entry.providerInfo.minWidth
+        val minHeightDp = entry.providerInfo.minHeight
+        widgetDetails.text = if (minWidthDp > 0 && minHeightDp > 0) {
+            context.getString(
+                R.string.widget_picker_details_format,
+                entry.appLabel,
+                minWidthDp,
+                minHeightDp
+            )
+        } else {
+            context.getString(R.string.widget_picker_details_app_only, entry.appLabel)
         }
 
         return view
