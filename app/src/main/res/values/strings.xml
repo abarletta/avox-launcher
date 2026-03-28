@@ -85,7 +85,8 @@
     <string name="settings_backup_summary">Export launcher preferences to a JSON file, or restore them later. Widget placements stay local to this device.</string>
     <string name="settings_notifications_hint">Badge counts and notification text are configured here. Reopen notification access from this screen if updates stop.</string>
     <string name="settings_home_hint">Manage favorites, footer actions, and home screen entry points from here.</string>
-    <string name="settings_widgets_hint">Manage widget placement, order, size, and widget controls from here.</string>
+    <string name="settings_widgets_hint">Manage widget placement, space, order, size, and widget controls from here.</string>
+    <string name="widget_space_hint">This controls how much vertical space widgets may use on the home screen before the app list takes over.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
     <string name="hide_status_bar_label">Hide Status Bar</string>

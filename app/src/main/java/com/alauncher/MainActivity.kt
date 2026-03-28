@@ -1798,7 +1798,7 @@ private data class FooterActionIconVisual(
     val glyph: String? = null
 )
 
-private val launcherNerdGlyphs = mapOf(
+val launcherNerdGlyphs = mapOf(
     "com.android.chrome" to "\uF268",
     "com.google.android.gm" to "\uF0E0",
     "com.google.android.youtube" to "\uF167",
@@ -1835,7 +1835,7 @@ private val footerQuickActionNerdGlyphs = mapOf(
     LauncherQuickActions.SPEC_APPLICATION_SETTINGS to "\uF013"
 )
 
-private class NerdFontSpan(private val typeface: Typeface) : android.text.style.MetricAffectingSpan() {
+class NerdFontSpan(private val typeface: Typeface) : android.text.style.MetricAffectingSpan() {
     override fun updateDrawState(tp: android.text.TextPaint) {
         tp.typeface = typeface
     }

@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
@@ -18,6 +19,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -39,10 +41,23 @@ class SettingsSystemFragment : Fragment() {
         val icon: Drawable?
     )
 
+    private data class FavoriteRowStyle(
+        val iconMode: String,
+        val iconSizeDp: Int,
+        val iconPackResolver: IconPackResolver?,
+        val nerdTypeface: Typeface?
+    )
+
     private val notifOptions = listOf(
         MainActivity.NOTIF_MODE_COUNT to "Badge Count",
         MainActivity.NOTIF_MODE_TEXT to "Notification Text",
         MainActivity.NOTIF_MODE_NONE to "Off"
+    )
+
+    private val blockCountOptions = listOf(
+        2 to "2 (default)",
+        3 to "3",
+        4 to "4"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +156,16 @@ class SettingsSystemFragment : Fragment() {
         }
 
         if (showWidgets) {
+            setupSpinner(
+                view.findViewById(R.id.blockCountSpinner),
+                blockCountOptions.map { it.second },
+                blockCountOptions.indexOfFirst {
+                    it.first == prefs.getInt(MainActivity.PREF_BLOCK_COUNT, MainActivity.DEFAULT_BLOCK_COUNT)
+                }.coerceAtLeast(0)
+            ) { pos ->
+                prefs.edit().putInt(MainActivity.PREF_BLOCK_COUNT, blockCountOptions[pos].first).apply()
+            }
+
             view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
                 requireActivity().finish()
                 val intent = Intent(requireContext(), MainActivity::class.java).apply {
@@ -262,6 +287,7 @@ class SettingsSystemFragment : Fragment() {
         container.removeAllViews()
 
         val appsByPackage = loadLaunchableAppsWithIcons().associateBy { it.packageName }
+        val rowStyle = getFavoriteRowStyle(prefs)
         val density = resources.displayMetrics.density
 
         favorites.forEachIndexed { index, packageName ->
@@ -271,7 +297,7 @@ class SettingsSystemFragment : Fragment() {
             }
 
             val appRow = layoutInflater.inflate(R.layout.item_app, row, false)
-            bindLauncherRow(appRow, appsByPackage[packageName], packageName)
+            bindLauncherRow(appRow, appsByPackage[packageName], packageName, rowStyle)
             row.addView(
                 appRow,
                 LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
@@ -346,7 +372,7 @@ class SettingsSystemFragment : Fragment() {
 
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.favorites_add_label)
-            .setAdapter(FavoritesPickerAdapter(availableApps)) { _, which ->
+            .setAdapter(FavoritesPickerAdapter(availableApps, getFavoriteRowStyle(prefs))) { _, which ->
                 val updated = favorites.toMutableList().apply { add(availableApps[which].packageName) }
                 saveFavoritePackages(prefs, updated)
                 populateFavoritesList(rootView)
@@ -355,26 +381,112 @@ class SettingsSystemFragment : Fragment() {
             .show()
     }
 
-    private fun bindLauncherRow(view: View, app: LaunchableAppEntry?, packageName: String) {
+    private fun bindLauncherRow(
+        view: View,
+        app: LaunchableAppEntry?,
+        packageName: String,
+        rowStyle: FavoriteRowStyle
+    ) {
         val iconView = view.findViewById<ImageView>(R.id.appIcon)
         val badgeView = view.findViewById<TextView>(R.id.notifBadge)
         val nameView = view.findViewById<TextView>(R.id.appName)
         val detailView = view.findViewById<TextView>(R.id.notificationText)
+        val iconFrame = iconView.parent as? FrameLayout
+        val density = view.resources.displayMetrics.density
+        val iconSizePx = (rowStyle.iconSizeDp * density).toInt()
+        val showRegularIcon = rowStyle.iconMode == MainActivity.ICON_MODE_REGULAR
+        val displayIcon = if (showRegularIcon) {
+            rowStyle.iconPackResolver?.resolve(packageName)
+                ?: app?.icon
+                ?: requireContext().packageManager.defaultActivityIcon
+        } else {
+            null
+        }
 
         badgeView.visibility = View.GONE
         nameView.textSize = 16f
         detailView.textSize = 12f
 
+        if (showRegularIcon) {
+            iconView.setImageDrawable(displayIcon)
+            iconView.visibility = View.VISIBLE
+            iconFrame?.layoutParams?.width = iconSizePx
+            iconFrame?.layoutParams?.height = iconSizePx
+            iconView.layoutParams?.width = iconSizePx
+            iconView.layoutParams?.height = iconSizePx
+            iconFrame?.visibility = View.VISIBLE
+        } else {
+            iconView.setImageDrawable(null)
+            iconView.visibility = View.GONE
+            iconFrame?.layoutParams?.width = 0
+            iconFrame?.layoutParams?.height = 0
+            iconFrame?.visibility = View.GONE
+        }
+
         if (app != null) {
-            iconView.setImageDrawable(app.icon)
-            nameView.text = app.label
+            val nerdTypeface = rowStyle.nerdTypeface
+            val glyph = if (rowStyle.iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) {
+                launcherNerdGlyphs[packageName]
+            } else {
+                null
+            }
+            if (glyph != null) {
+                val separator = "\u2003"
+                val spannable = android.text.SpannableString("$glyph$separator${app.label}")
+                spannable.setSpan(
+                    NerdFontSpan(nerdTypeface!!),
+                    0,
+                    glyph.length,
+                    android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                val glyphScale = rowStyle.iconSizeDp.toFloat() / nameView.textSize.coerceAtLeast(1f)
+                spannable.setSpan(
+                    android.text.style.RelativeSizeSpan(glyphScale.coerceIn(0.5f, 3f)),
+                    0,
+                    glyph.length,
+                    android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                nameView.text = spannable
+            } else {
+                nameView.text = app.label
+            }
             detailView.visibility = View.GONE
         } else {
-            iconView.setImageDrawable(requireContext().packageManager.defaultActivityIcon)
             nameView.text = getString(R.string.footer_action_unavailable)
             detailView.text = packageName
             detailView.visibility = View.VISIBLE
         }
+    }
+
+    private fun getFavoriteRowStyle(prefs: android.content.SharedPreferences): FavoriteRowStyle {
+        val iconMode = prefs.getString(MainActivity.PREF_ICON_MODE, null)
+            ?: if (prefs.getBoolean(MainActivity.PREF_NERD_FONT, false)) MainActivity.ICON_MODE_NERD else MainActivity.ICON_MODE_REGULAR
+        val iconPack = prefs.getString(MainActivity.PREF_ICON_PACK, "") ?: ""
+        val iconPackResolver = if (iconMode == MainActivity.ICON_MODE_REGULAR && iconPack.isNotBlank()) {
+            IconPackResolver(requireContext()).apply { load(iconPack) }
+        } else {
+            null
+        }
+        val nerdTypeface = if (iconMode == MainActivity.ICON_MODE_NERD) {
+            val nerdFile = java.io.File(requireContext().filesDir, "nerd_font.ttf")
+            if (nerdFile.exists()) {
+                try {
+                    Typeface.createFromFile(nerdFile)
+                } catch (_: Exception) {
+                    null
+                }
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+        return FavoriteRowStyle(
+            iconMode = iconMode,
+            iconSizeDp = prefs.getInt(MainActivity.PREF_ICON_SIZE, MainActivity.DEFAULT_ICON_SIZE),
+            iconPackResolver = iconPackResolver,
+            nerdTypeface = nerdTypeface
+        )
     }
 
     private fun createMoveButton(
@@ -519,20 +631,20 @@ class SettingsSystemFragment : Fragment() {
             }
 
             // Move up/down buttons
-            val moveUpBtn = TextView(requireContext()).apply {
-                text = "▲"
-                setTextColor(if (index > 0) Color.WHITE else Color.parseColor("#444444"))
-                textSize = 14f
-                setPadding((8 * density).toInt(), (4 * density).toInt(), (8 * density).toInt(), (4 * density).toInt())
-                if (index > 0) setOnClickListener { swapWidgets(ids, index, index - 1, view) }
+            val moveUpBtn = createMoveButton(
+                label = "▲",
+                enabled = index > 0,
+                description = getString(R.string.move_up_label)
+            ) {
+                swapWidgets(ids, index, index - 1, view)
             }
             header.addView(moveUpBtn)
-            val moveDownBtn = TextView(requireContext()).apply {
-                text = "▼"
-                setTextColor(if (index < ids.size - 1) Color.WHITE else Color.parseColor("#444444"))
-                textSize = 14f
-                setPadding((8 * density).toInt(), (4 * density).toInt(), (8 * density).toInt(), (4 * density).toInt())
-                if (index < ids.size - 1) setOnClickListener { swapWidgets(ids, index, index + 1, view) }
+            val moveDownBtn = createMoveButton(
+                label = "▼",
+                enabled = index < ids.size - 1,
+                description = getString(R.string.move_down_label)
+            ) {
+                swapWidgets(ids, index, index + 1, view)
             }
             header.addView(moveDownBtn)
 
@@ -714,7 +826,8 @@ class SettingsSystemFragment : Fragment() {
     }
 
     private inner class FavoritesPickerAdapter(
-        private val apps: List<LaunchableAppEntry>
+        private val apps: List<LaunchableAppEntry>,
+        private val rowStyle: FavoriteRowStyle
     ) : BaseAdapter() {
 
         override fun getCount(): Int = apps.size
@@ -725,7 +838,7 @@ class SettingsSystemFragment : Fragment() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = convertView ?: layoutInflater.inflate(R.layout.item_app, parent, false)
-            bindLauncherRow(view, apps[position], apps[position].packageName)
+            bindLauncherRow(view, apps[position], apps[position].packageName, rowStyle)
             return view
         }
     }

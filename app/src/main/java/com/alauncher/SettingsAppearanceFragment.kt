@@ -38,12 +38,6 @@ class SettingsAppearanceFragment : Fragment() {
         "center" to "Center"
     )
 
-    private val blockCountOptions = listOf(
-        2 to "2 (default)",
-        3 to "3",
-        4 to "4"
-    )
-
     private val iconModeOptions = listOf(
         MainActivity.ICON_MODE_REGULAR to "Regular Icons",
         MainActivity.ICON_MODE_NERD to "Nerd Font Icons",
@@ -159,15 +153,6 @@ class SettingsAppearanceFragment : Fragment() {
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
-
-        // Block count
-        setupSpinner(
-            view.findViewById(R.id.blockCountSpinner), blockCountOptions.map { it.second },
-            blockCountOptions.indexOfFirst { it.first == prefs.getInt(MainActivity.PREF_BLOCK_COUNT, MainActivity.DEFAULT_BLOCK_COUNT) }
-                .coerceAtLeast(0)
-        ) { pos ->
-            prefs.edit().putInt(MainActivity.PREF_BLOCK_COUNT, blockCountOptions[pos].first).apply()
-        }
 
         // Icon mode
         val currentIconMode = prefs.getString(MainActivity.PREF_ICON_MODE, null)

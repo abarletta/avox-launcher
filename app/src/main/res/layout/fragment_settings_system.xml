@@ -188,6 +188,28 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="12dp" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/block_count_label"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_space_hint"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/blockCountSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
             <LinearLayout
                 android:id="@+id/widgetManageContainer"
                 android:layout_width="match_parent"
