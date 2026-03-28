@@ -13,7 +13,7 @@ Items are added without any particular order, and without consideration for thei
 | [E](#e--multi-column-favorites) | Multi‑Column Favorites | Not started | |
 | [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
 | [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
-| [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Not started | |
+| [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/a-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
 | [I](#i--multilangual-support) | Multilangual support | Not started | |  
 
 ---
@@ -147,7 +147,7 @@ Provide more advanced controls for favorites and widgets, such as:
 - Drag‑and‑drop reordering on the home screen should be considered an optional enhancement. As such, it should only be implemented after the core features of favorites management are completed and stable.
 
 ### Status
-Not started.
+Implemented in commit [7848c680a568476774f2f042daebdd82b8625e12](https://github.com/abarletta/a-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12).
 
 ## I - Multilangual support
 
