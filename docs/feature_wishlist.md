@@ -10,7 +10,7 @@ Items are added without any particular order, and without consideration for thei
 | [B](#b--access-settings-via-long-press-on-home-screen) | Access Settings via Long‑Press on Home Screen | Implemented | [216a002](https://github.com/abarletta/avox-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f) |
 | [C](#c--add-quick-actions-to-home-footer) | Add Quick Actions to Home Footer | Implemented | [5c69698](https://github.com/abarletta/avox-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a) |
 | [D](#d--multi-widget-support) | Multi‑Widget Support | Implemented | [9ec62de](https://github.com/abarletta/avox-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08) |
-| [E](#e--multi-column-favorites) | Multi‑Column Favorites | Not started | |
+| [E](#e--multi-column-favorites) | Multi‑Column Favorites | Implemented | [58e00f4](https://github.com/abarletta/avox-launcher/commit/58e00f42eaab89e0320644f19126b198581c01c3) |
 | [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
 | [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/avox-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
 | [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
@@ -79,17 +79,17 @@ Implemented in commit [9ec62de9dcd5aa615332aefec9ac2368d3d62b08](https://github.
 ## E — Multi‑Column Favorites
 
 ### Description
-Allow users to choose between single‑column or multi‑column layouts for the favorites section.
+Add multi-column layout for favorites slot in home screen.
 
 ### Implementation Details
 - Users choose between single‑column and multi‑column layouts.
 - Multi‑column layout should adapt to screen size and orientation.
 - Reasonable maximum columns (e.g., 2 on phones, 4 on tablets).
-- Even more maximum columns allowed in horizontal layout.
+- Increase maximum columns in horizontal layout (e.g., 4 on phones, 6 on tablets).
 - Once multi‑column favorites are implemented, set home screen layout to default to 2 columns in portrait and 4 columns in landscape. The current single-column layout will be available as an option in settings, but it will no longer be the default.
 
 ### Status
-Not started.
+Implemented in commit [58e00f42eaab89e0320644f19126b198581c01c3](https://github.com/abarletta/avox-launcher/commit/58e00f42eaab89e0320644f19126b198581c01c3).
 
 ## F — Better Support for Horizontal Layout
 
@@ -99,7 +99,7 @@ Horizontal layout exists but is below acceptable functionality.
 ### Implementation Details
 - Alphabet must be fully visible without overlapping.
 - Widgets must resize to remain fully visible and functional.
-- Additional improvements may include optimizing margins and auto‑adjusting favorites layout.
+- Additional improvements should include optimizing margins, multi-column widget slots (stacking widgets in same slot horizontally), and auto‑adjusting favorites layout.
 - Depends naturally on Feature E (multi‑column favorites).
 
 ### Status
@@ -187,22 +187,36 @@ This is a two-step implementation workflow:
   - Styles: full, outline, rounded, square.
   - Colors: dark, light, blue, red, green, yellow and violet. Use a palette that matches these colors but fits modern design trends (e.g., pastel or muted tones instead of pure colors).
   - App categories/icon types for each pack: 
-    - social media-
-    - phone
-    - message
-    - email
-    - shopping
-    - finance
-    - document
-    - calendar
-    - settings
-    - gamepad
-    - tools
-    - health
-    - travel
-    - music
-    - video
-    - fitness
-    - education
-    - gallery
-    - baby
+    1. phone icon
+    2. message icon
+    3. contacts icon
+    4. email icon
+    5. shopping cart icon
+    6. finance category
+    7. document icon
+    8. calendar icon
+    9. settings icon
+    10. gamepad icon
+    11. tools icon
+    12. health category
+    13. luggage icon
+    14. music category
+    15. movie icon
+    16. education category
+    17. gallery icon
+    18. baby icon
+    19. locker icon
+    20. parcel icon
+    21. password icon
+    22. web browser category
+    23. file manager category
+    24. camera icon
+    25. social media category
+    26. bolt icon
+    27. star icon
+    28. heart icon
+    29. cloud icon
+    30. eye icon
+    31. food icon
+
+
