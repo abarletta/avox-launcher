@@ -42,6 +42,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,6 +72,10 @@ class MainActivity : AppCompatActivity() {
     private var pendingProvider: ComponentName? = null
     private var pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
     private val activeWidgetSlots = mutableListOf<WidgetSlotSpec>()
+    private val pendingWidgetRestoreQueue = mutableListOf<PendingWidgetRestoreRequest>()
+    private val pendingWidgetRestoreActiveIndices = mutableMapOf<Int, Int>()
+    private var pendingWidgetRestoreRequest: PendingWidgetRestoreRequest? = null
+    private var widgetRestoreHadFailures = false
 
     // Widget state
     private var widgetsRestored = false
@@ -290,6 +295,8 @@ class MainActivity : AppCompatActivity() {
             refreshWidgetSizes()
         }
 
+        maybeStartPendingWidgetRestore()
+
         // Handle widget picker trigger from settings
         if (intent.getBooleanExtra(EXTRA_OPEN_WIDGET_PICKER, false)) {
             val targetSlotIndex = intent.getIntExtra(EXTRA_WIDGET_TARGET_SLOT_INDEX, WIDGET_TARGET_NEW_SLOT)
@@ -372,6 +379,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, R.string.widget_bind_denied, Toast.LENGTH_LONG).show()
                     pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
                     pendingProvider = null
+                    pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
+                    if (pendingWidgetRestoreRequest != null) {
+                        widgetRestoreHadFailures = true
+                        pendingWidgetRestoreRequest = null
+                        widgetContainer.post { continuePendingWidgetRestore() }
+                    }
                 }
             }
             REQUEST_CONFIGURE_WIDGET -> {
@@ -384,9 +397,15 @@ class MainActivity : AppCompatActivity() {
                         try { appWidgetHost.deleteAppWidgetId(resultWidgetId) } catch (_: Exception) {}
                     }
                     Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+                    if (pendingWidgetRestoreRequest != null) {
+                        widgetRestoreHadFailures = true
+                        pendingWidgetRestoreRequest = null
+                        widgetContainer.post { continuePendingWidgetRestore() }
+                    }
                 }
                 pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
                 pendingProvider = null
+                pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             }
         }
     }
@@ -1246,6 +1265,11 @@ class MainActivity : AppCompatActivity() {
             pendingProvider = null
             pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_not_supported, Toast.LENGTH_LONG).show()
+            if (pendingWidgetRestoreRequest != null) {
+                widgetRestoreHadFailures = true
+                pendingWidgetRestoreRequest = null
+                widgetContainer.post { continuePendingWidgetRestore() }
+            }
             return
         }
 
@@ -1258,6 +1282,11 @@ class MainActivity : AppCompatActivity() {
             pendingProvider = null
             pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+            if (pendingWidgetRestoreRequest != null) {
+                widgetRestoreHadFailures = true
+                pendingWidgetRestoreRequest = null
+                widgetContainer.post { continuePendingWidgetRestore() }
+            }
         } catch (e: SecurityException) {
             android.util.Log.w("Avox", "Widget bind denied: ${e.message}")
             try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
@@ -1265,6 +1294,11 @@ class MainActivity : AppCompatActivity() {
             pendingProvider = null
             pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+            if (pendingWidgetRestoreRequest != null) {
+                widgetRestoreHadFailures = true
+                pendingWidgetRestoreRequest = null
+                widgetContainer.post { continuePendingWidgetRestore() }
+            }
         }
     }
 
@@ -1291,17 +1325,39 @@ class MainActivity : AppCompatActivity() {
             android.util.Log.e("Avox", "finalizeWidget: getAppWidgetInfo returned null for $widgetId")
             appWidgetHost.deleteAppWidgetId(widgetId)
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+            if (pendingWidgetRestoreRequest != null) {
+                widgetRestoreHadFailures = true
+                pendingWidgetRestoreRequest = null
+                pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
+                pendingProvider = null
+                pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
+                widgetContainer.post { continuePendingWidgetRestore() }
+            }
             return
         }
         android.util.Log.d("Avox", "finalizeWidget: id=$widgetId provider=${info.provider}")
+        var shouldContinueWidgetRestore = false
         try {
+            val restoreRequest = pendingWidgetRestoreRequest
             val targetSlotIndex = pendingWidgetSlotIndex.takeIf { it in activeWidgetSlots.indices }
+            val resolvedSlotIndex: Int
             if (targetSlotIndex != null) {
                 val slot = activeWidgetSlots[targetSlotIndex]
                 slot.widgetIds.add(widgetId)
-                slot.activeIndex = slot.widgetIds.lastIndex
+                resolvedSlotIndex = targetSlotIndex
+                slot.activeIndex = pendingWidgetRestoreActiveIndices[resolvedSlotIndex]
+                    ?.coerceIn(0, slot.widgetIds.lastIndex)
+                    ?: slot.widgetIds.lastIndex
             } else {
                 activeWidgetSlots.add(WidgetSlotSpec(mutableListOf(widgetId)))
+                resolvedSlotIndex = activeWidgetSlots.lastIndex
+                activeWidgetSlots[resolvedSlotIndex].activeIndex = pendingWidgetRestoreActiveIndices[resolvedSlotIndex]
+                    ?.coerceIn(0, activeWidgetSlots[resolvedSlotIndex].widgetIds.lastIndex)
+                    ?: 0
+            }
+            if (restoreRequest != null) {
+                applyRestoredWidgetPrefs(widgetId, restoreRequest)
+                shouldContinueWidgetRestore = true
             }
             saveWidgetOrder()
             renderWidgetSlots()
@@ -1312,11 +1368,124 @@ class MainActivity : AppCompatActivity() {
             android.util.Log.e("Avox", "Failed to create widget view for $widgetId: ${e.message}", e)
             try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+            if (pendingWidgetRestoreRequest != null) {
+                widgetRestoreHadFailures = true
+                shouldContinueWidgetRestore = true
+            }
         } finally {
             pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
             pendingProvider = null
             pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
+            pendingWidgetRestoreRequest = null
+            if (shouldContinueWidgetRestore) {
+                widgetContainer.post { continuePendingWidgetRestore() }
+            }
         }
+    }
+
+    private fun applyRestoredWidgetPrefs(widgetId: Int, request: PendingWidgetRestoreRequest) {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val editor = prefs.edit()
+        if (request.heightPx != null && request.heightPx > 0) {
+            editor.putInt("widget_h_$widgetId", request.heightPx)
+        } else {
+            editor.remove("widget_h_$widgetId")
+        }
+        editor.putBoolean("widget_fw_$widgetId", request.fullWidth)
+        editor.apply()
+    }
+
+    private fun maybeStartPendingWidgetRestore() {
+        if (pendingWidgetRestoreRequest != null || pendingWidgetRestoreQueue.isNotEmpty()) return
+
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val planJson = prefs.getString(PREF_PENDING_WIDGET_RESTORE, null) ?: return
+        prefs.edit().remove(PREF_PENDING_WIDGET_RESTORE).apply()
+
+        val requests = parsePendingWidgetRestorePlan(planJson)
+        if (requests.isEmpty()) return
+
+        pendingWidgetRestoreQueue.clear()
+        pendingWidgetRestoreQueue.addAll(requests)
+        widgetRestoreHadFailures = false
+        widgetContainer.post { continuePendingWidgetRestore() }
+    }
+
+    private fun continuePendingWidgetRestore() {
+        if (pendingWidgetRestoreRequest != null || pendingWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            return
+        }
+
+        if (pendingWidgetRestoreQueue.isEmpty()) {
+            pendingWidgetRestoreActiveIndices.clear()
+            if (widgetRestoreHadFailures) {
+                widgetRestoreHadFailures = false
+                Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        val nextRequest = pendingWidgetRestoreQueue.removeAt(0)
+        val providerInfo = appWidgetManager.installedProviders.firstOrNull {
+            it.provider == nextRequest.provider
+        }
+        if (providerInfo == null) {
+            widgetRestoreHadFailures = true
+            continuePendingWidgetRestore()
+            return
+        }
+
+        pendingWidgetRestoreRequest = nextRequest
+        bindWidget(providerInfo, nextRequest.targetSlotIndex)
+    }
+
+    private fun parsePendingWidgetRestorePlan(planJson: String): List<PendingWidgetRestoreRequest> {
+        pendingWidgetRestoreActiveIndices.clear()
+
+        val requests = mutableListOf<PendingWidgetRestoreRequest>()
+        val root = try {
+            JSONObject(planJson)
+        } catch (_: Exception) {
+            return emptyList()
+        }
+        val slots = root.optJSONArray("slots") ?: return emptyList()
+
+        for (slotOffset in 0 until slots.length()) {
+            val slotJson = slots.optJSONObject(slotOffset) ?: continue
+            val slotIndex = slotJson.optInt("slotIndex", slotOffset).coerceAtLeast(0)
+            val activeIndex = slotJson.optInt("activeIndex", 0).coerceAtLeast(0)
+            pendingWidgetRestoreActiveIndices[slotIndex] = activeIndex
+            val widgetsJson = slotJson.optJSONArray("widgets") ?: continue
+            for (widgetOffset in 0 until widgetsJson.length()) {
+                val widgetJson = widgetsJson.optJSONObject(widgetOffset) ?: continue
+                val provider = parseWidgetProviderComponent(widgetJson) ?: continue
+                requests.add(
+                    PendingWidgetRestoreRequest(
+                        targetSlotIndex = slotIndex,
+                        provider = provider,
+                        heightPx = widgetJson.optInt("heightPx", -1).takeIf { it > 0 },
+                        fullWidth = widgetJson.optBoolean("fullWidth", false)
+                    )
+                )
+            }
+        }
+
+        return requests
+    }
+
+    private fun parseWidgetProviderComponent(widgetJson: JSONObject): ComponentName? {
+        val flattened = widgetJson.optString("provider", "")
+        if (flattened.isNotBlank()) {
+            ComponentName.unflattenFromString(flattened)?.let { return it }
+        }
+
+        val packageName = widgetJson.optString("providerPackage", "")
+        val className = widgetJson.optString("providerClass", "")
+        if (packageName.isNotBlank() && className.isNotBlank()) {
+            return ComponentName(packageName, className)
+        }
+
+        return null
     }
 
     private fun createWidgetSlotWrapper(slotState: WidgetSlotSpec): FrameLayout {
@@ -1989,6 +2158,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private data class PendingWidgetRestoreRequest(
+        val targetSlotIndex: Int,
+        val provider: ComponentName,
+        val heightPx: Int?,
+        val fullWidth: Boolean
+    )
+
     companion object {
         private const val WIDGET_SLOT_FORMAT_PREFIX = "slots:"
         private const val TAG_WIDGET_SLOT_CARD = "widget_slot_card"
@@ -2005,6 +2181,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_WIDGET_ORDER = "widget_order"
         const val PREF_WIDGET_IDS_OLD = "widget_ids"
         const val PREF_WIDGETS_DIRTY = "widgets_dirty"
+        const val PREF_PENDING_WIDGET_RESTORE = "pending_widget_restore"
         const val PREF_SHOW_WIDGET_SLOT_INDICATOR = "show_widget_slot_indicator"
         const val PREF_ANIM_STYLE = "anim_style"
         const val PREF_WAVE_SHIFT = "wave_shift"

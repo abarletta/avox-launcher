@@ -1,5 +1,6 @@
 package com.avox.launcher
 
+import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONTokener
 
 class SettingsMenuFragment : Fragment() {
 
@@ -27,7 +29,8 @@ class SettingsMenuFragment : Fragment() {
 
     private data class ParsedSettingsBackup(
         val version: Int,
-        val preferences: LinkedHashMap<String, BackupPreference>
+        val preferences: LinkedHashMap<String, BackupPreference>,
+        val widgetRestorePlanJson: String? = null
     )
 
     private val backupDocumentLauncher = registerForActivityResult(
@@ -76,7 +79,7 @@ class SettingsMenuFragment : Fragment() {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
         try {
             val payload = buildSettingsBackupJson(prefs).toString(2)
-            requireContext().contentResolver.openOutputStream(uri)?.bufferedWriter(Charsets.UTF_8)?.use { writer ->
+            requireContext().contentResolver.openOutputStream(uri, "wt")?.bufferedWriter(Charsets.UTF_8)?.use { writer ->
                 writer.write(payload)
             } ?: error("Unable to open backup destination")
             Toast.makeText(requireContext(), R.string.backup_settings_success, Toast.LENGTH_SHORT).show()
@@ -119,7 +122,14 @@ class SettingsMenuFragment : Fragment() {
         try {
             applySettingsBackup(parsedBackup)
             Toast.makeText(requireContext(), R.string.restore_settings_success, Toast.LENGTH_SHORT).show()
-            requireActivity().recreate()
+            if (!parsedBackup.widgetRestorePlanJson.isNullOrBlank()) {
+                startActivity(Intent(requireContext(), MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                })
+                requireActivity().finish()
+            } else {
+                requireActivity().recreate()
+            }
         } catch (_: Exception) {
             Toast.makeText(requireContext(), R.string.restore_settings_failed, Toast.LENGTH_SHORT).show()
         }
@@ -169,13 +179,88 @@ class SettingsMenuFragment : Fragment() {
             .put("format", SETTINGS_BACKUP_FORMAT)
             .put("version", SETTINGS_BACKUP_VERSION)
             .put("preferences", preferencesJson)
+            .apply {
+                buildWidgetMetadataJson(prefs)?.let { put("widgets", it) }
+            }
+    }
+
+    private fun buildWidgetMetadataJson(prefs: SharedPreferences): JSONObject? {
+        val serializedOrder = prefs.getString(MainActivity.PREF_WIDGET_ORDER, null)
+        val slots = MainActivity.parseWidgetSlots(serializedOrder)
+        if (slots.isEmpty()) return null
+
+        val appWidgetManager = AppWidgetManager.getInstance(requireContext())
+        val packageManager = requireContext().packageManager
+        val slotsJson = JSONArray()
+
+        slots.forEachIndexed { slotIndex, slot ->
+            if (slot.widgetIds.isEmpty()) return@forEachIndexed
+
+            val widgetsJson = JSONArray()
+            val safeActiveIndex = slot.activeIndex.coerceIn(0, slot.widgetIds.lastIndex)
+            slot.widgetIds.forEachIndexed { widgetIndex, widgetId ->
+                val info = appWidgetManager.getAppWidgetInfo(widgetId)
+                val widgetJson = JSONObject()
+                    .put("appWidgetId", widgetId)
+                    .put("isActive", widgetIndex == safeActiveIndex)
+                    .put("fullWidth", prefs.getBoolean("widget_fw_$widgetId", false))
+
+                val heightPx = prefs.getInt("widget_h_$widgetId", -1)
+                if (heightPx > 0) {
+                    widgetJson.put("heightPx", heightPx)
+                }
+
+                if (info != null) {
+                    widgetJson.put("provider", info.provider.flattenToString())
+                    widgetJson.put("providerPackage", info.provider.packageName)
+                    widgetJson.put("providerClass", info.provider.className)
+                    val widgetLabel = info.loadLabel(packageManager)?.toString().orEmpty()
+                    if (widgetLabel.isNotBlank()) {
+                        widgetJson.put("label", widgetLabel)
+                    }
+                    val providerAppLabel = try {
+                        val appInfo = packageManager.getApplicationInfo(info.provider.packageName, 0)
+                        packageManager.getApplicationLabel(appInfo)?.toString()
+                    } catch (_: Exception) {
+                        null
+                    }
+                    if (!providerAppLabel.isNullOrBlank()) {
+                        widgetJson.put("providerApp", providerAppLabel)
+                    }
+                } else {
+                    widgetJson.put("provider", JSONObject.NULL)
+                    widgetJson.put("bindingState", "missing")
+                }
+
+                widgetsJson.put(widgetJson)
+            }
+
+            slotsJson.put(
+                JSONObject()
+                    .put("slotIndex", slotIndex)
+                    .put("activeIndex", safeActiveIndex)
+                    .put("widgets", widgetsJson)
+            )
+        }
+
+        if (slotsJson.length() == 0) return null
+
+        return JSONObject()
+            .put("serializedOrder", serializedOrder ?: "")
+            .put("slots", slotsJson)
     }
 
     private fun loadSettingsBackup(uri: Uri): ParsedSettingsBackup {
         val content = requireContext().contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use {
             it.readText()
         } ?: error("Unable to open restore source")
-        return parseSettingsBackup(JSONObject(content))
+        return parseSettingsBackup(parseBackupRootObject(content))
+    }
+
+    private fun parseBackupRootObject(content: String): JSONObject {
+        val parsed = JSONTokener(content).nextValue() as? JSONObject
+            ?: throw IllegalArgumentException("Backup root must be a JSON object")
+        return parsed
     }
 
     private fun parseSettingsBackup(root: JSONObject): ParsedSettingsBackup {
@@ -199,6 +284,9 @@ class SettingsMenuFragment : Fragment() {
 
         val preferencesJson = root.optJSONObject("preferences")
             ?: throw IllegalArgumentException("Missing preferences payload")
+        val widgetRestorePlanJson = root.optJSONObject("widgets")
+            ?.takeIf { widgets -> (widgets.optJSONArray("slots")?.length() ?: 0) > 0 }
+            ?.toString()
         val parsedPreferences = linkedMapOf<String, BackupPreference>()
 
         val preferenceKeys = mutableListOf<String>()
@@ -227,19 +315,26 @@ class SettingsMenuFragment : Fragment() {
 
         return ParsedSettingsBackup(
             version = version,
-            preferences = LinkedHashMap(parsedPreferences)
+            preferences = LinkedHashMap(parsedPreferences),
+            widgetRestorePlanJson = widgetRestorePlanJson
         )
     }
 
     private fun applySettingsBackup(parsedBackup: ParsedSettingsBackup) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val editor = prefs.edit()
+        val hasWidgetRestorePlan = !parsedBackup.widgetRestorePlanJson.isNullOrBlank()
+        val backupIncludesWidgetState = hasWidgetRestorePlan || parsedBackup.preferences.keys.any(::isWidgetPreferenceKey)
 
         prefs.all.keys
             .filter(::isRestorablePreferenceKey)
+            .filter { backupIncludesWidgetState || !isWidgetPreferenceKey(it) }
             .forEach { editor.remove(it) }
 
         parsedBackup.preferences.forEach { (key, entry) ->
+            if (hasWidgetRestorePlan && isWidgetPreferenceKey(key)) {
+                return@forEach
+            }
             when (entry.type) {
                 "boolean" -> editor.putBoolean(key, entry.value as Boolean)
                 "int" -> editor.putInt(key, entry.value as Int)
@@ -253,6 +348,16 @@ class SettingsMenuFragment : Fragment() {
                 }
                 else -> throw IllegalArgumentException("Unsupported backup value type")
             }
+        }
+
+        if (hasWidgetRestorePlan) {
+            editor.putString(MainActivity.PREF_PENDING_WIDGET_RESTORE, parsedBackup.widgetRestorePlanJson)
+        } else {
+            editor.remove(MainActivity.PREF_PENDING_WIDGET_RESTORE)
+        }
+
+        if (backupIncludesWidgetState) {
+            editor.putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
         }
 
         if (!editor.commit()) {
@@ -351,12 +456,16 @@ class SettingsMenuFragment : Fragment() {
         return getString(R.string.restore_settings_selected_file)
     }
 
+    private fun isWidgetPreferenceKey(key: String): Boolean {
+        return key == MainActivity.PREF_WIDGET_ORDER ||
+            key.startsWith("widget_h_") ||
+            key.startsWith("widget_fw_")
+    }
+
     private fun isRestorablePreferenceKey(key: String): Boolean {
-        return key != MainActivity.PREF_WIDGET_ORDER &&
-            key != MainActivity.PREF_WIDGET_IDS_OLD &&
-            key != MainActivity.PREF_WIDGETS_DIRTY &&
-            !key.startsWith("widget_h_") &&
-            !key.startsWith("widget_fw_")
+        return key != MainActivity.PREF_WIDGET_IDS_OLD &&
+            key != MainActivity.PREF_PENDING_WIDGET_RESTORE &&
+            key != MainActivity.PREF_WIDGETS_DIRTY
     }
 
     companion object {
