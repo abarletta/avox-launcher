@@ -65,7 +65,8 @@ class MainActivity : AppCompatActivity() {
     private var isWidgetEditMode = false
     private var pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
     private var pendingProvider: ComponentName? = null
-    private var activeWidgetIds = mutableListOf<Int>()
+    private var pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
+    private val activeWidgetSlots = mutableListOf<WidgetSlotSpec>()
 
     // Widget state
     private var widgetsRestored = false
@@ -296,9 +297,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Handle widget picker trigger from settings
-        if (intent.getBooleanExtra("open_widget_picker", false)) {
-            intent.removeExtra("open_widget_picker")
-            widgetContainer.post { selectWidget() }
+        if (intent.getBooleanExtra(EXTRA_OPEN_WIDGET_PICKER, false)) {
+            val targetSlotIndex = intent.getIntExtra(EXTRA_WIDGET_TARGET_SLOT_INDEX, WIDGET_TARGET_NEW_SLOT)
+            intent.removeExtra(EXTRA_OPEN_WIDGET_PICKER)
+            intent.removeExtra(EXTRA_WIDGET_TARGET_SLOT_INDEX)
+            widgetContainer.post {
+                selectWidget(targetSlotIndex.takeIf { it != WIDGET_TARGET_NEW_SLOT })
+            }
         }
 
         // Finalize any widget deferred from onActivityResult
@@ -1091,7 +1096,7 @@ class MainActivity : AppCompatActivity() {
 
     // --- Widgets ---
 
-    fun selectWidget() {
+    fun selectWidget(targetSlotIndex: Int? = null) {
         val providers = appWidgetManager.installedProviders
         if (providers.isEmpty()) {
             Toast.makeText(this, R.string.widget_no_providers, Toast.LENGTH_SHORT).show()
@@ -1109,16 +1114,17 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(R.string.widget_pick_title)
             .setItems(labels.toTypedArray()) { _, which ->
-                bindWidget(providers[which])
+                bindWidget(providers[which], targetSlotIndex)
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
-    private fun bindWidget(provider: AppWidgetProviderInfo) {
+    private fun bindWidget(provider: AppWidgetProviderInfo, targetSlotIndex: Int?) {
         val widgetId = appWidgetHost.allocateAppWidgetId()
         val bindOptions = buildWidgetOptions(getDefaultWidgetHeightPx(provider))
         android.util.Log.d("ALauncher", "bindWidget: allocated id=$widgetId provider=${provider.provider}")
+        pendingWidgetSlotIndex = targetSlotIndex?.takeIf { it in activeWidgetSlots.indices } ?: WIDGET_TARGET_NEW_SLOT
 
         // If already allowed, proceed directly
         val allowed = appWidgetManager.bindAppWidgetIdIfAllowed(widgetId, provider.provider, bindOptions)
@@ -1144,6 +1150,7 @@ class MainActivity : AppCompatActivity() {
             try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
             pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
             pendingProvider = null
+            pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_not_supported, Toast.LENGTH_LONG).show()
             return
         }
@@ -1155,12 +1162,14 @@ class MainActivity : AppCompatActivity() {
             try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
             pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
             pendingProvider = null
+            pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
         } catch (e: SecurityException) {
             android.util.Log.w("ALauncher", "Widget bind denied: ${e.message}")
             try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
             pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
             pendingProvider = null
+            pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
             Toast.makeText(this, R.string.widget_bind_failed, Toast.LENGTH_SHORT).show()
         }
     }
@@ -1192,10 +1201,16 @@ class MainActivity : AppCompatActivity() {
         }
         android.util.Log.d("ALauncher", "finalizeWidget: id=$widgetId provider=${info.provider}")
         try {
-            val wrapper = createWidgetWrapper(widgetId, info)
-            widgetContainer.addView(wrapper)
-            activeWidgetIds.add(widgetId)
+            val targetSlotIndex = pendingWidgetSlotIndex.takeIf { it in activeWidgetSlots.indices }
+            if (targetSlotIndex != null) {
+                val slot = activeWidgetSlots[targetSlotIndex]
+                slot.widgetIds.add(widgetId)
+                slot.activeIndex = slot.widgetIds.lastIndex
+            } else {
+                activeWidgetSlots.add(WidgetSlotSpec(mutableListOf(widgetId)))
+            }
             saveWidgetOrder()
+            renderWidgetSlots()
             // Re-register all views for updates after adding a new one
             try { appWidgetHost.startListening() } catch (_: Exception) {}
             updateListPaddingForWidgets()
@@ -1206,13 +1221,14 @@ class MainActivity : AppCompatActivity() {
         } finally {
             pendingWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
             pendingProvider = null
+            pendingWidgetSlotIndex = WIDGET_TARGET_NEW_SLOT
         }
     }
 
-    private fun createWidgetWrapper(widgetId: Int, info: AppWidgetProviderInfo): FrameLayout {
+    private fun createWidgetSlotWrapper(slotState: WidgetSlotSpec): FrameLayout {
         val density = resources.displayMetrics.density
         val wrapper = WidgetFrame(this)
-        wrapper.tag = widgetId
+        wrapper.tag = slotState
         wrapper.isClickable = true
         wrapper.isLongClickable = true
         wrapper.setOnLongClickListener {
@@ -1221,14 +1237,50 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        // Create the host view; createView() already calls setAppWidget() internally.
-        val hostView = appWidgetHost.createView(widgetHostContext, widgetId, info)
-            ?: throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
-        hostView.setPadding(0, 0, 0, 0)
+        val cardContainer = FrameLayout(this).apply {
+            tag = TAG_WIDGET_SLOT_CARD
+        }
+        val hostContainer = FrameLayout(this).apply {
+            tag = TAG_WIDGET_HOST_CONTAINER
+        }
+        for ((index, widgetId) in slotState.widgetIds.withIndex()) {
+            val info = appWidgetManager.getAppWidgetInfo(widgetId)
+                ?: throw RuntimeException("Missing provider info for $widgetId")
+            val hostView = appWidgetHost.createView(widgetHostContext, widgetId, info)
+                ?: throw RuntimeException("AppWidgetHost.createView returned null for $widgetId")
+            hostView.setPadding(0, 0, 0, 0)
+            hostView.visibility = if (index == slotState.activeIndex) View.VISIBLE else View.GONE
+            hostContainer.addView(hostView, FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            ))
+        }
 
-        wrapper.addView(hostView, FrameLayout.LayoutParams(
+        cardContainer.addView(hostContainer, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
         ))
+        wrapper.addView(cardContainer, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.TOP
+        })
+
+        val indicatorView = TextView(this).apply {
+            setTextColor(Color.WHITE)
+            textSize = 11f
+            gravity = Gravity.CENTER
+            alpha = 0.9f
+            visibility = View.GONE
+            tag = TAG_WIDGET_SLOT_INDICATOR
+        }
+        wrapper.addView(indicatorView, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            bottomMargin = (2 * density).toInt()
+        })
 
         // Remove button (edit mode)
         val removeBtn = ImageButton(this).apply {
@@ -1238,13 +1290,13 @@ class MainActivity : AppCompatActivity() {
             setPadding((4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt())
             visibility = View.GONE
             tag = "remove"
-            setOnClickListener { removeWidget(widgetId) }
+            setOnClickListener { removeActiveWidget(slotState) }
         }
         val removeLp = FrameLayout.LayoutParams((28 * density).toInt(), (28 * density).toInt()).apply {
             gravity = Gravity.TOP or Gravity.END
             setMargins((4 * density).toInt(), (4 * density).toInt(), (4 * density).toInt(), 0)
         }
-        wrapper.addView(removeBtn, removeLp)
+        cardContainer.addView(removeBtn, removeLp)
 
         val settingsBtn = ImageButton(this).apply {
             setImageResource(R.drawable.ic_settings)
@@ -1263,7 +1315,7 @@ class MainActivity : AppCompatActivity() {
             gravity = Gravity.TOP or Gravity.END
             setMargins((4 * density).toInt(), (4 * density).toInt(), (36 * density).toInt(), 0)
         }
-        wrapper.addView(settingsBtn, settingsLp)
+        cardContainer.addView(settingsBtn, settingsLp)
 
         // Resize handle (edit mode)
         val resizeHandle = View(this).apply {
@@ -1284,37 +1336,54 @@ class MainActivity : AppCompatActivity() {
         val resizeLp = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, (10 * density).toInt()
         ).apply { gravity = Gravity.BOTTOM }
-        wrapper.addView(resizeHandle, resizeLp)
+        cardContainer.addView(resizeHandle, resizeLp)
 
         // Touch handling for resize handle
         resizeHandle.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    android.util.Log.d("ALauncher", "resize ACTION_DOWN widget=$widgetId y=${event.rawY}")
+                    android.util.Log.d(
+                        "ALauncher",
+                        "resize ACTION_DOWN widget=${slotState.activeWidgetId()} y=${event.rawY}"
+                    )
                     resizingWrapper = wrapper
                     resizeStartY = event.rawY
-                    resizeStartHeight = wrapper.height
+                    resizeStartHeight = getWidgetCardView(wrapper)?.height ?: wrapper.height
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (resizingWrapper == wrapper) {
-                        android.util.Log.d("ALauncher", "resize ACTION_MOVE widget=$widgetId y=${event.rawY}")
+                        val activeWidgetId = slotState.activeWidgetId() ?: return@setOnTouchListener true
+                        android.util.Log.d("ALauncher", "resize ACTION_MOVE widget=$activeWidgetId y=${event.rawY}")
                         val delta = (event.rawY - resizeStartY).toInt()
                         val minH = (MIN_WIDGET_HEIGHT_DP * density).toInt()
                         val maxH = (MAX_WIDGET_HEIGHT_DP * density).toInt()
                         val newHeight = (resizeStartHeight + delta).coerceIn(minH, maxH)
-                        val lp = wrapper.layoutParams as LinearLayout.LayoutParams
-                        lp.height = newHeight
-                        wrapper.layoutParams = lp
-                        applyWidgetSize(hostView, widgetId, newHeight)
+                        getWidgetCardView(wrapper)?.let { cardView ->
+                            val cardLp = (cardView.layoutParams as? FrameLayout.LayoutParams)
+                                ?: FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, newHeight)
+                            cardLp.height = newHeight
+                            cardLp.gravity = Gravity.TOP
+                            cardView.layoutParams = cardLp
+                        }
+                        val wrapperLp = wrapper.layoutParams as LinearLayout.LayoutParams
+                        wrapperLp.height = newHeight + getWidgetSlotIndicatorExtraHeightPx(slotState)
+                        wrapper.layoutParams = wrapperLp
+                        val activeHostView = getActiveWidgetHostView(wrapper, slotState)
+                        if (activeHostView != null) {
+                            applyWidgetSize(activeHostView, activeWidgetId, newHeight)
+                        }
                         updateListPaddingForWidgets()
                     }
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    android.util.Log.d("ALauncher", "resize ACTION_UP widget=$widgetId height=${wrapper.height}")
+                    val activeWidgetId = slotState.activeWidgetId()
+                    android.util.Log.d("ALauncher", "resize ACTION_UP widget=$activeWidgetId height=${wrapper.height}")
                     if (resizingWrapper == wrapper) {
-                        setWidgetHeight(widgetId, wrapper.height)
+                        if (activeWidgetId != null) {
+                            setWidgetHeight(activeWidgetId, getWidgetCardView(wrapper)?.height ?: wrapper.height)
+                        }
                         resizingWrapper = null
                     }
                     true
@@ -1326,22 +1395,11 @@ class MainActivity : AppCompatActivity() {
         // Ensure overlay controls receive touch events in edit mode
         removeBtn.isClickable = true
         resizeHandle.isClickable = true
-
-        // Set height
-        val savedHeight = getWidgetHeight(widgetId)
-        val heightPx = if (savedHeight > 0) savedHeight
-                        else (info.minHeight * density).toInt().coerceAtLeast((MIN_WIDGET_HEIGHT_DP * density).toInt())
-        val wrapperParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, heightPx
-        ).apply {
-            bottomMargin = (4 * density).toInt()
-            if (isWidgetFullWidth(widgetId)) {
-                marginStart = -widgetContainer.paddingStart
-            }
-        }
-        wrapper.layoutParams = wrapperParams
-
-        applyWidgetSize(hostView, widgetId, heightPx)
+        wrapper.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        updateWidgetSlotView(wrapper, slotState)
 
         return wrapper
     }
@@ -1350,13 +1408,18 @@ class MainActivity : AppCompatActivity() {
         isWidgetEditMode = true
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
-            if (child.tag is Int) {
+            if (child.tag is WidgetSlotSpec) {
                 child.findViewWithTag<View>("remove")?.visibility = View.VISIBLE
                 child.findViewWithTag<View>("settings")?.visibility = View.VISIBLE
                 child.findViewWithTag<View>("resize")?.visibility = View.VISIBLE
             }
         }
-        // Add "+" button at end
+        addWidgetEditButton()
+    }
+
+    private fun addWidgetEditButton() {
+        val existing = widgetContainer.findViewWithTag<View>(TAG_ADD_WIDGET_BUTTON)
+        if (existing != null) return
         val density = resources.displayMetrics.density
         val addBtn = TextView(this).apply {
             text = "+ ${getString(R.string.add_widget)}"
@@ -1365,7 +1428,7 @@ class MainActivity : AppCompatActivity() {
             gravity = Gravity.CENTER
             setBackgroundColor(Color.parseColor("#44FFFFFF"))
             setPadding(0, (12 * density).toInt(), 0, (12 * density).toInt())
-            tag = "add_widget_btn"
+            tag = TAG_ADD_WIDGET_BUTTON
             setOnClickListener { selectWidget() }
         }
         widgetContainer.addView(addBtn, LinearLayout.LayoutParams(
@@ -1377,42 +1440,34 @@ class MainActivity : AppCompatActivity() {
         isWidgetEditMode = false
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
-            if (child.tag is Int) {
+            if (child.tag is WidgetSlotSpec) {
                 child.findViewWithTag<View>("remove")?.visibility = View.GONE
                 child.findViewWithTag<View>("settings")?.visibility = View.GONE
                 child.findViewWithTag<View>("resize")?.visibility = View.GONE
             }
         }
         // Remove the add button
-        val addBtn = widgetContainer.findViewWithTag<View>("add_widget_btn")
+        val addBtn = widgetContainer.findViewWithTag<View>(TAG_ADD_WIDGET_BUTTON)
         if (addBtn != null) widgetContainer.removeView(addBtn)
     }
 
-    private fun removeWidget(widgetId: Int) {
-        appWidgetHost.deleteAppWidgetId(widgetId)
-        activeWidgetIds.remove(widgetId)
-        // Remove wrapper from container
-        for (i in 0 until widgetContainer.childCount) {
-            val child = widgetContainer.getChildAt(i)
-            if (child.tag == widgetId) {
-                widgetContainer.removeViewAt(i)
-                break
-            }
+    private fun removeActiveWidget(slotState: WidgetSlotSpec) {
+        val widgetId = slotState.activeWidgetId() ?: return
+        try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
+        slotState.widgetIds.remove(widgetId)
+        if (slotState.widgetIds.isEmpty()) {
+            activeWidgetSlots.removeAll { it === slotState }
+        } else {
+            slotState.activeIndex = slotState.activeIndex.coerceAtMost(slotState.widgetIds.lastIndex)
         }
         clearWidgetHeight(widgetId)
         saveWidgetOrder()
-        updateListPaddingForWidgets()
+        renderWidgetSlots()
     }
 
     private fun saveWidgetOrder() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        prefs.edit().putString(PREF_WIDGET_ORDER, activeWidgetIds.joinToString(",")).apply()
-    }
-
-    private fun getWidgetOrder(): List<Int> {
-        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-        val str = prefs.getString(PREF_WIDGET_ORDER, "") ?: ""
-        return if (str.isBlank()) emptyList() else str.split(",").mapNotNull { it.toIntOrNull() }
+        prefs.edit().putString(PREF_WIDGET_ORDER, serializeWidgetSlots(activeWidgetSlots)).apply()
     }
 
     private fun getWidgetHeight(widgetId: Int): Int {
@@ -1442,56 +1497,165 @@ class MainActivity : AppCompatActivity() {
 
     private fun restoreWidgets() {
         widgetContainer.removeAllViews()
-        activeWidgetIds.clear()
+        activeWidgetSlots.clear()
         // Migrate from old StringSet format if needed
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val orderStr = prefs.getString(PREF_WIDGET_ORDER, null)
-        val ids: List<Int> = if (orderStr != null && orderStr.isNotBlank()) {
-            orderStr.split(",").mapNotNull { it.toIntOrNull() }
+        val parsedSlots: MutableList<WidgetSlotSpec> = if (orderStr != null && orderStr.isNotBlank()) {
+            parseWidgetSlots(orderStr)
         } else {
             // Try migrating from old format
             val oldSet = prefs.getStringSet(PREF_WIDGET_IDS_OLD, null)
             if (oldSet != null) {
-                val migrated = oldSet.mapNotNull { it.toIntOrNull() }
-                prefs.edit().putString(PREF_WIDGET_ORDER, migrated.joinToString(","))
-                    .remove(PREF_WIDGET_IDS_OLD).apply()
-                migrated
-            } else emptyList()
-        }
-
-        for (widgetId in ids) {
-            val info = appWidgetManager.getAppWidgetInfo(widgetId)
-            if (info != null) {
-                val wrapper = createWidgetWrapper(widgetId, info)
-                widgetContainer.addView(wrapper)
-                activeWidgetIds.add(widgetId)
+                oldSet.mapNotNull { it.toIntOrNull() }
+                    .distinct()
+                    .mapTo(mutableListOf()) { WidgetSlotSpec(mutableListOf(it)) }
             } else {
-                appWidgetHost.deleteAppWidgetId(widgetId)
+                mutableListOf()
             }
         }
-        // Clean up stale IDs
-        if (activeWidgetIds.size != ids.size) saveWidgetOrder()
+
+        val restoredSlots = mutableListOf<WidgetSlotSpec>()
+        parsedSlots.forEach { slot ->
+            val validIds = mutableListOf<Int>()
+            slot.widgetIds.forEach { widgetId ->
+                if (appWidgetManager.getAppWidgetInfo(widgetId) != null) {
+                    validIds.add(widgetId)
+                } else {
+                    try { appWidgetHost.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
+                    clearWidgetHeight(widgetId)
+                }
+            }
+            if (validIds.isNotEmpty()) {
+                restoredSlots.add(
+                    WidgetSlotSpec(
+                        validIds,
+                        slot.activeIndex.coerceIn(0, validIds.lastIndex)
+                    )
+                )
+            }
+        }
+        activeWidgetSlots.addAll(restoredSlots)
+        val serializedSlots = serializeWidgetSlots(restoredSlots)
+        if (serializedSlots != (orderStr ?: "") || prefs.contains(PREF_WIDGET_IDS_OLD)) {
+            prefs.edit()
+                .putString(PREF_WIDGET_ORDER, serializedSlots)
+                .remove(PREF_WIDGET_IDS_OLD)
+                .apply()
+        }
+        renderWidgetSlots()
         // Re-register all views for updates
         try { appWidgetHost.startListening() } catch (_: Exception) {}
-        updateListPaddingForWidgets()
     }
 
     private fun refreshWidgetSizes() {
         for (i in 0 until widgetContainer.childCount) {
             val child = widgetContainer.getChildAt(i)
-            val wId = child.tag as? Int ?: continue
-            val savedHeight = getWidgetHeight(wId)
-            if (savedHeight > 0) {
-                val lp = child.layoutParams as LinearLayout.LayoutParams
-                lp.height = savedHeight
-                child.layoutParams = lp
-                val hostView = (child as? ViewGroup)?.getChildAt(0) as? AppWidgetHostView
-                if (hostView != null) {
-                    applyWidgetSize(hostView, wId, savedHeight)
-                }
-            }
+            val slotState = child.tag as? WidgetSlotSpec ?: continue
+            updateWidgetSlotView(child as FrameLayout, slotState)
         }
         updateListPaddingForWidgets()
+    }
+
+    private fun renderWidgetSlots() {
+        widgetContainer.removeAllViews()
+        activeWidgetSlots.removeAll { it.widgetIds.isEmpty() }
+        activeWidgetSlots.forEach { slotState ->
+            slotState.activeIndex = slotState.activeIndex.coerceIn(0, slotState.widgetIds.lastIndex)
+            widgetContainer.addView(createWidgetSlotWrapper(slotState))
+        }
+        if (isWidgetEditMode) {
+            addWidgetEditButton()
+        }
+        updateListPaddingForWidgets()
+    }
+
+    private fun updateWidgetSlotView(wrapper: FrameLayout, slotState: WidgetSlotSpec) {
+        val activeWidgetId = slotState.activeWidgetId() ?: return
+        val activeInfo = appWidgetManager.getAppWidgetInfo(activeWidgetId) ?: return
+        val hostContainer = wrapper.findViewWithTag<FrameLayout>(TAG_WIDGET_HOST_CONTAINER) ?: return
+        val cardContainer = getWidgetCardView(wrapper) ?: return
+        for (index in 0 until hostContainer.childCount) {
+            hostContainer.getChildAt(index).visibility = if (index == slotState.activeIndex) View.VISIBLE else View.GONE
+        }
+
+        val heightPx = resolveWidgetHeightPx(activeWidgetId, activeInfo)
+        val indicatorExtraHeight = getWidgetSlotIndicatorExtraHeightPx(slotState)
+        val lp = (wrapper.layoutParams as? LinearLayout.LayoutParams)
+            ?: LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, heightPx + indicatorExtraHeight)
+        lp.height = heightPx + indicatorExtraHeight
+        lp.bottomMargin = (4 * resources.displayMetrics.density).toInt()
+        lp.marginStart = if (isWidgetFullWidth(activeWidgetId)) -widgetContainer.paddingStart else 0
+        wrapper.layoutParams = lp
+
+        val cardLp = (cardContainer.layoutParams as? FrameLayout.LayoutParams)
+            ?: FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, heightPx)
+        cardLp.height = heightPx
+        cardLp.gravity = Gravity.TOP
+        cardContainer.layoutParams = cardLp
+
+        getActiveWidgetHostView(wrapper, slotState)?.let { hostView ->
+            applyWidgetSize(hostView, activeWidgetId, heightPx)
+        }
+
+        val indicatorView = wrapper.findViewWithTag<TextView>(TAG_WIDGET_SLOT_INDICATOR)
+        if (indicatorView != null) {
+            if (indicatorExtraHeight > 0) {
+                indicatorView.visibility = View.VISIBLE
+                indicatorView.text = getString(
+                    R.string.widget_slot_indicator,
+                    slotState.activeIndex + 1,
+                    slotState.widgetIds.size
+                )
+            } else {
+                indicatorView.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun getActiveWidgetHostView(wrapper: FrameLayout, slotState: WidgetSlotSpec): AppWidgetHostView? {
+        val hostContainer = wrapper.findViewWithTag<FrameLayout>(TAG_WIDGET_HOST_CONTAINER) ?: return null
+        return hostContainer.getChildAt(slotState.activeIndex) as? AppWidgetHostView
+    }
+
+    private fun getWidgetCardView(wrapper: FrameLayout): FrameLayout? {
+        return wrapper.findViewWithTag(TAG_WIDGET_SLOT_CARD)
+    }
+
+    private fun getWidgetSlotIndicatorExtraHeightPx(slotState: WidgetSlotSpec): Int {
+        return if (isWidgetSlotIndicatorEnabled() && slotState.widgetIds.size > 1) {
+            (22 * resources.displayMetrics.density).toInt()
+        } else {
+            0
+        }
+    }
+
+    private fun isWidgetSlotIndicatorEnabled(): Boolean {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+            .getBoolean(PREF_SHOW_WIDGET_SLOT_INDICATOR, true)
+    }
+
+    private fun resolveWidgetHeightPx(widgetId: Int, info: AppWidgetProviderInfo): Int {
+        val density = resources.displayMetrics.density
+        val savedHeight = getWidgetHeight(widgetId)
+        return if (savedHeight > 0) {
+            savedHeight
+        } else {
+            info.minHeight.coerceAtLeast(MIN_WIDGET_HEIGHT_DP).let { minDp ->
+                (minDp * density).toInt()
+            }
+        }
+    }
+
+    private fun switchWidgetInSlot(wrapper: FrameLayout, slotState: WidgetSlotSpec, direction: Int): Boolean {
+        if (slotState.widgetIds.size < 2) return false
+        val size = slotState.widgetIds.size
+        val newIndex = (slotState.activeIndex + direction + size) % size
+        if (newIndex == slotState.activeIndex) return false
+        slotState.activeIndex = newIndex
+        updateWidgetSlotView(wrapper, slotState)
+        updateListPaddingForWidgets()
+        return true
     }
 
     private fun createWidgetHostContext(): Context {
@@ -1555,7 +1719,7 @@ class MainActivity : AppCompatActivity() {
                 val density = resources.displayMetrics.density
                 val vMargin = (getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
                     .getInt(PREF_V_MARGIN, DEFAULT_V_MARGIN) * density).toInt()
-                val topPadding = if (widgetContainer.visibility == View.VISIBLE && activeWidgetIds.isNotEmpty()) {
+                val topPadding = if (widgetContainer.visibility == View.VISIBLE && activeWidgetSlots.isNotEmpty()) {
                     widgetContainer.height + vMargin
                 } else {
                     (60 * density).toInt() + vMargin
@@ -1623,6 +1787,7 @@ class MainActivity : AppCompatActivity() {
         private var downY = 0f
         private var longPressTriggered = false
         private val touchSlop = android.view.ViewConfiguration.get(context).scaledTouchSlop
+        private val swipeThreshold = (48 * resources.displayMetrics.density).toInt()
         private val longPressRunnable = Runnable {
             if (!isWidgetEditMode) {
                 longPressTriggered = true
@@ -1647,6 +1812,22 @@ class MainActivity : AppCompatActivity() {
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     removeCallbacks(longPressRunnable)
+                }
+            }
+
+            if (!isWidgetEditMode && ev.actionMasked == MotionEvent.ACTION_UP) {
+                val slotState = tag as? WidgetSlotSpec
+                if (slotState != null && slotState.widgetIds.size > 1) {
+                    val deltaX = ev.x - downX
+                    val deltaY = ev.y - downY
+                    if (kotlin.math.abs(deltaX) > swipeThreshold &&
+                        kotlin.math.abs(deltaX) > kotlin.math.abs(deltaY)
+                    ) {
+                        val direction = if (deltaX < 0f) 1 else -1
+                        if (switchWidgetInSlot(this, slotState, direction)) {
+                            return true
+                        }
+                    }
                 }
             }
 
@@ -1701,7 +1882,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    data class WidgetSlotSpec(
+        val widgetIds: MutableList<Int>,
+        var activeIndex: Int = 0
+    ) {
+        fun activeWidgetId(): Int? {
+            if (widgetIds.isEmpty()) return null
+            activeIndex = activeIndex.coerceIn(0, widgetIds.lastIndex)
+            return widgetIds[activeIndex]
+        }
+    }
+
     companion object {
+        private const val WIDGET_SLOT_FORMAT_PREFIX = "slots:"
+        private const val TAG_WIDGET_SLOT_CARD = "widget_slot_card"
+        private const val TAG_WIDGET_HOST_CONTAINER = "widget_host_container"
+        private const val TAG_WIDGET_SLOT_INDICATOR = "widget_slot_indicator"
+        private const val TAG_ADD_WIDGET_BUTTON = "add_widget_btn"
         const val PREFS_NAME = "launcher_prefs"
         const val PREF_FONT = "font_family"
         const val PREF_SPACING = "item_spacing"
@@ -1712,6 +1909,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_WIDGET_ORDER = "widget_order"
         const val PREF_WIDGET_IDS_OLD = "widget_ids"
         const val PREF_WIDGETS_DIRTY = "widgets_dirty"
+        const val PREF_SHOW_WIDGET_SLOT_INDICATOR = "show_widget_slot_indicator"
         const val PREF_ANIM_STYLE = "anim_style"
         const val PREF_WAVE_SHIFT = "wave_shift"
         const val PREF_WAVE_SCALE = "wave_scale"
@@ -1766,6 +1964,9 @@ class MainActivity : AppCompatActivity() {
         const val REQUEST_CONFIGURE_WIDGET = 9002
         const val MIN_WIDGET_HEIGHT_DP = 60
         const val MAX_WIDGET_HEIGHT_DP = 400
+        const val EXTRA_OPEN_WIDGET_PICKER = "open_widget_picker"
+        const val EXTRA_WIDGET_TARGET_SLOT_INDEX = "widget_target_slot_index"
+        const val WIDGET_TARGET_NEW_SLOT = -1
         val DEFAULT_FAVORITES = listOf(
             "com.android.settings",
             "com.android.chrome",
@@ -1773,6 +1974,48 @@ class MainActivity : AppCompatActivity() {
             "com.google.android.youtube",
             "com.google.android.apps.maps"
         )
+
+        fun parseWidgetSlots(serialized: String?): MutableList<WidgetSlotSpec> {
+            if (serialized.isNullOrBlank()) return mutableListOf()
+
+            val rawSlots = if (serialized.startsWith(WIDGET_SLOT_FORMAT_PREFIX)) {
+                serialized.removePrefix(WIDGET_SLOT_FORMAT_PREFIX).split(";")
+            } else {
+                serialized.split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+            }
+
+            val seenWidgetIds = mutableSetOf<Int>()
+            val slots = mutableListOf<WidgetSlotSpec>()
+            rawSlots.forEach { rawSlot ->
+                val ids = rawSlot.split(",")
+                    .mapNotNull { it.trim().toIntOrNull() }
+                    .filter { seenWidgetIds.add(it) }
+                if (ids.isNotEmpty()) {
+                    slots.add(WidgetSlotSpec(ids.toMutableList()))
+                }
+            }
+            return slots
+        }
+
+        fun serializeWidgetSlots(slots: List<WidgetSlotSpec>): String {
+            val serializedSlots = slots.mapNotNull { slot ->
+                val ids = slot.widgetIds
+                    .filter { it != AppWidgetManager.INVALID_APPWIDGET_ID }
+                    .distinct()
+                if (ids.isEmpty()) {
+                    null
+                } else {
+                    ids.joinToString(",")
+                }
+            }
+            return if (serializedSlots.isEmpty()) {
+                ""
+            } else {
+                WIDGET_SLOT_FORMAT_PREFIX + serializedSlots.joinToString(";")
+            }
+        }
     }
 }
 

@@ -166,13 +166,15 @@ class SettingsSystemFragment : Fragment() {
                 prefs.edit().putInt(MainActivity.PREF_BLOCK_COUNT, blockCountOptions[pos].first).apply()
             }
 
+            @Suppress("UseSwitchCompatOrMaterialCode")
+            val slotIndicatorSwitch = view.findViewById<android.widget.Switch>(R.id.widgetSlotIndicatorSwitch)
+            slotIndicatorSwitch.isChecked = prefs.getBoolean(MainActivity.PREF_SHOW_WIDGET_SLOT_INDICATOR, true)
+            slotIndicatorSwitch.setOnCheckedChangeListener { _, isChecked ->
+                prefs.edit().putBoolean(MainActivity.PREF_SHOW_WIDGET_SLOT_INDICATOR, isChecked).apply()
+            }
+
             view.findViewById<android.widget.Button>(R.id.addWidgetButton).setOnClickListener {
-                requireActivity().finish()
-                val intent = Intent(requireContext(), MainActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    putExtra("open_widget_picker", true)
-                }
-                startActivity(intent)
+                launchWidgetPicker()
             }
 
             populateWidgetList(view)
@@ -307,7 +309,6 @@ class SettingsSystemFragment : Fragment() {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
             }
-
             actions.addView(
                 createMoveButton(
                     label = "▲",
@@ -597,165 +598,325 @@ class SettingsSystemFragment : Fragment() {
             .sortedBy { it.label.lowercase() }
     }
 
-    private fun populateWidgetList(view: View) {
-        val container = view.findViewById<LinearLayout>(R.id.widgetManageContainer)
+    private fun populateWidgetList(rootView: View) {
+        val container = rootView.findViewById<LinearLayout>(R.id.widgetManageContainer)
         container.removeAllViews()
+
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val orderStr = prefs.getString(MainActivity.PREF_WIDGET_ORDER, null)
-        if (orderStr.isNullOrBlank()) {
-            val hint = TextView(requireContext()).apply {
+        val slots = loadWidgetSlots(prefs)
+        if (slots.isEmpty()) {
+            container.addView(TextView(requireContext()).apply {
                 text = getString(R.string.widget_none_label)
                 setTextColor(Color.parseColor("#888888"))
                 textSize = 14f
-            }
-            container.addView(hint)
+            })
             return
         }
-        val ids = orderStr.split(",").mapNotNull { it.toIntOrNull() }
-        if (ids.isEmpty()) return
+
         val awm = AppWidgetManager.getInstance(requireContext())
         val density = resources.displayMetrics.density
 
-        for ((index, widgetId) in ids.withIndex()) {
-            val info = awm.getAppWidgetInfo(widgetId) ?: continue
-            val label = info.loadLabel(requireContext().packageManager) ?: "Widget"
-
-            val row = LinearLayout(requireContext()).apply {
+        slots.forEachIndexed { slotIndex, slot ->
+            val slotCard = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(0, (8 * density).toInt(), 0, (8 * density).toInt())
             }
 
-            val header = LinearLayout(requireContext()).apply {
+            val slotHeader = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
             }
-
-            // Move up/down buttons
-            val moveUpBtn = createMoveButton(
-                label = "▲",
-                enabled = index > 0,
-                description = getString(R.string.move_up_label)
-            ) {
-                swapWidgets(ids, index, index - 1, view)
-            }
-            header.addView(moveUpBtn)
-            val moveDownBtn = createMoveButton(
-                label = "▼",
-                enabled = index < ids.size - 1,
-                description = getString(R.string.move_down_label)
-            ) {
-                swapWidgets(ids, index, index + 1, view)
-            }
-            header.addView(moveDownBtn)
-
-            val nameView = TextView(requireContext()).apply {
-                text = label
-                setTextColor(Color.WHITE)
-                textSize = 15f
-            }
-            header.addView(nameView, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-            if (info.configure != null) {
-                header.addView(
-                    createIconActionButton(
-                        iconRes = R.drawable.ic_settings,
-                        contentDescription = getString(R.string.widget_controls_label)
-                    ) {
-                        openWidgetControls(widgetId)
-                    }
-                )
-            }
-            header.addView(
-                createIconActionButton(
-                    iconRes = R.drawable.ic_delete,
-                    contentDescription = getString(R.string.widget_remove_label),
-                    tint = Color.parseColor("#FF6666")
+            slotHeader.addView(
+                createMoveButton(
+                    label = "▲",
+                    enabled = slotIndex > 0,
+                    description = getString(R.string.move_up_label)
                 ) {
-                    removeWidgetFromSettings(widgetId, view)
+                    moveWidgetSlot(slots, slotIndex, slotIndex - 1, rootView)
                 }
             )
-            row.addView(header)
-
-            val controlsRow = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                setPadding(0, (4 * density).toInt(), 0, 0)
-            }
-
-            val fullWidthSwitch = Switch(requireContext()).apply {
-                text = getString(R.string.widget_full_width_label)
-                isChecked = prefs.getBoolean("widget_fw_$widgetId", false)
-                setTextColor(Color.WHITE)
-                setOnCheckedChangeListener { _, isChecked ->
-                    prefs.edit()
-                        .putBoolean("widget_fw_$widgetId", isChecked)
-                        .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
-                        .apply()
+            slotHeader.addView(
+                createMoveButton(
+                    label = "▼",
+                    enabled = slotIndex < slots.lastIndex,
+                    description = getString(R.string.move_down_label)
+                ) {
+                    moveWidgetSlot(slots, slotIndex, slotIndex + 1, rootView)
                 }
-            }
-            controlsRow.addView(fullWidthSwitch, LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
-            ))
-            row.addView(controlsRow)
-
-            val heightRow = LinearLayout(requireContext()).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                setPadding(0, (4 * density).toInt(), 0, 0)
-            }
-            val heightLabel = TextView(requireContext()).apply {
-                text = getString(R.string.widget_height_label)
-                setTextColor(Color.parseColor("#AAAAAA"))
-                textSize = 13f
-            }
-            heightRow.addView(heightLabel, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { marginEnd = (8 * density).toInt() })
-
-            val savedHeightPx = prefs.getInt("widget_h_$widgetId", -1)
-            val currentDp = if (savedHeightPx > 0) (savedHeightPx / density).toInt()
-                            else info.minHeight.coerceAtLeast(MainActivity.MIN_WIDGET_HEIGHT_DP)
-            val heightValue = TextView(requireContext()).apply {
-                text = "${currentDp}dp"
+            )
+            slotHeader.addView(TextView(requireContext()).apply {
+                text = getString(R.string.widget_slot_label, slotIndex + 1)
                 setTextColor(Color.WHITE)
-                textSize = 13f
-                minWidth = (40 * density).toInt()
-                gravity = Gravity.END
+                textSize = 15f
+            }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            slotCard.addView(slotHeader)
+
+            if (slot.widgetIds.size > 1) {
+                slotCard.addView(TextView(requireContext()).apply {
+                    text = getString(R.string.widget_slot_swipe_hint, slot.widgetIds.size)
+                    setTextColor(Color.parseColor("#AAAAAA"))
+                    textSize = 12f
+                    setPadding(0, (4 * density).toInt(), 0, (8 * density).toInt())
+                })
             }
-            val slider = SeekBar(requireContext()).apply {
-                max = MainActivity.MAX_WIDGET_HEIGHT_DP - MainActivity.MIN_WIDGET_HEIGHT_DP
-                progress = (currentDp - MainActivity.MIN_WIDGET_HEIGHT_DP).coerceIn(0, max)
-                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
-                        val dpVal = progress + MainActivity.MIN_WIDGET_HEIGHT_DP
-                        heightValue.text = "${dpVal}dp"
-                        val px = (dpVal * density).toInt()
+
+            slot.widgetIds.forEachIndexed { widgetIndex, widgetId ->
+                val info = awm.getAppWidgetInfo(widgetId) ?: return@forEachIndexed
+                val row = LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.VERTICAL
+                    setPadding((12 * density).toInt(), (4 * density).toInt(), 0, (4 * density).toInt())
+                }
+
+                val header = LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                header.addView(
+                    createMoveButton(
+                        label = "▲",
+                        enabled = widgetIndex > 0,
+                        description = getString(R.string.move_up_label)
+                    ) {
+                        moveWidgetWithinSlot(slots, slotIndex, widgetIndex, widgetIndex - 1, rootView)
+                    }
+                )
+                header.addView(
+                    createMoveButton(
+                        label = "▼",
+                        enabled = widgetIndex < slot.widgetIds.lastIndex,
+                        description = getString(R.string.move_down_label)
+                    ) {
+                        moveWidgetWithinSlot(slots, slotIndex, widgetIndex, widgetIndex + 1, rootView)
+                    }
+                )
+                header.addView(TextView(requireContext()).apply {
+                    text = info.loadLabel(requireContext().packageManager) ?: getString(R.string.widget_manage_label)
+                    setTextColor(Color.WHITE)
+                    textSize = 14f
+                }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                if (info.configure != null) {
+                    header.addView(
+                        createIconActionButton(
+                            iconRes = R.drawable.ic_settings,
+                            contentDescription = getString(R.string.widget_controls_label)
+                        ) {
+                            openWidgetControls(widgetId)
+                        }
+                    )
+                }
+                header.addView(
+                    createIconActionButton(
+                        iconRes = R.drawable.ic_delete,
+                        contentDescription = getString(R.string.widget_remove_label),
+                        tint = Color.parseColor("#FF6666")
+                    ) {
+                        removeWidgetFromSettings(widgetId, rootView)
+                    }
+                )
+                row.addView(header)
+
+                val controlsRow = LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(0, (4 * density).toInt(), 0, 0)
+                }
+                controlsRow.addView(Switch(requireContext()).apply {
+                    text = getString(R.string.widget_full_width_label)
+                    isChecked = prefs.getBoolean("widget_fw_$widgetId", false)
+                    setTextColor(Color.WHITE)
+                    setOnCheckedChangeListener { _, isChecked ->
                         prefs.edit()
-                            .putInt("widget_h_$widgetId", px)
+                            .putBoolean("widget_fw_$widgetId", isChecked)
                             .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
                             .apply()
                     }
-                    override fun onStartTrackingTouch(sb: SeekBar?) {}
-                    override fun onStopTrackingTouch(sb: SeekBar?) {}
+                }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                row.addView(controlsRow)
+
+                val heightRow = LinearLayout(requireContext()).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                    setPadding(0, (4 * density).toInt(), 0, 0)
+                }
+                heightRow.addView(TextView(requireContext()).apply {
+                    text = getString(R.string.widget_height_label)
+                    setTextColor(Color.parseColor("#AAAAAA"))
+                    textSize = 13f
+                }, LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginEnd = (8 * density).toInt()
+                })
+
+                val savedHeightPx = prefs.getInt("widget_h_$widgetId", -1)
+                val currentDp = if (savedHeightPx > 0) {
+                    (savedHeightPx / density).toInt()
+                } else {
+                    info.minHeight.coerceAtLeast(MainActivity.MIN_WIDGET_HEIGHT_DP)
+                }
+                val heightValue = TextView(requireContext()).apply {
+                    text = "${currentDp}dp"
+                    setTextColor(Color.WHITE)
+                    textSize = 13f
+                    minWidth = (40 * density).toInt()
+                    gravity = Gravity.END
+                }
+                val slider = SeekBar(requireContext()).apply {
+                    max = MainActivity.MAX_WIDGET_HEIGHT_DP - MainActivity.MIN_WIDGET_HEIGHT_DP
+                    progress = (currentDp - MainActivity.MIN_WIDGET_HEIGHT_DP).coerceIn(0, max)
+                    setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                        override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
+                            val dpVal = progress + MainActivity.MIN_WIDGET_HEIGHT_DP
+                            heightValue.text = "${dpVal}dp"
+                            val px = (dpVal * density).toInt()
+                            prefs.edit()
+                                .putInt("widget_h_$widgetId", px)
+                                .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+                                .apply()
+                        }
+
+                        override fun onStartTrackingTouch(sb: SeekBar?) {}
+                        override fun onStopTrackingTouch(sb: SeekBar?) {}
+                    })
+                }
+                heightRow.addView(slider, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                heightRow.addView(heightValue)
+                row.addView(heightRow)
+
+                slotCard.addView(row)
+
+                if (widgetIndex < slot.widgetIds.lastIndex) {
+                    slotCard.addView(View(requireContext()).apply {
+                        setBackgroundColor(Color.parseColor("#22FFFFFF"))
+                    }, LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1
+                    ).apply {
+                        marginStart = (12 * density).toInt()
+                        topMargin = (4 * density).toInt()
+                        bottomMargin = (4 * density).toInt()
+                    })
+                }
+            }
+
+            slotCard.addView(Button(requireContext()).apply {
+                text = getString(R.string.widget_add_to_slot_label)
+                setOnClickListener { launchWidgetPicker(slotIndex) }
+            }, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                marginStart = (12 * density).toInt()
+                topMargin = (8 * density).toInt()
+            })
+
+            container.addView(slotCard)
+
+            if (slotIndex < slots.lastIndex) {
+                container.addView(View(requireContext()).apply {
+                    setBackgroundColor(Color.parseColor("#33FFFFFF"))
+                }, LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    1
+                ).apply {
+                    topMargin = (8 * density).toInt()
+                    bottomMargin = (8 * density).toInt()
                 })
             }
-            heightRow.addView(slider, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-            heightRow.addView(heightValue)
-            row.addView(heightRow)
-
-            container.addView(row)
         }
     }
 
-    private fun swapWidgets(ids: List<Int>, from: Int, to: Int, rootView: View) {
-        val mutable = ids.toMutableList()
-        val temp = mutable[from]
-        mutable[from] = mutable[to]
-        mutable[to] = temp
-        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+    private fun loadWidgetSlots(
+        prefs: android.content.SharedPreferences
+    ): MutableList<MainActivity.WidgetSlotSpec> {
+        val stored = prefs.getString(MainActivity.PREF_WIDGET_ORDER, null)
+        val parsed = MainActivity.parseWidgetSlots(stored)
+        val awm = AppWidgetManager.getInstance(requireContext())
+        val host = AppWidgetHost(requireContext(), MainActivity.APPWIDGET_HOST_ID)
+        var changed = false
+        val sanitized = mutableListOf<MainActivity.WidgetSlotSpec>()
+
+        parsed.forEach { slot ->
+            val validIds = mutableListOf<Int>()
+            slot.widgetIds.forEach { widgetId ->
+                if (awm.getAppWidgetInfo(widgetId) != null) {
+                    validIds.add(widgetId)
+                } else {
+                    changed = true
+                    try { host.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
+                }
+            }
+            if (validIds.isNotEmpty()) {
+                sanitized.add(MainActivity.WidgetSlotSpec(validIds, slot.activeIndex.coerceIn(0, validIds.lastIndex)))
+            } else if (slot.widgetIds.isNotEmpty()) {
+                changed = true
+            }
+        }
+
+        val serialized = MainActivity.serializeWidgetSlots(sanitized)
+        if (changed || serialized != (stored ?: "")) {
+            prefs.edit()
+                .putString(MainActivity.PREF_WIDGET_ORDER, serialized)
+                .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+                .apply()
+        }
+        return sanitized
+    }
+
+    private fun saveWidgetSlots(
+        prefs: android.content.SharedPreferences,
+        slots: List<MainActivity.WidgetSlotSpec>
+    ) {
         prefs.edit()
-            .putString(MainActivity.PREF_WIDGET_ORDER, mutable.joinToString(","))
+            .putString(MainActivity.PREF_WIDGET_ORDER, MainActivity.serializeWidgetSlots(slots))
             .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
             .apply()
+    }
+
+    private fun launchWidgetPicker(targetSlotIndex: Int? = null) {
+        requireActivity().finish()
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            putExtra(MainActivity.EXTRA_OPEN_WIDGET_PICKER, true)
+            if (targetSlotIndex != null) {
+                putExtra(MainActivity.EXTRA_WIDGET_TARGET_SLOT_INDEX, targetSlotIndex)
+            }
+        }
+        startActivity(intent)
+    }
+
+    private fun moveWidgetSlot(
+        slots: List<MainActivity.WidgetSlotSpec>,
+        from: Int,
+        to: Int,
+        rootView: View
+    ) {
+        if (from !in slots.indices || to !in slots.indices) return
+        val mutable = slots.map { MainActivity.WidgetSlotSpec(it.widgetIds.toMutableList(), it.activeIndex) }.toMutableList()
+        val moved = mutable.removeAt(from)
+        mutable.add(to, moved)
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        saveWidgetSlots(prefs, mutable)
+        populateWidgetList(rootView)
+    }
+
+    private fun moveWidgetWithinSlot(
+        slots: List<MainActivity.WidgetSlotSpec>,
+        slotIndex: Int,
+        from: Int,
+        to: Int,
+        rootView: View
+    ) {
+        if (slotIndex !in slots.indices) return
+        val mutable = slots.map { MainActivity.WidgetSlotSpec(it.widgetIds.toMutableList(), it.activeIndex) }.toMutableList()
+        val slot = mutable[slotIndex]
+        if (from !in slot.widgetIds.indices || to !in slot.widgetIds.indices) return
+        val moved = slot.widgetIds.removeAt(from)
+        slot.widgetIds.add(to, moved)
+        slot.activeIndex = slot.activeIndex.coerceIn(0, slot.widgetIds.lastIndex)
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        saveWidgetSlots(prefs, mutable)
         populateWidgetList(rootView)
     }
 
@@ -763,13 +924,23 @@ class SettingsSystemFragment : Fragment() {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val host = AppWidgetHost(requireContext(), MainActivity.APPWIDGET_HOST_ID)
         try { host.deleteAppWidgetId(widgetId) } catch (_: Exception) {}
-        val order = prefs.getString(MainActivity.PREF_WIDGET_ORDER, "") ?: ""
-        val newIds = order.split(",").mapNotNull { it.toIntOrNull() }.filter { it != widgetId }
+
+        val slots = loadWidgetSlots(prefs)
+            .map { MainActivity.WidgetSlotSpec(it.widgetIds.toMutableList(), it.activeIndex) }
+            .toMutableList()
+        slots.forEach { slot ->
+            slot.widgetIds.removeAll { it == widgetId }
+            if (slot.widgetIds.isNotEmpty()) {
+                slot.activeIndex = slot.activeIndex.coerceIn(0, slot.widgetIds.lastIndex)
+            }
+        }
+        slots.removeAll { it.widgetIds.isEmpty() }
+
         prefs.edit()
-            .putString(MainActivity.PREF_WIDGET_ORDER, if (newIds.isEmpty()) "" else newIds.joinToString(","))
             .remove("widget_h_$widgetId")
-            .putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
+            .remove("widget_fw_$widgetId")
             .apply()
+        saveWidgetSlots(prefs, slots)
         populateWidgetList(rootView)
     }
 
