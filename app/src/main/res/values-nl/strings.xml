@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Zoeken</string>
+    <string name="search_hint">Apps zoeken…</string>
+    <string name="favorites_section_title">Favorieten</string>
+    <string name="apps_section_title">Alle apps</string>
+    <string name="launch_failed">Kan app niet openen.</string>
+    <string name="search_unavailable">Zoeken is niet beschikbaar op dit apparaat.</string>
+    <string name="settings_label">Instellingen</string>
+    <string name="wallpaper_darkness_label">Donkerte</string>
+    <string name="font_label">Lettertype</string>
+    <string name="font_size_label">Lettergrootte</string>
+    <string name="spacing_label">Afstand tussen items</string>
+    <string name="theme_label">Thema</string>
+    <string name="notification_mode_label">Meldingsmodus</string>
+    <string name="custom_font_label">Aangepast lettertype laden (TTF)</string>
+    <string name="wallpaper_select_label">Achtergrond selecteren</string>
+    <string name="action_app_info">App-info</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Verwijderen</string>
+    <string name="notification_access_title">Meldingstoegang</string>
+    <string name="notification_access_message">Om meldingsbadges te tonen heeft de launcher
+        toestemming voor meldingstoegang nodig.</string>
+    <string name="grant">Toestaan</string>
+    <string name="cancel">Annuleren</string>
+    <string name="add_widget">Widget toevoegen</string>
+    <string name="remove_widget">Widget verwijderen</string>
+    <string name="widget_pick_title">Widget selecteren</string>
+    <string name="widget_no_providers">Geen widgets beschikbaar</string>
+    <string name="widget_bind_failed">Widget toevoegen mislukt</string>
+    <string name="widget_manage_label">Widgets beheren</string>
+    <string name="widget_empty_hint">Houd ingedrukt om widgets toe te voegen</string>
+    <string name="widget_height_label">Hoogte</string>
+    <string name="widget_remove_label">Verwijderen</string>
+    <string name="widget_none_label">Geen widgets toegevoegd</string>
+    <string name="widget_full_width_label">Volledige breedte</string>
+    <string name="widget_settings_shortcut_label">Widgetinstellingen</string>
+    <string name="widget_controls_label">Bediening</string>
+    <string name="widget_controls_unavailable">Deze widget biedt geen extra bediening.</string>
+    <string name="widget_slot_label">Widgetslot %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Veeg op het startscherm naar links of rechts om te
+        wisselen tussen
+        de %1$d widgets in dit slot.</string>
+    <string name="widget_add_slot_label">Widgetslot toevoegen</string>
+    <string name="widget_add_to_slot_label">Widget aan dit slot toevoegen</string>
+    <string name="widget_slot_indicator_toggle_label">Slotindicator tonen</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Animatie van zijbalk</string>
+    <string name="wave_shift_label">Tekstverschuiving</string>
+    <string name="wave_scale_label">Zoomschaal</string>
+    <string name="wave_radius_label">Golfstraal</string>
+    <string name="highlight_intensity_label">Intensiteit van markering</string>
+    <string name="fade_radius_label">Vervaagstraal</string>
+    <string name="wallpaper_effect_label">Achtergrondeffect</string>
+    <string name="blur_radius_label">Vervagingsstraal</string>
+    <string name="color_tint_label">Kleurtint</string>
+    <string name="notif_swipe_label">Veeg om meldingen te verwijderen</string>
+    <string name="alignment_label">Uitlijning van inhoud</string>
+    <string name="horizontal_margin_label">Horizontale marge</string>
+    <string name="vertical_margin_label">Verticale marge</string>
+    <string name="block_count_label">Rijen op startscherm</string>
+    <string name="favorites_label">Favorieten</string>
+    <string name="favorites_select_label">Favorieten selecteren</string>
+    <string name="favorites_add_label">Favoriet toevoegen</string>
+    <string name="favorites_manage_hint">Bekijk hier de huidige favorietenlijst, wijzig de volgorde
+        direct en voeg meer apps toe met hun echte iconen.</string>
+    <string name="favorites_layout_label">Layout van favorieten</string>
+    <string name="favorites_layout_hint">Adaptief raster gebruikt maximaal 2 kolommen op telefoons
+        in portretstand,
+        breidt uit in landschap en houdt de oude lay-out met één kolom beschikbaar.</string>
+    <string name="favorites_layout_adaptive">Adaptief raster</string>
+    <string name="favorites_layout_single">Eén kolom</string>
+    <string name="favorites_min_max">Selecteer 3 tot 10 favorieten</string>
+    <string name="favorites_picker_empty">Er zijn geen extra startbare apps meer om toe te voegen.</string>
+    <string name="remove_favorite_label">Favoriet verwijderen</string>
+    <string name="move_up_label">Omhoog</string>
+    <string name="move_down_label">Omlaag</string>
+    <string name="notification_not_granted">Meldingstoegang niet verleend. Tik om in te schakelen.</string>
+    <string name="action_uninstall_failed">Kan app niet verwijderen.</string>
+    <string name="icon_size_label">Pictogramgrootte</string>
+    <string name="icon_pack_label">Icon pack</string>
+    <string name="nerd_font_label">Nerd Font-pictogrammen</string>
+    <string name="nerd_font_pick_label">Nerd Font selecteren (TTF)</string>
+    <string name="icon_mode_label">Pictogramweergave</string>
+    <string name="icon_mode_regular">Normale pictogrammen</string>
+    <string name="icon_mode_nerd">Nerd Font-pictogrammen</string>
+    <string name="icon_mode_none">Geen pictogrammen</string>
+    <string name="settings_appearance">Weergave</string>
+    <string name="settings_appearance_summary">Lettertype, grootte, afstand, uitlijning, marges</string>
+    <string name="settings_wallpaper">Achtergrond</string>
+    <string name="settings_wallpaper_summary">Thema, effecten, donkerte, vervaging</string>
+    <string name="settings_animations">Animaties</string>
+    <string name="settings_animations_summary">Animatiestijl van zijbalk en bediening</string>
+    <string name="settings_notifications">Meldingen</string>
+    <string name="settings_notifications_summary">Badgemodus, veegbewegingen</string>
+    <string name="settings_home">Startscherm</string>
+    <string name="settings_home_summary">Favorieten, footeracties, toegangspunten op startscherm</string>
+    <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Widgetslots, veegstapels, grootte, bediening</string>
+    <string name="settings_menu_title">Launcher-instellingen</string>
+    <string name="settings_language_title">Taal</string>
+    <string name="settings_language_summary">Gebruik de systeemtaal als die wordt ondersteund, of
+        forceer
+        Engels.</string>
+    <string name="settings_backup_title">Back-up en herstellen</string>
+    <string name="settings_backup_summary">Exporteer launcher-voorkeuren naar een JSON-bestand of
+        herstel ze
+        later. Widgetposities worden meegenomen, maar alleen hersteld als hun koppelingen nog op
+        dit apparaat bestaan.</string>
+    <string name="settings_notifications_hint">Badgeaantallen en meldingstekst stel je hier in. Open
+        vanaf dit
+        scherm opnieuw meldingstoegang als updates stoppen.</string>
+    <string name="settings_home_hint">Beheer hier favorieten, footeracties en toegangspunten op het
+        startscherm.</string>
+    <string name="settings_widgets_hint">Beheer widgetslots, voeg meerdere widgets toe aan hetzelfde
+        slot
+        en veeg vanaf het startscherm tussen gestapelde widgets.</string>
+    <string name="widget_space_hint">Hiermee bepaal je hoeveel verticale ruimte widgets op het
+        startscherm
+        mogen gebruiken voordat de applijst het overneemt.</string>
+    <string name="widget_bind_denied">Koppeling van widget is geweigerd. Controleer de
+        apparaatinstellingen.</string>
+    <string name="widget_bind_not_supported">Koppeling van widgets wordt niet ondersteund op dit
+        apparaat.</string>
+    <string name="hide_status_bar_label">Statusbalk verbergen</string>
+    <string name="footer_action_slot_label">Footeractie %1$d</string>
+    <string name="footer_action_not_set">Niet ingesteld</string>
+    <string name="footer_action_unavailable">App niet beschikbaar</string>
+    <string name="footer_action_choose">Kiezen</string>
+    <string name="footer_action_clear">Wissen</string>
+    <string name="footer_action_pick_title">Snelle actie kiezen</string>
+    <string name="footer_action_pick_app_title">App kiezen</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Snelle footeracties</string>
+    <string name="footer_quick_actions_summary">Kies maximaal drie footerpictogrammen voor het
+        startscherm.
+        Houd een footerpictogram ingedrukt om het slot opnieuw in te stellen, of houd lege ruimte
+        op het startscherm ingedrukt om launcher-instellingen te openen wanneer alle slots leeg
+        zijn.</string>
+    <string name="footer_notifications_title">Footermeldingen</string>
+    <string name="footer_show_labels">Footerlabels tonen</string>
+    <string name="quick_action_launcher_settings">Launcher-instellingen</string>
+    <string name="quick_action_system_settings">Systeeminstellingen</string>
+    <string name="quick_action_wifi_settings">Wi-Fi-instellingen</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth-instellingen</string>
+    <string name="quick_action_display_settings">Scherminstellingen</string>
+    <string name="quick_action_app_settings">App-instellingen</string>
+    <string name="quick_action_open_app">App openen…</string>
+    <string name="backup_settings_button">Instellingen back-uppen</string>
+    <string name="backup_settings_success">Back-up van instellingen opgeslagen.</string>
+    <string name="backup_settings_failed">Kan back-up van instellingen niet opslaan.</string>
+    <string name="backup_settings_share_title">Back-up opgeslagen</string>
+    <string name="backup_settings_share_message">De back-up van je instellingen is klaar. Deel die
+        nu via
+        het systeemdeelvenster als je hem naar een ander apparaat wilt verplaatsen.</string>
+    <string name="backup_settings_share_action">Delen</string>
+    <string name="backup_settings_share_chooser_title">Back-up van instellingen delen</string>
+    <string name="backup_settings_share_failed">Back-up opgeslagen, maar delen is niet beschikbaar
+        op dit
+        apparaat.</string>
+    <string name="restore_settings_success">Instellingen hersteld.</string>
+    <string name="restore_settings_failed">Kan instellingen niet herstellen.</string>
+    <string name="restore_settings_button">Instellingen herstellen</string>
+    <string name="restore_settings_invalid">Dat bestand is geen geldige launcher-back-up.</string>
+    <string name="restore_settings_incompatible">Die back-up is gemaakt door een niet-ondersteunde
+        launcher-versie.</string>
+    <string name="restore_settings_confirm_title">Instellingen herstellen</string>
+    <string name="restore_settings_confirm_message">%2$d instellingen herstellen uit %1$s? Hiermee
+        vervang je
+        je opgeslagen launcher-voorkeuren. Widgetposities worden alleen hersteld als hun koppelingen
+        nog op dit apparaat bestaan.</string>
+    <string name="restore_settings_confirm_action">Herstellen</string>
+    <string name="restore_settings_selected_file">de geselecteerde back-up</string>
+    <string name="option_default">Standaard</string>
+    <string name="option_light">Licht</string>
+    <string name="option_thin">Dun</string>
+    <string name="option_condensed">Gecondenseerd</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">Aangepaste TTF</string>
+    <string name="option_compact">Compact</string>
+    <string name="option_normal">Normaal</string>
+    <string name="option_spacious">Ruim</string>
+    <string name="option_large">Groot</string>
+    <string name="option_left">Links</string>
+    <string name="option_center">Midden</string>
+    <string name="option_dark">Donker</string>
+    <string name="option_follow_system">Systeem volgen</string>
+    <string name="option_system_default">Systeemstandaard</string>
+    <string name="option_english">Engels</string>
+    <string name="option_darken">Donkerder maken</string>
+    <string name="option_blur">Vervagen</string>
+    <string name="option_indigo">Indigo</string>
+    <string name="option_green">Groen</string>
+    <string name="option_red">Rood</string>
+    <string name="option_purple">Paars</string>
+    <string name="option_teal">Blauwgroen</string>
+    <string name="option_orange">Oranje</string>
+    <string name="option_wave_zoom">Golf / Zoom</string>
+    <string name="option_highlight">Markering</string>
+    <string name="option_fade">Vervagen</string>
+    <string name="option_badge_count">Badgeaantal</string>
+    <string name="option_notification_text">Meldingstekst</string>
+    <string name="option_off">Uit</string>
+    <string name="block_count_option_default">%1$d (standaard)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

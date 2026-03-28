@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Suchen</string>
+    <string name="search_hint">Apps suchen…</string>
+    <string name="favorites_section_title">Favoriten</string>
+    <string name="apps_section_title">Alle Apps</string>
+    <string name="launch_failed">App konnte nicht geöffnet werden.</string>
+    <string name="search_unavailable">Die Suche ist auf diesem Gerät nicht verfügbar.</string>
+    <string name="settings_label">Einstellungen</string>
+    <string name="wallpaper_darkness_label">Dunkelheit</string>
+    <string name="font_label">Schriftart</string>
+    <string name="font_size_label">Schriftgröße</string>
+    <string name="spacing_label">Elementabstand</string>
+    <string name="theme_label">Thema</string>
+    <string name="notification_mode_label">Benachrichtigungsmodus</string>
+    <string name="custom_font_label">Benutzerdefinierte Schriftart laden (TTF)</string>
+    <string name="wallpaper_select_label">Hintergrundbild auswählen</string>
+    <string name="action_app_info">App-Info</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Deinstallieren</string>
+    <string name="notification_access_title">Benachrichtigungszugriff</string>
+    <string name="notification_access_message">Um Benachrichtigungsbadges anzuzeigen, benötigt der
+        Launcher
+        die Berechtigung für den Benachrichtigungszugriff.</string>
+    <string name="grant">Erteilen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="add_widget">Widget hinzufügen</string>
+    <string name="remove_widget">Widget entfernen</string>
+    <string name="widget_pick_title">Widget auswählen</string>
+    <string name="widget_no_providers">Keine Widgets verfügbar</string>
+    <string name="widget_bind_failed">Widget konnte nicht hinzugefügt werden</string>
+    <string name="widget_manage_label">Widgets verwalten</string>
+    <string name="widget_empty_hint">Zum Hinzufügen von Widgets lange drücken</string>
+    <string name="widget_height_label">Höhe</string>
+    <string name="widget_remove_label">Entfernen</string>
+    <string name="widget_none_label">Keine Widgets hinzugefügt</string>
+    <string name="widget_full_width_label">Volle Breite</string>
+    <string name="widget_settings_shortcut_label">Widget-Einstellungen</string>
+    <string name="widget_controls_label">Steuerelemente</string>
+    <string name="widget_controls_unavailable">Dieses Widget bietet keine zusätzlichen
+        Steuerelemente.</string>
+    <string name="widget_slot_label">Widget-Slot %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Wische auf dem Startbildschirm nach links oder rechts, um
+        zwischen
+        den %1$d Widgets in diesem Slot zu wechseln.</string>
+    <string name="widget_add_slot_label">Widget-Slot hinzufügen</string>
+    <string name="widget_add_to_slot_label">Widget zu diesem Slot hinzufügen</string>
+    <string name="widget_slot_indicator_toggle_label">Slot-Anzeige anzeigen</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Seitenleistenanimation</string>
+    <string name="wave_shift_label">Textverschiebung</string>
+    <string name="wave_scale_label">Zoomfaktor</string>
+    <string name="wave_radius_label">Wellenradius</string>
+    <string name="highlight_intensity_label">Hervorhebungsintensität</string>
+    <string name="fade_radius_label">Verblassradius</string>
+    <string name="wallpaper_effect_label">Hintergrundeffekt</string>
+    <string name="blur_radius_label">Unschärferadius</string>
+    <string name="color_tint_label">Farbtönung</string>
+    <string name="notif_swipe_label">Zum Verwerfen von Benachrichtigungen wischen</string>
+    <string name="alignment_label">Inhaltsausrichtung</string>
+    <string name="horizontal_margin_label">Horizontaler Rand</string>
+    <string name="vertical_margin_label">Vertikaler Rand</string>
+    <string name="block_count_label">Startbildschirm-Zeilen</string>
+    <string name="favorites_label">Favoriten</string>
+    <string name="favorites_select_label">Favoriten auswählen</string>
+    <string name="favorites_add_label">Favorit hinzufügen</string>
+    <string name="favorites_manage_hint">Hier kannst du die aktuelle Favoritenliste prüfen, direkt
+        neu anordnen
+        und weitere Apps mit ihren echten Symbolen hinzufügen.</string>
+    <string name="favorites_layout_label">Favoritenlayout</string>
+    <string name="favorites_layout_hint">Das adaptive Raster nutzt auf Smartphones im Hochformat bis
+        zu 2 Spalten,
+        erweitert sich im Querformat und behält das alte einspaltige Layout bei.</string>
+    <string name="favorites_layout_adaptive">Adaptives Raster</string>
+    <string name="favorites_layout_single">Eine Spalte</string>
+    <string name="favorites_min_max">Wähle 3 bis 10 Favoriten</string>
+    <string name="favorites_picker_empty">Es sind keine weiteren startbaren Apps zum Hinzufügen
+        verfügbar.</string>
+    <string name="remove_favorite_label">Favorit entfernen</string>
+    <string name="move_up_label">Nach oben</string>
+    <string name="move_down_label">Nach unten</string>
+    <string name="notification_not_granted">Benachrichtigungszugriff nicht gewährt. Tippe, um ihn zu
+        aktivieren.</string>
+    <string name="action_uninstall_failed">App konnte nicht deinstalliert werden.</string>
+    <string name="icon_size_label">Symbolgröße</string>
+    <string name="icon_pack_label">Icon-Pack</string>
+    <string name="nerd_font_label">Nerd-Font-Symbole</string>
+    <string name="nerd_font_pick_label">Nerd Font (TTF) auswählen</string>
+    <string name="icon_mode_label">Symbolanzeige</string>
+    <string name="icon_mode_regular">Normale Symbole</string>
+    <string name="icon_mode_nerd">Nerd-Font-Symbole</string>
+    <string name="icon_mode_none">Keine Symbole</string>
+    <string name="settings_appearance">Darstellung</string>
+    <string name="settings_appearance_summary">Schriftart, Größe, Abstand, Ausrichtung, Ränder</string>
+    <string name="settings_wallpaper">Hintergrund</string>
+    <string name="settings_wallpaper_summary">Thema, Effekte, Dunkelheit, Unschärfe</string>
+    <string name="settings_animations">Animationen</string>
+    <string name="settings_animations_summary">Seitenleistenanimation und Steuerelemente</string>
+    <string name="settings_notifications">Benachrichtigungen</string>
+    <string name="settings_notifications_summary">Badge-Modus, Wischgesten</string>
+    <string name="settings_home">Startbildschirm</string>
+    <string name="settings_home_summary">Favoriten, Footer-Aktionen, Startbildschirm-Zugriffe</string>
+    <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Widget-Slots, Wischstapel, Größe, Steuerelemente</string>
+    <string name="settings_menu_title">Launcher-Einstellungen</string>
+    <string name="settings_language_title">Sprache</string>
+    <string name="settings_language_summary">Verwende die Systemsprache, wenn sie unterstützt wird,
+        oder erzwinge
+        Englisch.</string>
+    <string name="settings_backup_title">Sichern &amp; Wiederherstellen</string>
+    <string name="settings_backup_summary">Exportiere Launcher-Einstellungen in eine JSON-Datei oder
+        stelle sie später
+        wieder her. Widget-Platzierungen sind enthalten, werden aber nur wiederhergestellt, wenn
+        ihre Verknüpfungen auf diesem Gerät noch existieren.</string>
+    <string name="settings_notifications_hint">Badge-Zähler und Benachrichtigungstext werden hier
+        konfiguriert. Öffne
+        den Benachrichtigungszugriff von diesem Bildschirm erneut, wenn Aktualisierungen ausbleiben.</string>
+    <string name="settings_home_hint">Verwalte hier Favoriten, Footer-Aktionen und Zugriffe auf den
+        Startbildschirm.</string>
+    <string name="settings_widgets_hint">Verwalte Widget-Slots, füge mehrere Widgets zum selben Slot
+        hinzu und
+        wische auf dem Startbildschirm zwischen gestapelten Widgets.</string>
+    <string name="widget_space_hint">Hiermit wird gesteuert, wie viel vertikalen Platz Widgets auf
+        dem Startbildschirm
+        nutzen dürfen, bevor die App-Liste übernimmt.</string>
+    <string name="widget_bind_denied">Die Widget-Bindung wurde verweigert. Prüfe die
+        Geräteeinstellungen.</string>
+    <string name="widget_bind_not_supported">Widget-Bindung wird auf diesem Gerät nicht unterstützt.</string>
+    <string name="hide_status_bar_label">Statusleiste ausblenden</string>
+    <string name="footer_action_slot_label">Footer-Aktion %1$d</string>
+    <string name="footer_action_not_set">Nicht festgelegt</string>
+    <string name="footer_action_unavailable">App nicht verfügbar</string>
+    <string name="footer_action_choose">Auswählen</string>
+    <string name="footer_action_clear">Leeren</string>
+    <string name="footer_action_pick_title">Schnellaktion auswählen</string>
+    <string name="footer_action_pick_app_title">App auswählen</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Footer-Schnellaktionen</string>
+    <string name="footer_quick_actions_summary">Wähle bis zu drei Footer-Symbole für den
+        Startbildschirm.
+        Halte ein Footer-Symbol gedrückt, um seinen Slot neu zu konfigurieren, oder halte einen
+        leeren Bereich des Startbildschirms gedrückt, um die Launcher-Einstellungen zu öffnen,
+        wenn alle Slots geleert sind.</string>
+    <string name="footer_notifications_title">Footer-Benachrichtigungen</string>
+    <string name="footer_show_labels">Footer-Beschriftungen anzeigen</string>
+    <string name="quick_action_launcher_settings">Launcher-Einstellungen</string>
+    <string name="quick_action_system_settings">Systemeinstellungen</string>
+    <string name="quick_action_wifi_settings">WLAN-Einstellungen</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth-Einstellungen</string>
+    <string name="quick_action_display_settings">Anzeigeeinstellungen</string>
+    <string name="quick_action_app_settings">App-Einstellungen</string>
+    <string name="quick_action_open_app">App öffnen…</string>
+    <string name="backup_settings_button">Einstellungen sichern</string>
+    <string name="backup_settings_success">Einstellungs-Backup gespeichert.</string>
+    <string name="backup_settings_failed">Einstellungs-Backup konnte nicht gespeichert werden.</string>
+    <string name="backup_settings_share_title">Backup gespeichert</string>
+    <string name="backup_settings_share_message">Dein Einstellungs-Backup ist bereit. Teile es jetzt
+        über
+        die Systemfreigabe, wenn du es auf ein anderes Gerät übertragen möchtest.</string>
+    <string name="backup_settings_share_action">Teilen</string>
+    <string name="backup_settings_share_chooser_title">Einstellungs-Backup teilen</string>
+    <string name="backup_settings_share_failed">Das Backup wurde gespeichert, aber Teilen ist auf
+        diesem Gerät
+        nicht verfügbar.</string>
+    <string name="restore_settings_success">Einstellungen wiederhergestellt.</string>
+    <string name="restore_settings_failed">Einstellungen konnten nicht wiederhergestellt werden.</string>
+    <string name="restore_settings_button">Einstellungen wiederherstellen</string>
+    <string name="restore_settings_invalid">Diese Datei ist kein gültiges Launcher-Backup.</string>
+    <string name="restore_settings_incompatible">Dieses Backup wurde von einer nicht unterstützten
+        Launcher-Version erstellt.</string>
+    <string name="restore_settings_confirm_title">Einstellungen wiederherstellen</string>
+    <string name="restore_settings_confirm_message">%2$d Einstellungen aus %1$s wiederherstellen?
+        Dadurch
+        werden deine gespeicherten Launcher-Einstellungen ersetzt. Widget-Platzierungen werden nur
+        wiederhergestellt, wenn ihre Verknüpfungen auf diesem Gerät noch existieren.</string>
+    <string name="restore_settings_confirm_action">Wiederherstellen</string>
+    <string name="restore_settings_selected_file">dem ausgewählten Backup</string>
+    <string name="option_default">Standard</string>
+    <string name="option_light">Hell</string>
+    <string name="option_thin">Dünn</string>
+    <string name="option_condensed">Kondensiert</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">Benutzerdefiniertes TTF</string>
+    <string name="option_compact">Kompakt</string>
+    <string name="option_normal">Normal</string>
+    <string name="option_spacious">Großzügig</string>
+    <string name="option_large">Groß</string>
+    <string name="option_left">Links</string>
+    <string name="option_center">Zentriert</string>
+    <string name="option_dark">Dunkel</string>
+    <string name="option_follow_system">Dem System folgen</string>
+    <string name="option_system_default">Systemstandard</string>
+    <string name="option_english">Englisch</string>
+    <string name="option_darken">Abdunkeln</string>
+    <string name="option_blur">Unschärfe</string>
+    <string name="option_indigo">Indigo</string>
+    <string name="option_green">Grün</string>
+    <string name="option_red">Rot</string>
+    <string name="option_purple">Lila</string>
+    <string name="option_teal">Petrol</string>
+    <string name="option_orange">Orange</string>
+    <string name="option_wave_zoom">Welle / Zoom</string>
+    <string name="option_highlight">Hervorhebung</string>
+    <string name="option_fade">Ausblenden</string>
+    <string name="option_badge_count">Badge-Anzahl</string>
+    <string name="option_notification_text">Benachrichtigungstext</string>
+    <string name="option_off">Aus</string>
+    <string name="block_count_option_default">%1$d (Standard)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

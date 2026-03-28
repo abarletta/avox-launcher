@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Søg</string>
+    <string name="search_hint">Søg efter apps…</string>
+    <string name="favorites_section_title">Favoritter</string>
+    <string name="apps_section_title">Alle apps</string>
+    <string name="launch_failed">Kunne ikke åbne appen.</string>
+    <string name="search_unavailable">Søgning er ikke tilgængelig på denne enhed.</string>
+    <string name="settings_label">Indstillinger</string>
+    <string name="wallpaper_darkness_label">Mørke</string>
+    <string name="font_label">Skrifttype</string>
+    <string name="font_size_label">Skriftstørrelse</string>
+    <string name="spacing_label">Afstand mellem elementer</string>
+    <string name="theme_label">Tema</string>
+    <string name="notification_mode_label">Notifikationstilstand</string>
+    <string name="custom_font_label">Indlæs brugerdefineret skrifttype (TTF)</string>
+    <string name="wallpaper_select_label">Vælg baggrund</string>
+    <string name="action_app_info">Appinfo</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Afinstaller</string>
+    <string name="notification_access_title">Notifikationsadgang</string>
+    <string name="notification_access_message">For at vise notifikationsbadges skal launcheren have
+        tilladelse til notifikationsadgang.</string>
+    <string name="grant">Giv adgang</string>
+    <string name="cancel">Annuller</string>
+    <string name="add_widget">Tilføj widget</string>
+    <string name="remove_widget">Fjern widget</string>
+    <string name="widget_pick_title">Vælg widget</string>
+    <string name="widget_no_providers">Ingen widgets tilgængelige</string>
+    <string name="widget_bind_failed">Kunne ikke tilføje widget</string>
+    <string name="widget_manage_label">Administrer widgets</string>
+    <string name="widget_empty_hint">Hold nede for at tilføje widgets</string>
+    <string name="widget_height_label">Højde</string>
+    <string name="widget_remove_label">Fjern</string>
+    <string name="widget_none_label">Ingen widgets tilføjet</string>
+    <string name="widget_full_width_label">Fuld bredde</string>
+    <string name="widget_settings_shortcut_label">Widgetindstillinger</string>
+    <string name="widget_controls_label">Kontroller</string>
+    <string name="widget_controls_unavailable">Denne widget har ingen ekstra kontroller.</string>
+    <string name="widget_slot_label">Widgetplads %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Stryg til venstre eller højre på startskærmen for at
+        skifte mellem
+        de %1$d widgets i denne plads.</string>
+    <string name="widget_add_slot_label">Tilføj widgetplads</string>
+    <string name="widget_add_to_slot_label">Tilføj widget til denne plads</string>
+    <string name="widget_slot_indicator_toggle_label">Vis pladsindikator</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Sidebjælkeanimation</string>
+    <string name="wave_shift_label">Tekstforskydning</string>
+    <string name="wave_scale_label">Zoomskala</string>
+    <string name="wave_radius_label">Bølgeradius</string>
+    <string name="highlight_intensity_label">Markeringsintensitet</string>
+    <string name="fade_radius_label">Faderadius</string>
+    <string name="wallpaper_effect_label">Baggrundseffekt</string>
+    <string name="blur_radius_label">Sløringsradius</string>
+    <string name="color_tint_label">Farvetone</string>
+    <string name="notif_swipe_label">Stryg for at afvise notifikationer</string>
+    <string name="alignment_label">Indholdsjustering</string>
+    <string name="horizontal_margin_label">Vandret margen</string>
+    <string name="vertical_margin_label">Lodret margen</string>
+    <string name="block_count_label">Rækker på startskærmen</string>
+    <string name="favorites_label">Favoritter</string>
+    <string name="favorites_select_label">Vælg favoritter</string>
+    <string name="favorites_add_label">Tilføj favorit</string>
+    <string name="favorites_manage_hint">Gennemgå den aktuelle favoritliste her, omarranger den
+        direkte,
+        og tilføj flere apps med deres rigtige ikoner.</string>
+    <string name="favorites_layout_label">Favoritlayout</string>
+    <string name="favorites_layout_hint">Adaptivt gitter bruger op til 2 kolonner på telefoner i
+        portræt,
+        udvider i landskab og bevarer det gamle layout med én kolonne.</string>
+    <string name="favorites_layout_adaptive">Adaptivt gitter</string>
+    <string name="favorites_layout_single">Én kolonne</string>
+    <string name="favorites_min_max">Vælg 3 til 10 favoritter</string>
+    <string name="favorites_picker_empty">Der er ikke flere startbare apps at tilføje.</string>
+    <string name="remove_favorite_label">Fjern favorit</string>
+    <string name="move_up_label">Flyt op</string>
+    <string name="move_down_label">Flyt ned</string>
+    <string name="notification_not_granted">Notifikationsadgang er ikke givet. Tryk for at aktivere.</string>
+    <string name="action_uninstall_failed">Kunne ikke afinstallere appen.</string>
+    <string name="icon_size_label">Ikonstørrelse</string>
+    <string name="icon_pack_label">Ikonpakke</string>
+    <string name="nerd_font_label">Nerd Font-ikoner</string>
+    <string name="nerd_font_pick_label">Vælg Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Ikonvisning</string>
+    <string name="icon_mode_regular">Almindelige ikoner</string>
+    <string name="icon_mode_nerd">Nerd Font-ikoner</string>
+    <string name="icon_mode_none">Ingen ikoner</string>
+    <string name="settings_appearance">Udseende</string>
+    <string name="settings_appearance_summary">Skrifttype, størrelse, afstand, justering, margener</string>
+    <string name="settings_wallpaper">Baggrund</string>
+    <string name="settings_wallpaper_summary">Tema, effekter, mørke, sløring</string>
+    <string name="settings_animations">Animationer</string>
+    <string name="settings_animations_summary">Sidebjælkeanimation og kontroller</string>
+    <string name="settings_notifications">Notifikationer</string>
+    <string name="settings_notifications_summary">Badge-tilstand, strygebevægelser</string>
+    <string name="settings_home">Hjem</string>
+    <string name="settings_home_summary">Favoritter, footer-handlinger, adgangspunkter til
+        startskærmen</string>
+    <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Widgetpladser, strygestakke, størrelse, kontroller</string>
+    <string name="settings_menu_title">Launcher-indstillinger</string>
+    <string name="settings_language_title">Sprog</string>
+    <string name="settings_language_summary">Brug systemsproget, når det understøttes, eller tving
+        engelsk.</string>
+    <string name="settings_backup_title">Backup og gendannelse</string>
+    <string name="settings_backup_summary">Eksportér launcher-præferencer til en JSON-fil, eller
+        gendan dem senere.
+        Widgetplaceringer er inkluderet, men gendannes kun, når deres bindinger stadig findes på
+        denne enhed.</string>
+    <string name="settings_notifications_hint">Badge-tal og notifikationstekst konfigureres her. Åbn
+        notifikationsadgang
+        igen fra denne skærm, hvis opdateringer stopper.</string>
+    <string name="settings_home_hint">Administrer favoritter, footer-handlinger og adgangspunkter
+        til startskærmen herfra.</string>
+    <string name="settings_widgets_hint">Administrer widgetpladser, tilføj flere widgets til samme
+        plads,
+        og stryg mellem stablede widgets fra startskærmen.</string>
+    <string name="widget_space_hint">Dette styrer, hvor meget lodret plads widgets må bruge på
+        startskærmen,
+        før applisten tager over.</string>
+    <string name="widget_bind_denied">Widgetbinding blev afvist. Tjek enhedsindstillingerne.</string>
+    <string name="widget_bind_not_supported">Widgetbinding understøttes ikke på denne enhed.</string>
+    <string name="hide_status_bar_label">Skjul statuslinje</string>
+    <string name="footer_action_slot_label">Footer-handling %1$d</string>
+    <string name="footer_action_not_set">Ikke angivet</string>
+    <string name="footer_action_unavailable">Utilgængelig app</string>
+    <string name="footer_action_choose">Vælg</string>
+    <string name="footer_action_clear">Ryd</string>
+    <string name="footer_action_pick_title">Vælg hurtighandling</string>
+    <string name="footer_action_pick_app_title">Vælg app</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Footer-hurtighandlinger</string>
+    <string name="footer_quick_actions_summary">Vælg op til tre footer-ikoner til startskærmen.
+        Hold et footer-ikon nede for at konfigurere dets plads igen, eller hold et tomt område
+        på startskærmen nede for at åbne launcher-indstillinger, når alle pladser er ryddet.</string>
+    <string name="footer_notifications_title">Footer-notifikationer</string>
+    <string name="footer_show_labels">Vis footer-etiketter</string>
+    <string name="quick_action_launcher_settings">Launcher-indstillinger</string>
+    <string name="quick_action_system_settings">Systemindstillinger</string>
+    <string name="quick_action_wifi_settings">Wi-Fi-indstillinger</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth-indstillinger</string>
+    <string name="quick_action_display_settings">Skærmindstillinger</string>
+    <string name="quick_action_app_settings">Appindstillinger</string>
+    <string name="quick_action_open_app">Åbn app…</string>
+    <string name="backup_settings_button">Tag backup af indstillinger</string>
+    <string name="backup_settings_success">Backup af indstillinger gemt.</string>
+    <string name="backup_settings_failed">Kunne ikke gemme backup af indstillinger.</string>
+    <string name="backup_settings_share_title">Backup gemt</string>
+    <string name="backup_settings_share_message">Din backup af indstillinger er klar. Del den nu via
+        systemets
+        deleark, hvis du vil flytte den til en anden enhed.</string>
+    <string name="backup_settings_share_action">Del</string>
+    <string name="backup_settings_share_chooser_title">Del backup af indstillinger</string>
+    <string name="backup_settings_share_failed">Backup gemt, men deling er ikke tilgængelig på denne
+        enhed.</string>
+    <string name="restore_settings_success">Indstillinger gendannet.</string>
+    <string name="restore_settings_failed">Kunne ikke gendanne indstillinger.</string>
+    <string name="restore_settings_button">Gendan indstillinger</string>
+    <string name="restore_settings_invalid">Den fil er ikke en gyldig launcher-backup.</string>
+    <string name="restore_settings_incompatible">Den backup blev oprettet af en launcher-version,
+        der ikke understøttes.</string>
+    <string name="restore_settings_confirm_title">Gendan indstillinger</string>
+    <string name="restore_settings_confirm_message">Gendan %2$d indstillinger fra %1$s? Dette
+        erstatter
+        dine gemte launcher-præferencer. Widgetplaceringer gendannes kun, når deres bindinger stadig
+        findes på denne enhed.</string>
+    <string name="restore_settings_confirm_action">Gendan</string>
+    <string name="restore_settings_selected_file">den valgte backup</string>
+    <string name="option_default">Standard</string>
+    <string name="option_light">Lys</string>
+    <string name="option_thin">Tynd</string>
+    <string name="option_condensed">Kondenseret</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">Brugerdefineret TTF</string>
+    <string name="option_compact">Kompakt</string>
+    <string name="option_normal">Normal</string>
+    <string name="option_spacious">Rummelig</string>
+    <string name="option_large">Stor</string>
+    <string name="option_left">Venstre</string>
+    <string name="option_center">Midte</string>
+    <string name="option_dark">Mørk</string>
+    <string name="option_follow_system">Følg systemet</string>
+    <string name="option_system_default">Systemstandard</string>
+    <string name="option_english">Engelsk</string>
+    <string name="option_darken">Gør mørkere</string>
+    <string name="option_blur">Sløring</string>
+    <string name="option_indigo">Indigo</string>
+    <string name="option_green">Grøn</string>
+    <string name="option_red">Rød</string>
+    <string name="option_purple">Lilla</string>
+    <string name="option_teal">Blågrøn</string>
+    <string name="option_orange">Orange</string>
+    <string name="option_wave_zoom">Bølge / Zoom</string>
+    <string name="option_highlight">Fremhævning</string>
+    <string name="option_fade">Udtoning</string>
+    <string name="option_badge_count">Badge-antal</string>
+    <string name="option_notification_text">Notifikationstekst</string>
+    <string name="option_off">Fra</string>
+    <string name="block_count_option_default">%1$d (standard)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

@@ -100,5 +100,3 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 Thank you for contributing translations. Add your name and language to the PR description to receive credit.
 
 ---
-
-If you want, I can add an example `values-es/strings.xml` stub and update `arrays.xml` to demonstrate the recommended approach.

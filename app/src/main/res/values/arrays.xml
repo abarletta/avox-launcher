@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="language_codes">
+        <item></item>
+        <item>da</item>
+        <item>de</item>
+        <item>en</item>
+        <item>es</item>
+        <item>fi</item>
+        <item>fr</item>
+        <item>it</item>
+        <item>nl</item>
+        <item>nb</item>
+        <item>pl</item>
+        <item>pt</item>
+        <item>sv</item>
+    </string-array>
+
+    <string-array name="language_labels">
+        <item>Default</item>
+        <item>Dansk</item>
+        <item>Deutsch</item>
+        <item>English</item>
+        <item>Español</item>
+        <item>Suomi</item>
+        <item>Français</item>
+        <item>Italiano</item>
+        <item>Nederlands</item>
+        <item>Norsk (Bokmål)</item>
+        <item>Polski</item>
+        <item>Português</item>
+        <item>Svenska</item>
+    </string-array>
+</resources>

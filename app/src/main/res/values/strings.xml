@@ -47,8 +47,8 @@
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
     <string name="widget_picker_details_app_only">%1$s</string>
     <string name="animation_style_label">Sidebar Animation</string>
-    <string name="wave_shift_label">Wave Shift</string>
-    <string name="wave_scale_label">Wave Scale</string>
+    <string name="wave_shift_label">Text Shift</string>
+    <string name="wave_scale_label">Zoom Scale</string>
     <string name="wave_radius_label">Wave Radius</string>
     <string name="highlight_intensity_label">Highlight Intensity</string>
     <string name="fade_radius_label">Fade Radius</string>

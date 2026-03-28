@@ -59,27 +59,23 @@ class SettingsMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity() as SettingsActivity
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val languageOptions = listOf(
-            LauncherApp.LANGUAGE_TAG_SYSTEM to getString(R.string.option_system_default),
-            LauncherApp.LANGUAGE_TAG_ENGLISH to getString(R.string.option_english)
-        )
+        val codes = resources.getStringArray(R.array.language_codes).toList()
+        val labels = resources.getStringArray(R.array.language_labels).toList()
+
+        val selectedIndex = codes.indexOf(
+            prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)
+                ?: LauncherApp.LANGUAGE_TAG_SYSTEM
+        ).coerceAtLeast(0)
 
         setupSpinner(
             view.findViewById(R.id.languageSpinner),
-            languageOptions.map { it.second },
-            languageOptions.indexOfFirst {
-                it.first == (
-                    prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)
-                        ?: LauncherApp.LANGUAGE_TAG_SYSTEM
-                )
-            }.coerceAtLeast(0)
+            labels,
+            selectedIndex
         ) { pos ->
-            val selectedLanguage = languageOptions[pos].first
+            val selectedLanguage = codes.getOrNull(pos) ?: LauncherApp.LANGUAGE_TAG_SYSTEM
             val savedLanguage = prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)
                 ?: LauncherApp.LANGUAGE_TAG_SYSTEM
-            if (selectedLanguage == savedLanguage) {
-                return@setupSpinner
-            }
+            if (selectedLanguage == savedLanguage) return@setupSpinner
 
             prefs.edit().putString(MainActivity.PREF_LANGUAGE, selectedLanguage).apply()
             LauncherApp.applyLanguagePreference(requireContext())
@@ -521,7 +517,7 @@ class SettingsMenuFragment : Fragment() {
     }
 
     companion object {
-        private const val SETTINGS_BACKUP_FORMAT = "avox_settings"
+        private const val   SETTINGS_BACKUP_FORMAT = "avox_settings"
         private const val PREVIOUS_SETTINGS_BACKUP_FORMAT = "a_launcher_settings"
         private const val LEGACY_SETTINGS_BACKUP_FORMAT = "launcher_settings"
         private const val SETTINGS_BACKUP_VERSION = 1

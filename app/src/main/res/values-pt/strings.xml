@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Pesquisar</string>
+    <string name="search_hint">Pesquisar aplicativos…</string>
+    <string name="favorites_section_title">Favoritos</string>
+    <string name="apps_section_title">Todos os apps</string>
+    <string name="launch_failed">Não foi possível abrir o app.</string>
+    <string name="search_unavailable">A pesquisa não está disponível neste dispositivo.</string>
+    <string name="settings_label">Configurações</string>
+    <string name="wallpaper_darkness_label">Escurecimento</string>
+    <string name="font_label">Fonte</string>
+    <string name="font_size_label">Tamanho da fonte</string>
+    <string name="spacing_label">Espaçamento dos itens</string>
+    <string name="theme_label">Tema</string>
+    <string name="notification_mode_label">Modo de notificação</string>
+    <string name="custom_font_label">Carregar fonte personalizada (TTF)</string>
+    <string name="wallpaper_select_label">Selecionar papel de parede</string>
+    <string name="action_app_info">Informações do app</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Desinstalar</string>
+    <string name="notification_access_title">Acesso às notificações</string>
+    <string name="notification_access_message">Para mostrar badges de notificação, o launcher
+        precisa
+        da permissão de acesso às notificações.</string>
+    <string name="grant">Conceder</string>
+    <string name="cancel">Cancelar</string>
+    <string name="add_widget">Adicionar widget</string>
+    <string name="remove_widget">Remover widget</string>
+    <string name="widget_pick_title">Selecionar widget</string>
+    <string name="widget_no_providers">Nenhum widget disponível</string>
+    <string name="widget_bind_failed">Falha ao adicionar widget</string>
+    <string name="widget_manage_label">Gerenciar widgets</string>
+    <string name="widget_empty_hint">Toque e segure para adicionar widgets</string>
+    <string name="widget_height_label">Altura</string>
+    <string name="widget_remove_label">Remover</string>
+    <string name="widget_none_label">Nenhum widget adicionado</string>
+    <string name="widget_full_width_label">Largura total</string>
+    <string name="widget_settings_shortcut_label">Configurações do widget</string>
+    <string name="widget_controls_label">Controles</string>
+    <string name="widget_controls_unavailable">Este widget não oferece controles extras.</string>
+    <string name="widget_slot_label">Slot de widget %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Deslize para a esquerda ou para a direita na tela inicial
+        para alternar
+        entre os %1$d widgets neste slot.</string>
+    <string name="widget_add_slot_label">Adicionar slot de widget</string>
+    <string name="widget_add_to_slot_label">Adicionar widget a este slot</string>
+    <string name="widget_slot_indicator_toggle_label">Mostrar indicador de slot</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Animação da barra lateral</string>
+    <string name="wave_shift_label">Deslocamento do texto</string>
+    <string name="wave_scale_label">Escala de zoom</string>
+    <string name="wave_radius_label">Raio da onda</string>
+    <string name="highlight_intensity_label">Intensidade do destaque</string>
+    <string name="fade_radius_label">Raio do esmaecimento</string>
+    <string name="wallpaper_effect_label">Efeito do papel de parede</string>
+    <string name="blur_radius_label">Raio do desfoque</string>
+    <string name="color_tint_label">Tonalidade de cor</string>
+    <string name="notif_swipe_label">Deslizar para dispensar notificações</string>
+    <string name="alignment_label">Alinhamento do conteúdo</string>
+    <string name="horizontal_margin_label">Margem horizontal</string>
+    <string name="vertical_margin_label">Margem vertical</string>
+    <string name="block_count_label">Linhas da tela inicial</string>
+    <string name="favorites_label">Favoritos</string>
+    <string name="favorites_select_label">Selecionar favoritos</string>
+    <string name="favorites_add_label">Adicionar favorito</string>
+    <string name="favorites_manage_hint">Revise a lista atual de favoritos aqui, reordene-a
+        diretamente
+        e adicione mais apps com seus ícones reais.</string>
+    <string name="favorites_layout_label">Layout dos favoritos</string>
+    <string name="favorites_layout_hint">A grade adaptativa usa até 2 colunas em telefones no modo
+        retrato,
+        se expande no modo paisagem e mantém o layout antigo de coluna única disponível.</string>
+    <string name="favorites_layout_adaptive">Grade adaptativa</string>
+    <string name="favorites_layout_single">Coluna única</string>
+    <string name="favorites_min_max">Selecione de 3 a 10 favoritos</string>
+    <string name="favorites_picker_empty">Não há mais apps iniciáveis disponíveis para adicionar.</string>
+    <string name="remove_favorite_label">Remover favorito</string>
+    <string name="move_up_label">Mover para cima</string>
+    <string name="move_down_label">Mover para baixo</string>
+    <string name="notification_not_granted">Acesso às notificações não concedido. Toque para ativar.</string>
+    <string name="action_uninstall_failed">Não foi possível desinstalar o app.</string>
+    <string name="icon_size_label">Tamanho dos ícones</string>
+    <string name="icon_pack_label">Pacote de ícones</string>
+    <string name="nerd_font_label">Ícones Nerd Font</string>
+    <string name="nerd_font_pick_label">Selecionar Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Exibição de ícones</string>
+    <string name="icon_mode_regular">Ícones normais</string>
+    <string name="icon_mode_nerd">Ícones Nerd Font</string>
+    <string name="icon_mode_none">Sem ícones</string>
+    <string name="settings_appearance">Aparência</string>
+    <string name="settings_appearance_summary">Fonte, tamanho, espaçamento, alinhamento, margens</string>
+    <string name="settings_wallpaper">Papel de parede</string>
+    <string name="settings_wallpaper_summary">Tema, efeitos, escurecimento, desfoque</string>
+    <string name="settings_animations">Animações</string>
+    <string name="settings_animations_summary">Estilo de animação da barra lateral e controles</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_notifications_summary">Modo de badge, gestos de deslizar</string>
+    <string name="settings_home">Início</string>
+    <string name="settings_home_summary">Favoritos, ações do rodapé, acessos da tela inicial</string>
+    <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Slots de widget, pilhas deslizáveis, tamanho, controles</string>
+    <string name="settings_menu_title">Configurações do launcher</string>
+    <string name="settings_language_title">Idioma</string>
+    <string name="settings_language_summary">Usar o idioma do sistema quando houver suporte ou
+        forçar
+        inglês.</string>
+    <string name="settings_backup_title">Backup e restauração</string>
+    <string name="settings_backup_summary">Exporte as preferências do launcher para um arquivo JSON
+        ou restaure-as
+        mais tarde. As posições dos widgets são incluídas, mas só são restauradas quando os vínculos
+        ainda existem neste dispositivo.</string>
+    <string name="settings_notifications_hint">A contagem de badges e o texto das notificações são
+        configurados
+        aqui. Reabra o acesso às notificações nesta tela se as atualizações pararem.</string>
+    <string name="settings_home_hint">Gerencie favoritos, ações do rodapé e acessos da tela inicial
+        aqui.</string>
+    <string name="settings_widgets_hint">Gerencie slots de widget, adicione vários widgets ao mesmo
+        slot
+        e deslize entre widgets empilhados na tela inicial.</string>
+    <string name="widget_space_hint">Isso controla quanto espaço vertical os widgets podem usar na
+        tela
+        inicial antes que a lista de apps assuma.</string>
+    <string name="widget_bind_denied">O vínculo do widget foi negado. Verifique as configurações do
+        dispositivo.</string>
+    <string name="widget_bind_not_supported">O vínculo de widgets não é compatível neste
+        dispositivo.</string>
+    <string name="hide_status_bar_label">Ocultar barra de status</string>
+    <string name="footer_action_slot_label">Ação do rodapé %1$d</string>
+    <string name="footer_action_not_set">Não definido</string>
+    <string name="footer_action_unavailable">App indisponível</string>
+    <string name="footer_action_choose">Escolher</string>
+    <string name="footer_action_clear">Limpar</string>
+    <string name="footer_action_pick_title">Escolher ação rápida</string>
+    <string name="footer_action_pick_app_title">Escolher app</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Ações rápidas do rodapé</string>
+    <string name="footer_quick_actions_summary">Escolha até três ícones de rodapé para a tela
+        inicial.
+        Toque e segure um ícone do rodapé para reconfigurar seu slot ou toque e segure um espaço
+        vazio da tela inicial para abrir as configurações do launcher quando todos os slots
+        estiverem
+        vazios.</string>
+    <string name="footer_notifications_title">Notificações do rodapé</string>
+    <string name="footer_show_labels">Mostrar rótulos do rodapé</string>
+    <string name="quick_action_launcher_settings">Configurações do launcher</string>
+    <string name="quick_action_system_settings">Configurações do sistema</string>
+    <string name="quick_action_wifi_settings">Configurações de Wi-Fi</string>
+    <string name="quick_action_bluetooth_settings">Configurações de Bluetooth</string>
+    <string name="quick_action_display_settings">Configurações de tela</string>
+    <string name="quick_action_app_settings">Configurações do app</string>
+    <string name="quick_action_open_app">Abrir app…</string>
+    <string name="backup_settings_button">Backup das configurações</string>
+    <string name="backup_settings_success">Backup das configurações salvo.</string>
+    <string name="backup_settings_failed">Não foi possível salvar o backup das configurações.</string>
+    <string name="backup_settings_share_title">Backup salvo</string>
+    <string name="backup_settings_share_message">O backup das configurações está pronto.
+        Compartilhe-o agora
+        pela folha de compartilhamento do sistema se quiser movê-lo para outro dispositivo.</string>
+    <string name="backup_settings_share_action">Compartilhar</string>
+    <string name="backup_settings_share_chooser_title">Compartilhar backup das configurações</string>
+    <string name="backup_settings_share_failed">Backup salvo, mas o compartilhamento não está
+        disponível neste
+        dispositivo.</string>
+    <string name="restore_settings_success">Configurações restauradas.</string>
+    <string name="restore_settings_failed">Não foi possível restaurar as configurações.</string>
+    <string name="restore_settings_button">Restaurar configurações</string>
+    <string name="restore_settings_invalid">Esse arquivo não é um backup válido do launcher.</string>
+    <string name="restore_settings_incompatible">Esse backup foi criado por uma versão do launcher
+        sem suporte.</string>
+    <string name="restore_settings_confirm_title">Restaurar configurações</string>
+    <string name="restore_settings_confirm_message">Restaurar %2$d configurações de %1$s? Isso
+        substitui
+        as preferências salvas do launcher. As posições dos widgets só são restauradas quando seus
+        vínculos ainda existem neste dispositivo.</string>
+    <string name="restore_settings_confirm_action">Restaurar</string>
+    <string name="restore_settings_selected_file">o backup selecionado</string>
+    <string name="option_default">Padrão</string>
+    <string name="option_light">Claro</string>
+    <string name="option_thin">Fina</string>
+    <string name="option_condensed">Condensada</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">TTF personalizado</string>
+    <string name="option_compact">Compacto</string>
+    <string name="option_normal">Normal</string>
+    <string name="option_spacious">Espaçado</string>
+    <string name="option_large">Grande</string>
+    <string name="option_left">Esquerda</string>
+    <string name="option_center">Centro</string>
+    <string name="option_dark">Escuro</string>
+    <string name="option_follow_system">Seguir o sistema</string>
+    <string name="option_system_default">Padrão do sistema</string>
+    <string name="option_english">Inglês</string>
+    <string name="option_darken">Escurecer</string>
+    <string name="option_blur">Desfoque</string>
+    <string name="option_indigo">Índigo</string>
+    <string name="option_green">Verde</string>
+    <string name="option_red">Vermelho</string>
+    <string name="option_purple">Roxo</string>
+    <string name="option_teal">Verde-azulado</string>
+    <string name="option_orange">Laranja</string>
+    <string name="option_wave_zoom">Onda / Zoom</string>
+    <string name="option_highlight">Destaque</string>
+    <string name="option_fade">Esmaecimento</string>
+    <string name="option_badge_count">Contagem de badges</string>
+    <string name="option_notification_text">Texto da notificação</string>
+    <string name="option_off">Desativado</string>
+    <string name="block_count_option_default">%1$d (padrão)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

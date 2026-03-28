@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Sök</string>
+    <string name="search_hint">Sök appar…</string>
+    <string name="favorites_section_title">Favoriter</string>
+    <string name="apps_section_title">Alla appar</string>
+    <string name="launch_failed">Det gick inte att öppna appen.</string>
+    <string name="search_unavailable">Sökning är inte tillgänglig på den här enheten.</string>
+    <string name="settings_label">Inställningar</string>
+    <string name="wallpaper_darkness_label">Mörker</string>
+    <string name="font_label">Teckensnitt</string>
+    <string name="font_size_label">Teckenstorlek</string>
+    <string name="spacing_label">Objektavstånd</string>
+    <string name="theme_label">Tema</string>
+    <string name="notification_mode_label">Notifieringsläge</string>
+    <string name="custom_font_label">Läs in anpassat teckensnitt (TTF)</string>
+    <string name="wallpaper_select_label">Välj bakgrund</string>
+    <string name="action_app_info">Appinfo</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Avinstallera</string>
+    <string name="notification_access_title">Aviseringsåtkomst</string>
+    <string name="notification_access_message">För att visa notifieringsmärken behöver launchern
+        behörighet för aviseringsåtkomst.</string>
+    <string name="grant">Tillåt</string>
+    <string name="cancel">Avbryt</string>
+    <string name="add_widget">Lägg till widget</string>
+    <string name="remove_widget">Ta bort widget</string>
+    <string name="widget_pick_title">Välj widget</string>
+    <string name="widget_no_providers">Inga widgets tillgängliga</string>
+    <string name="widget_bind_failed">Det gick inte att lägga till widgeten</string>
+    <string name="widget_manage_label">Hantera widgets</string>
+    <string name="widget_empty_hint">Tryck länge för att lägga till widgets</string>
+    <string name="widget_height_label">Höjd</string>
+    <string name="widget_remove_label">Ta bort</string>
+    <string name="widget_none_label">Inga widgets tillagda</string>
+    <string name="widget_full_width_label">Full bredd</string>
+    <string name="widget_settings_shortcut_label">Widgetinställningar</string>
+    <string name="widget_controls_label">Kontroller</string>
+    <string name="widget_controls_unavailable">Den här widgeten erbjuder inga extra kontroller.</string>
+    <string name="widget_slot_label">Widgetplats %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Svep åt vänster eller höger på startskärmen för att växla
+        mellan
+        de %1$d widgetarna i den här platsen.</string>
+    <string name="widget_add_slot_label">Lägg till widgetplats</string>
+    <string name="widget_add_to_slot_label">Lägg till widget i den här platsen</string>
+    <string name="widget_slot_indicator_toggle_label">Visa platsindikator</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Sidofältsanimation</string>
+    <string name="wave_shift_label">Textförskjutning</string>
+    <string name="wave_scale_label">Zoomskala</string>
+    <string name="wave_radius_label">Vågradie</string>
+    <string name="highlight_intensity_label">Markeringsintensitet</string>
+    <string name="fade_radius_label">Toningsradie</string>
+    <string name="wallpaper_effect_label">Bakgrundseffekt</string>
+    <string name="blur_radius_label">Oskärperadie</string>
+    <string name="color_tint_label">Färgton</string>
+    <string name="notif_swipe_label">Svep för att avfärda notifieringar</string>
+    <string name="alignment_label">Innehållsjustering</string>
+    <string name="horizontal_margin_label">Horisontell marginal</string>
+    <string name="vertical_margin_label">Vertikal marginal</string>
+    <string name="block_count_label">Rader på startskärmen</string>
+    <string name="favorites_label">Favoriter</string>
+    <string name="favorites_select_label">Välj favoriter</string>
+    <string name="favorites_add_label">Lägg till favorit</string>
+    <string name="favorites_manage_hint">Granska den aktuella favoritlistan här, ändra ordningen
+        direkt
+        och lägg till fler appar med deras riktiga ikoner.</string>
+    <string name="favorites_layout_label">Favoritlayout</string>
+    <string name="favorites_layout_hint">Adaptivt rutnät använder upp till 2 kolumner på telefoner i
+        stående läge,
+        utökas i liggande läge och behåller den gamla enkolumnslayouten.</string>
+    <string name="favorites_layout_adaptive">Adaptivt rutnät</string>
+    <string name="favorites_layout_single">En kolumn</string>
+    <string name="favorites_min_max">Välj 3 till 10 favoriter</string>
+    <string name="favorites_picker_empty">Det finns inga fler startbara appar att lägga till.</string>
+    <string name="remove_favorite_label">Ta bort favorit</string>
+    <string name="move_up_label">Flytta upp</string>
+    <string name="move_down_label">Flytta ned</string>
+    <string name="notification_not_granted">Aviseringsåtkomst har inte beviljats. Tryck för att
+        aktivera.</string>
+    <string name="action_uninstall_failed">Det gick inte att avinstallera appen.</string>
+    <string name="icon_size_label">Ikonstorlek</string>
+    <string name="icon_pack_label">Ikonpaket</string>
+    <string name="nerd_font_label">Nerd Font-ikoner</string>
+    <string name="nerd_font_pick_label">Välj Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Ikonvisning</string>
+    <string name="icon_mode_regular">Vanliga ikoner</string>
+    <string name="icon_mode_nerd">Nerd Font-ikoner</string>
+    <string name="icon_mode_none">Inga ikoner</string>
+    <string name="settings_appearance">Utseende</string>
+    <string name="settings_appearance_summary">Teckensnitt, storlek, avstånd, justering, marginaler</string>
+    <string name="settings_wallpaper">Bakgrund</string>
+    <string name="settings_wallpaper_summary">Tema, effekter, mörker, oskärpa</string>
+    <string name="settings_animations">Animationer</string>
+    <string name="settings_animations_summary">Sidofältets animationsstil och kontroller</string>
+    <string name="settings_notifications">Notifieringar</string>
+    <string name="settings_notifications_summary">Märkesläge, svepgester</string>
+    <string name="settings_home">Hem</string>
+    <string name="settings_home_summary">Favoriter, sidfotsåtgärder, ingångar på startskärmen</string>
+    <string name="settings_widgets">Widgets</string>
+    <string name="settings_widgets_summary">Widgetplatser, svepstaplar, storlek, kontroller</string>
+    <string name="settings_menu_title">Launcher-inställningar</string>
+    <string name="settings_language_title">Språk</string>
+    <string name="settings_language_summary">Använd systemspråket när det stöds, eller tvinga
+        engelska.</string>
+    <string name="settings_backup_title">Säkerhetskopiera och återställ</string>
+    <string name="settings_backup_summary">Exportera launcher-inställningar till en JSON-fil eller
+        återställ dem
+        senare. Widgetplaceringar följer med, men återställs bara om deras bindningar fortfarande
+        finns på den här enheten.</string>
+    <string name="settings_notifications_hint">Antal märken och notifieringstext ställs in här.
+        Öppna aviseringstillgång
+        igen från den här skärmen om uppdateringar slutar komma.</string>
+    <string name="settings_home_hint">Hantera favoriter, sidfotsåtgärder och ingångar på
+        startskärmen här.</string>
+    <string name="settings_widgets_hint">Hantera widgetplatser, lägg till flera widgets i samma
+        plats
+        och svep mellan staplade widgets från startskärmen.</string>
+    <string name="widget_space_hint">Det här styr hur mycket vertikalt utrymme widgets får använda
+        på
+        startskärmen innan applistan tar över.</string>
+    <string name="widget_bind_denied">Widgetbindning nekades. Kontrollera enhetsinställningarna.</string>
+    <string name="widget_bind_not_supported">Widgetbindning stöds inte på den här enheten.</string>
+    <string name="hide_status_bar_label">Dölj statusfält</string>
+    <string name="footer_action_slot_label">Sidfotsåtgärd %1$d</string>
+    <string name="footer_action_not_set">Inte inställd</string>
+    <string name="footer_action_unavailable">Appen är inte tillgänglig</string>
+    <string name="footer_action_choose">Välj</string>
+    <string name="footer_action_clear">Rensa</string>
+    <string name="footer_action_pick_title">Välj snabbåtgärd</string>
+    <string name="footer_action_pick_app_title">Välj app</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Snabbåtgärder i sidfot</string>
+    <string name="footer_quick_actions_summary">Välj upp till tre sidfotsikoner för startskärmen.
+        Tryck länge på en sidfotsikon för att konfigurera platsen igen, eller tryck länge på en
+        tom yta på startskärmen för att öppna launcher-inställningar när alla platser är tomma.</string>
+    <string name="footer_notifications_title">Sidfotsnotifieringar</string>
+    <string name="footer_show_labels">Visa sidfotsetiketter</string>
+    <string name="quick_action_launcher_settings">Launcher-inställningar</string>
+    <string name="quick_action_system_settings">Systeminställningar</string>
+    <string name="quick_action_wifi_settings">Wi-Fi-inställningar</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth-inställningar</string>
+    <string name="quick_action_display_settings">Skärminställningar</string>
+    <string name="quick_action_app_settings">Appinställningar</string>
+    <string name="quick_action_open_app">Öppna app…</string>
+    <string name="backup_settings_button">Säkerhetskopiera inställningar</string>
+    <string name="backup_settings_success">Säkerhetskopia av inställningar sparad.</string>
+    <string name="backup_settings_failed">Det gick inte att spara säkerhetskopian av inställningar.</string>
+    <string name="backup_settings_share_title">Säkerhetskopia sparad</string>
+    <string name="backup_settings_share_message">Säkerhetskopian av dina inställningar är klar. Dela
+        den nu
+        via systemets delningspanel om du vill flytta den till en annan enhet.</string>
+    <string name="backup_settings_share_action">Dela</string>
+    <string name="backup_settings_share_chooser_title">Dela säkerhetskopia av inställningar</string>
+    <string name="backup_settings_share_failed">Säkerhetskopian sparades, men delning är inte
+        tillgänglig på
+        den här enheten.</string>
+    <string name="restore_settings_success">Inställningar återställda.</string>
+    <string name="restore_settings_failed">Det gick inte att återställa inställningarna.</string>
+    <string name="restore_settings_button">Återställ inställningar</string>
+    <string name="restore_settings_invalid">Den filen är inte en giltig launcher-säkerhetskopia.</string>
+    <string name="restore_settings_incompatible">Den säkerhetskopian skapades av en launcher-version
+        som inte stöds.</string>
+    <string name="restore_settings_confirm_title">Återställ inställningar</string>
+    <string name="restore_settings_confirm_message">Återställa %2$d inställningar från %1$s? Det här
+        ersätter
+        dina sparade launcher-inställningar. Widgetplaceringar återställs bara om deras bindningar
+        fortfarande finns på den här enheten.</string>
+    <string name="restore_settings_confirm_action">Återställ</string>
+    <string name="restore_settings_selected_file">den valda säkerhetskopian</string>
+    <string name="option_default">Standard</string>
+    <string name="option_light">Ljus</string>
+    <string name="option_thin">Tunn</string>
+    <string name="option_condensed">Kondenserad</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">Anpassad TTF</string>
+    <string name="option_compact">Kompakt</string>
+    <string name="option_normal">Normal</string>
+    <string name="option_spacious">Rymlig</string>
+    <string name="option_large">Stor</string>
+    <string name="option_left">Vänster</string>
+    <string name="option_center">Mitten</string>
+    <string name="option_dark">Mörk</string>
+    <string name="option_follow_system">Följ systemet</string>
+    <string name="option_system_default">Systemstandard</string>
+    <string name="option_english">Engelska</string>
+    <string name="option_darken">Mörka ned</string>
+    <string name="option_blur">Oskärpa</string>
+    <string name="option_indigo">Indigo</string>
+    <string name="option_green">Grön</string>
+    <string name="option_red">Röd</string>
+    <string name="option_purple">Lila</string>
+    <string name="option_teal">Blågrön</string>
+    <string name="option_orange">Orange</string>
+    <string name="option_wave_zoom">Våg / Zoom</string>
+    <string name="option_highlight">Markering</string>
+    <string name="option_fade">Tona</string>
+    <string name="option_badge_count">Antal märken</string>
+    <string name="option_notification_text">Notifieringstext</string>
+    <string name="option_off">Av</string>
+    <string name="block_count_option_default">%1$d (standard)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

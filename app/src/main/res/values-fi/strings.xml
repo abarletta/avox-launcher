@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Hae</string>
+    <string name="search_hint">Hae sovelluksia…</string>
+    <string name="favorites_section_title">Suosikit</string>
+    <string name="apps_section_title">Kaikki sovellukset</string>
+    <string name="launch_failed">Sovellusta ei voitu avata.</string>
+    <string name="search_unavailable">Haku ei ole käytettävissä tällä laitteella.</string>
+    <string name="settings_label">Asetukset</string>
+    <string name="wallpaper_darkness_label">Tummuus</string>
+    <string name="font_label">Fontti</string>
+    <string name="font_size_label">Fonttikoko</string>
+    <string name="spacing_label">Kohteiden väli</string>
+    <string name="theme_label">Teema</string>
+    <string name="notification_mode_label">Ilmoitustila</string>
+    <string name="custom_font_label">Lataa oma fontti (TTF)</string>
+    <string name="wallpaper_select_label">Valitse taustakuva</string>
+    <string name="action_app_info">Sovellustiedot</string>
+    <string name="action_play_store">Play Kauppa</string>
+    <string name="action_uninstall">Poista asennus</string>
+    <string name="notification_access_title">Ilmoitusoikeus</string>
+    <string name="notification_access_message">Ilmoitusmerkkien näyttäminen edellyttää, että
+        launcherilla on
+        ilmoitusoikeus.</string>
+    <string name="grant">Myönnä</string>
+    <string name="cancel">Peruuta</string>
+    <string name="add_widget">Lisää widget</string>
+    <string name="remove_widget">Poista widget</string>
+    <string name="widget_pick_title">Valitse widget</string>
+    <string name="widget_no_providers">Widgetejä ei ole saatavilla</string>
+    <string name="widget_bind_failed">Widgetin lisääminen epäonnistui</string>
+    <string name="widget_manage_label">Hallitse widgetejä</string>
+    <string name="widget_empty_hint">Lisää widgetejä painamalla pitkään</string>
+    <string name="widget_height_label">Korkeus</string>
+    <string name="widget_remove_label">Poista</string>
+    <string name="widget_none_label">Widgetejä ei ole lisätty</string>
+    <string name="widget_full_width_label">Täysi leveys</string>
+    <string name="widget_settings_shortcut_label">Widgetin asetukset</string>
+    <string name="widget_controls_label">Säätimet</string>
+    <string name="widget_controls_unavailable">Tämä widget ei tarjoa lisäsäätimiä.</string>
+    <string name="widget_slot_label">Widget-paikka %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Vaihda tämän paikan %1$d widgetin välillä pyyhkäisemällä
+        aloitusnäytössä vasemmalle tai oikealle.</string>
+    <string name="widget_add_slot_label">Lisää widget-paikka</string>
+    <string name="widget_add_to_slot_label">Lisää widget tähän paikkaan</string>
+    <string name="widget_slot_indicator_toggle_label">Näytä paikan ilmaisin</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Sivupalkin animaatio</string>
+    <string name="wave_shift_label">Tekstin siirtymä</string>
+    <string name="wave_scale_label">Zoomausaste</string>
+    <string name="wave_radius_label">Aaltosäde</string>
+    <string name="highlight_intensity_label">Korostuksen voimakkuus</string>
+    <string name="fade_radius_label">Häivytyssäde</string>
+    <string name="wallpaper_effect_label">Taustakuvan tehoste</string>
+    <string name="blur_radius_label">Sumennussäde</string>
+    <string name="color_tint_label">Värisävy</string>
+    <string name="notif_swipe_label">Hylkää ilmoitukset pyyhkäisemällä</string>
+    <string name="alignment_label">Sisällön tasaus</string>
+    <string name="horizontal_margin_label">Vaakasuuntainen marginaali</string>
+    <string name="vertical_margin_label">Pystysuuntainen marginaali</string>
+    <string name="block_count_label">Aloitusnäytön rivit</string>
+    <string name="favorites_label">Suosikit</string>
+    <string name="favorites_select_label">Valitse suosikit</string>
+    <string name="favorites_add_label">Lisää suosikki</string>
+    <string name="favorites_manage_hint">Tarkista nykyinen suosikkilista täällä, muuta järjestystä
+        suoraan ja lisää lisää sovelluksia niiden oikeilla kuvakkeilla.</string>
+    <string name="favorites_layout_label">Suosikkien asettelu</string>
+    <string name="favorites_layout_hint">Mukautuva ruudukko käyttää puhelimissa pystyasennossa
+        enintään 2 saraketta,
+        laajenee vaaka-asennossa ja säilyttää vanhan yhden sarakkeen asettelun.</string>
+    <string name="favorites_layout_adaptive">Mukautuva ruudukko</string>
+    <string name="favorites_layout_single">Yksi sarake</string>
+    <string name="favorites_min_max">Valitse 3–10 suosikkia</string>
+    <string name="favorites_picker_empty">Lisättäviä käynnistettäviä sovelluksia ei ole enää.</string>
+    <string name="remove_favorite_label">Poista suosikki</string>
+    <string name="move_up_label">Siirrä ylös</string>
+    <string name="move_down_label">Siirrä alas</string>
+    <string name="notification_not_granted">Ilmoitusoikeutta ei ole myönnetty. Ota käyttöön
+        napauttamalla.</string>
+    <string name="action_uninstall_failed">Sovelluksen poistaminen epäonnistui.</string>
+    <string name="icon_size_label">Kuvakekoko</string>
+    <string name="icon_pack_label">Kuvakepaketti</string>
+    <string name="nerd_font_label">Nerd Font -kuvakkeet</string>
+    <string name="nerd_font_pick_label">Valitse Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Kuvakenäyttö</string>
+    <string name="icon_mode_regular">Tavalliset kuvakkeet</string>
+    <string name="icon_mode_nerd">Nerd Font -kuvakkeet</string>
+    <string name="icon_mode_none">Ei kuvakkeita</string>
+    <string name="settings_appearance">Ulkoasu</string>
+    <string name="settings_appearance_summary">Fontti, koko, väli, tasaus, marginaalit</string>
+    <string name="settings_wallpaper">Taustakuva</string>
+    <string name="settings_wallpaper_summary">Teema, tehosteet, tummuus, sumennus</string>
+    <string name="settings_animations">Animaatiot</string>
+    <string name="settings_animations_summary">Sivupalkin animaatiotyyli ja säätimet</string>
+    <string name="settings_notifications">Ilmoitukset</string>
+    <string name="settings_notifications_summary">Merkkitila, pyyhkäisyeleet</string>
+    <string name="settings_home">Koti</string>
+    <string name="settings_home_summary">Suosikit, alatunnisteen toiminnot, aloitusnäytön siirtymät</string>
+    <string name="settings_widgets">Widgetit</string>
+    <string name="settings_widgets_summary">Widget-paikat, pyyhkäisypinot, koko, säätimet</string>
+    <string name="settings_menu_title">Launcherin asetukset</string>
+    <string name="settings_language_title">Kieli</string>
+    <string name="settings_language_summary">Käytä järjestelmän kieltä, kun sitä tuetaan, tai pakota
+        englanti.</string>
+    <string name="settings_backup_title">Varmuuskopiointi ja palautus</string>
+    <string name="settings_backup_summary">Vie launcherin asetukset JSON-tiedostoon tai palauta ne
+        myöhemmin.
+        Widgetien sijainnit sisältyvät mukaan, mutta ne palautetaan vain, jos niiden sidokset ovat
+        yhä olemassa tällä laitteella.</string>
+    <string name="settings_notifications_hint">Merkkimäärät ja ilmoitusteksti määritetään täällä.
+        Avaa
+        ilmoitusoikeus uudelleen tältä näytöltä, jos päivitykset lakkaavat toimimasta.</string>
+    <string name="settings_home_hint">Hallitse suosikkeja, alatunnisteen toimintoja ja aloitusnäytön
+        siirtymiä täältä.</string>
+    <string name="settings_widgets_hint">Hallitse widget-paikkoja, lisää useita widgetejä samaan
+        paikkaan
+        ja pyyhkäise pinottujen widgetien välillä aloitusnäytöstä.</string>
+    <string name="widget_space_hint">Tämä määrittää, kuinka paljon pystysuuntaista tilaa widgetit
+        saavat
+        käyttää aloitusnäytössä ennen kuin sovelluslista ottaa tilan käyttöönsä.</string>
+    <string name="widget_bind_denied">Widgetin sidonta evättiin. Tarkista laitteen asetukset.</string>
+    <string name="widget_bind_not_supported">Widgetin sidontaa ei tueta tällä laitteella.</string>
+    <string name="hide_status_bar_label">Piilota tilarivi</string>
+    <string name="footer_action_slot_label">Alatunnisteen toiminto %1$d</string>
+    <string name="footer_action_not_set">Ei asetettu</string>
+    <string name="footer_action_unavailable">Sovellus ei ole käytettävissä</string>
+    <string name="footer_action_choose">Valitse</string>
+    <string name="footer_action_clear">Tyhjennä</string>
+    <string name="footer_action_pick_title">Valitse pikatoiminto</string>
+    <string name="footer_action_pick_app_title">Valitse sovellus</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Alatunnisteen pikatoiminnot</string>
+    <string name="footer_quick_actions_summary">Valitse enintään kolme alatunnisteen kuvaketta
+        aloitusnäyttöön.
+        Pidä alatunnisteen kuvaketta painettuna, jos haluat määrittää sen paikan uudelleen, tai pidä
+        aloitusnäytön tyhjää kohtaa painettuna avataksesi launcherin asetukset, kun kaikki paikat
+        on tyhjennetty.</string>
+    <string name="footer_notifications_title">Alatunnisteen ilmoitukset</string>
+    <string name="footer_show_labels">Näytä alatunnisteen nimet</string>
+    <string name="quick_action_launcher_settings">Launcherin asetukset</string>
+    <string name="quick_action_system_settings">Järjestelmäasetukset</string>
+    <string name="quick_action_wifi_settings">Wi-Fi-asetukset</string>
+    <string name="quick_action_bluetooth_settings">Bluetooth-asetukset</string>
+    <string name="quick_action_display_settings">Näyttöasetukset</string>
+    <string name="quick_action_app_settings">Sovellusasetukset</string>
+    <string name="quick_action_open_app">Avaa sovellus…</string>
+    <string name="backup_settings_button">Varmuuskopioi asetukset</string>
+    <string name="backup_settings_success">Asetusten varmuuskopio tallennettu.</string>
+    <string name="backup_settings_failed">Asetusten varmuuskopion tallentaminen epäonnistui.</string>
+    <string name="backup_settings_share_title">Varmuuskopio tallennettu</string>
+    <string name="backup_settings_share_message">Asetustesi varmuuskopio on valmis. Jaa se nyt
+        järjestelmän
+        jakonäkymässä, jos haluat siirtää sen toiseen laitteeseen.</string>
+    <string name="backup_settings_share_action">Jaa</string>
+    <string name="backup_settings_share_chooser_title">Jaa asetusten varmuuskopio</string>
+    <string name="backup_settings_share_failed">Varmuuskopio tallennettiin, mutta jakaminen ei ole
+        käytettävissä
+        tällä laitteella.</string>
+    <string name="restore_settings_success">Asetukset palautettu.</string>
+    <string name="restore_settings_failed">Asetusten palauttaminen epäonnistui.</string>
+    <string name="restore_settings_button">Palauta asetukset</string>
+    <string name="restore_settings_invalid">Tiedosto ei ole kelvollinen launcherin varmuuskopio.</string>
+    <string name="restore_settings_incompatible">Varmuuskopio on luotu launcher-versiolla, jota ei
+        tueta.</string>
+    <string name="restore_settings_confirm_title">Palauta asetukset</string>
+    <string name="restore_settings_confirm_message">Palautetaanko %2$d asetusta kohteesta %1$s? Tämä
+        korvaa
+        tallennetut launcherin asetuksesi. Widgetien sijainnit palautetaan vain, jos niiden sidokset
+        ovat yhä olemassa tällä laitteella.</string>
+    <string name="restore_settings_confirm_action">Palauta</string>
+    <string name="restore_settings_selected_file">valittu varmuuskopio</string>
+    <string name="option_default">Oletus</string>
+    <string name="option_light">Vaalea</string>
+    <string name="option_thin">Ohut</string>
+    <string name="option_condensed">Tiivistetty</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">Mukautettu TTF</string>
+    <string name="option_compact">Tiivis</string>
+    <string name="option_normal">Normaali</string>
+    <string name="option_spacious">Väljä</string>
+    <string name="option_large">Suuri</string>
+    <string name="option_left">Vasen</string>
+    <string name="option_center">Keskitetty</string>
+    <string name="option_dark">Tumma</string>
+    <string name="option_follow_system">Seuraa järjestelmää</string>
+    <string name="option_system_default">Järjestelmän oletus</string>
+    <string name="option_english">Englanti</string>
+    <string name="option_darken">Tummenna</string>
+    <string name="option_blur">Sumenna</string>
+    <string name="option_indigo">Indigo</string>
+    <string name="option_green">Vihreä</string>
+    <string name="option_red">Punainen</string>
+    <string name="option_purple">Violetti</string>
+    <string name="option_teal">Sinivihreä</string>
+    <string name="option_orange">Oranssi</string>
+    <string name="option_wave_zoom">Aalto / Zoom</string>
+    <string name="option_highlight">Korostus</string>
+    <string name="option_fade">Häivytys</string>
+    <string name="option_badge_count">Merkkien määrä</string>
+    <string name="option_notification_text">Ilmoitusteksti</string>
+    <string name="option_off">Pois</string>
+    <string name="block_count_option_default">%1$d (oletus)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>

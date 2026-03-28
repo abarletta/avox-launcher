@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_button_label">Cerca</string>
+    <string name="search_hint">Cerca app…</string>
+    <string name="favorites_section_title">Preferiti</string>
+    <string name="apps_section_title">Tutte le app</string>
+    <string name="launch_failed">Impossibile aprire l\'app.</string>
+    <string name="search_unavailable">La ricerca non è disponibile su questo dispositivo.</string>
+    <string name="settings_label">Impostazioni</string>
+    <string name="wallpaper_darkness_label">Oscurità</string>
+    <string name="font_label">Carattere</string>
+    <string name="font_size_label">Dimensione carattere</string>
+    <string name="spacing_label">Spaziatura elementi</string>
+    <string name="theme_label">Tema</string>
+    <string name="notification_mode_label">Modalità notifiche</string>
+    <string name="custom_font_label">Carica carattere personalizzato (TTF)</string>
+    <string name="wallpaper_select_label">Seleziona sfondo</string>
+    <string name="action_app_info">Informazioni app</string>
+    <string name="action_play_store">Play Store</string>
+    <string name="action_uninstall">Disinstalla</string>
+    <string name="notification_access_title">Accesso alle notifiche</string>
+    <string name="notification_access_message">Per mostrare i badge di notifica, il launcher
+        richiede
+        l\'autorizzazione di accesso alle notifiche.</string>
+    <string name="grant">Concedi</string>
+    <string name="cancel">Annulla</string>
+    <string name="add_widget">Aggiungi widget</string>
+    <string name="remove_widget">Rimuovi widget</string>
+    <string name="widget_pick_title">Seleziona widget</string>
+    <string name="widget_no_providers">Nessun widget disponibile</string>
+    <string name="widget_bind_failed">Impossibile aggiungere il widget</string>
+    <string name="widget_manage_label">Gestisci widget</string>
+    <string name="widget_empty_hint">Tieni premuto per aggiungere widget</string>
+    <string name="widget_height_label">Altezza</string>
+    <string name="widget_remove_label">Rimuovi</string>
+    <string name="widget_none_label">Nessun widget aggiunto</string>
+    <string name="widget_full_width_label">Larghezza intera</string>
+    <string name="widget_settings_shortcut_label">Impostazioni widget</string>
+    <string name="widget_controls_label">Controlli</string>
+    <string name="widget_controls_unavailable">Questo widget non espone controlli aggiuntivi.</string>
+    <string name="widget_slot_label">Slot widget %1$d</string>
+    <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
+    <string name="widget_slot_swipe_hint">Scorri a sinistra o a destra nella schermata Home per
+        passare tra
+        i %1$d widget in questo slot.</string>
+    <string name="widget_add_slot_label">Aggiungi slot widget</string>
+    <string name="widget_add_to_slot_label">Aggiungi widget a questo slot</string>
+    <string name="widget_slot_indicator_toggle_label">Mostra indicatore slot</string>
+    <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
+    <string name="widget_picker_details_app_only">%1$s</string>
+    <string name="animation_style_label">Animazione barra laterale</string>
+    <string name="wave_shift_label">Spostamento testo</string>
+    <string name="wave_scale_label">Scala zoom</string>
+    <string name="wave_radius_label">Raggio onda</string>
+    <string name="highlight_intensity_label">Intensità evidenziazione</string>
+    <string name="fade_radius_label">Raggio dissolvenza</string>
+    <string name="wallpaper_effect_label">Effetto sfondo</string>
+    <string name="blur_radius_label">Raggio sfocatura</string>
+    <string name="color_tint_label">Tinta colore</string>
+    <string name="notif_swipe_label">Scorri per chiudere le notifiche</string>
+    <string name="alignment_label">Allineamento contenuto</string>
+    <string name="horizontal_margin_label">Margine orizzontale</string>
+    <string name="vertical_margin_label">Margine verticale</string>
+    <string name="block_count_label">Righe schermata Home</string>
+    <string name="favorites_label">Preferiti</string>
+    <string name="favorites_select_label">Seleziona preferiti</string>
+    <string name="favorites_add_label">Aggiungi preferito</string>
+    <string name="favorites_manage_hint">Controlla qui l\'elenco attuale dei preferiti,
+        riordinalo direttamente
+        e aggiungi altre app con le loro icone reali.</string>
+    <string name="favorites_layout_label">Layout preferiti</string>
+    <string name="favorites_layout_hint">La griglia adattiva usa fino a 2 colonne sui telefoni in
+        verticale,
+        si espande in orizzontale e mantiene disponibile il vecchio layout a colonna singola.</string>
+    <string name="favorites_layout_adaptive">Griglia adattiva</string>
+    <string name="favorites_layout_single">Colonna singola</string>
+    <string name="favorites_min_max">Seleziona da 3 a 10 preferiti</string>
+    <string name="favorites_picker_empty">Non ci sono altre app avviabili da aggiungere.</string>
+    <string name="remove_favorite_label">Rimuovi preferito</string>
+    <string name="move_up_label">Sposta su</string>
+    <string name="move_down_label">Sposta giù</string>
+    <string name="notification_not_granted">Accesso alle notifiche non concesso. Tocca per
+        abilitarlo.</string>
+    <string name="action_uninstall_failed">Impossibile disinstallare l\'app.</string>
+    <string name="icon_size_label">Dimensione icone</string>
+    <string name="icon_pack_label">Pacchetto icone</string>
+    <string name="nerd_font_label">Icone Nerd Font</string>
+    <string name="nerd_font_pick_label">Seleziona Nerd Font (TTF)</string>
+    <string name="icon_mode_label">Visualizzazione icone</string>
+    <string name="icon_mode_regular">Icone normali</string>
+    <string name="icon_mode_nerd">Icone Nerd Font</string>
+    <string name="icon_mode_none">Nessuna icona</string>
+    <string name="settings_appearance">Aspetto</string>
+    <string name="settings_appearance_summary">Carattere, dimensione, spaziatura, allineamento,
+        margini</string>
+    <string name="settings_wallpaper">Sfondo</string>
+    <string name="settings_wallpaper_summary">Tema, effetti, oscurità, sfocatura</string>
+    <string name="settings_animations">Animazioni</string>
+    <string name="settings_animations_summary">Stile animazione barra laterale e controlli</string>
+    <string name="settings_notifications">Notifiche</string>
+    <string name="settings_notifications_summary">Modalità badge, gesti di scorrimento</string>
+    <string name="settings_home">Home</string>
+    <string name="settings_home_summary">Preferiti, azioni del footer, accessi Home</string>
+    <string name="settings_widgets">Widget</string>
+    <string name="settings_widgets_summary">Slot widget, pile scorrevoli, dimensioni, controlli</string>
+    <string name="settings_menu_title">Impostazioni launcher</string>
+    <string name="settings_language_title">Lingua</string>
+    <string name="settings_language_summary">Usa la lingua di sistema quando supportata oppure forza
+        l\'inglese.</string>
+    <string name="settings_backup_title">Backup e ripristino</string>
+    <string name="settings_backup_summary">Esporta le preferenze del launcher in un file JSON o
+        ripristinale
+        più tardi. Le posizioni dei widget sono incluse, ma vengono ripristinate solo quando i
+        relativi collegamenti esistono ancora su questo dispositivo.</string>
+    <string name="settings_notifications_hint">Il conteggio dei badge e il testo delle notifiche si
+        configurano
+        qui. Riapri l\'accesso alle notifiche da questa schermata se gli aggiornamenti si
+        interrompono.</string>
+    <string name="settings_home_hint">Gestisci da qui i preferiti, le azioni del footer e gli
+        accessi
+        della schermata Home.</string>
+    <string name="settings_widgets_hint">Gestisci gli slot widget, aggiungi più widget allo stesso
+        slot
+        e scorri tra i widget impilati dalla schermata Home.</string>
+    <string name="widget_space_hint">Questo controlla quanto spazio verticale possono usare i widget
+        nella
+        schermata Home prima che l\'elenco app prenda il sopravvento.</string>
+    <string name="widget_bind_denied">Il collegamento del widget è stato negato. Controlla le
+        impostazioni del dispositivo.</string>
+    <string name="widget_bind_not_supported">Il collegamento dei widget non è supportato su questo
+        dispositivo.</string>
+    <string name="hide_status_bar_label">Nascondi barra di stato</string>
+    <string name="footer_action_slot_label">Azione footer %1$d</string>
+    <string name="footer_action_not_set">Non impostato</string>
+    <string name="footer_action_unavailable">App non disponibile</string>
+    <string name="footer_action_choose">Scegli</string>
+    <string name="footer_action_clear">Cancella</string>
+    <string name="footer_action_pick_title">Scegli azione rapida</string>
+    <string name="footer_action_pick_app_title">Scegli app</string>
+    <string name="footer_badge_overflow">9+</string>
+    <string name="footer_quick_actions_title">Azioni rapide del footer</string>
+    <string name="footer_quick_actions_summary">Scegli fino a tre icone del footer per la schermata
+        Home.
+        Tieni premuta un\'icona del footer per riconfigurare il suo slot, oppure tieni premuto
+        uno
+        spazio vuoto della Home per aprire le impostazioni del launcher quando tutti gli slot sono
+        vuoti.</string>
+    <string name="footer_notifications_title">Notifiche footer</string>
+    <string name="footer_show_labels">Mostra etichette footer</string>
+    <string name="quick_action_launcher_settings">Impostazioni launcher</string>
+    <string name="quick_action_system_settings">Impostazioni di sistema</string>
+    <string name="quick_action_wifi_settings">Impostazioni Wi-Fi</string>
+    <string name="quick_action_bluetooth_settings">Impostazioni Bluetooth</string>
+    <string name="quick_action_display_settings">Impostazioni schermo</string>
+    <string name="quick_action_app_settings">Impostazioni app</string>
+    <string name="quick_action_open_app">Apri app…</string>
+    <string name="backup_settings_button">Backup impostazioni</string>
+    <string name="backup_settings_success">Backup delle impostazioni salvato.</string>
+    <string name="backup_settings_failed">Impossibile salvare il backup delle impostazioni.</string>
+    <string name="backup_settings_share_title">Backup salvato</string>
+    <string name="backup_settings_share_message">Il backup delle impostazioni è pronto. Condividilo
+        ora con
+        il menu di condivisione del sistema se vuoi spostarlo su un altro dispositivo.</string>
+    <string name="backup_settings_share_action">Condividi</string>
+    <string name="backup_settings_share_chooser_title">Condividi backup impostazioni</string>
+    <string name="backup_settings_share_failed">Backup salvato, ma la condivisione non è disponibile
+        su questo
+        dispositivo.</string>
+    <string name="restore_settings_success">Impostazioni ripristinate.</string>
+    <string name="restore_settings_failed">Impossibile ripristinare le impostazioni.</string>
+    <string name="restore_settings_button">Ripristina impostazioni</string>
+    <string name="restore_settings_invalid">Quel file non è un backup valido del launcher.</string>
+    <string name="restore_settings_incompatible">Quel backup è stato creato da una versione del
+        launcher non supportata.</string>
+    <string name="restore_settings_confirm_title">Ripristina impostazioni</string>
+    <string name="restore_settings_confirm_message">Ripristinare %2$d impostazioni da %1$s? Questa
+        operazione
+        sostituisce le preferenze del launcher salvate. Le posizioni dei widget vengono ripristinate
+        solo se i relativi collegamenti esistono ancora su questo dispositivo.</string>
+    <string name="restore_settings_confirm_action">Ripristina</string>
+    <string name="restore_settings_selected_file">il backup selezionato</string>
+    <string name="option_default">Predefinito</string>
+    <string name="option_light">Chiaro</string>
+    <string name="option_thin">Sottile</string>
+    <string name="option_condensed">Condensato</string>
+    <string name="option_serif">Serif</string>
+    <string name="option_monospace">Monospace</string>
+    <string name="option_custom_ttf">TTF personalizzato</string>
+    <string name="option_compact">Compatto</string>
+    <string name="option_normal">Normale</string>
+    <string name="option_spacious">Ampio</string>
+    <string name="option_large">Grande</string>
+    <string name="option_left">Sinistra</string>
+    <string name="option_center">Centro</string>
+    <string name="option_dark">Scuro</string>
+    <string name="option_follow_system">Segui il sistema</string>
+    <string name="option_system_default">Predefinito di sistema</string>
+    <string name="option_english">Inglese</string>
+    <string name="option_darken">Scurisci</string>
+    <string name="option_blur">Sfocatura</string>
+    <string name="option_indigo">Indaco</string>
+    <string name="option_green">Verde</string>
+    <string name="option_red">Rosso</string>
+    <string name="option_purple">Viola</string>
+    <string name="option_teal">Verde acqua</string>
+    <string name="option_orange">Arancione</string>
+    <string name="option_wave_zoom">Onda / Zoom</string>
+    <string name="option_highlight">Evidenziazione</string>
+    <string name="option_fade">Dissolvenza</string>
+    <string name="option_badge_count">Conteggio badge</string>
+    <string name="option_notification_text">Testo notifica</string>
+    <string name="option_off">Disattivato</string>
+    <string name="block_count_option_default">%1$d (predefinito)</string>
+    <string name="block_count_option_number">%1$d</string>
+    <string name="settings_value_sp">%1$dsp</string>
+    <string name="settings_value_dp">%1$ddp</string>
+    <string name="settings_value_percent">%1$d%%</string>
+    <string name="settings_value_multiplier">%1$.1fx</string>
+</resources>
