@@ -9,7 +9,7 @@ Items are added without any particular order, and without consideration for thei
 | [A](#a--settings-backup-and-restore) | Settings Backup and Restore | Implemented | [47f41fc](https://github.com/abarletta/a-launcher/commit/47f41fc1d0ac47db6d59935903f660753f2df198) |
 | [B](#b--access-settings-via-long-press-on-home-screen) | Access Settings via Long‑Press on Home Screen | Implemented | [216a002](https://github.com/abarletta/a-launcher/commit/216a00269c92037813d7faec7a5f627265ee5a2f) |
 | [C](#c--add-quick-actions-to-home-footer) | Add Quick Actions to Home Footer | Implemented | [5c69698](https://github.com/abarletta/a-launcher/commit/5c69698a0f4164f3b284630d0cd73771e269cd8a) |
-| [D](#d--multi-widget-support) | Multi‑Widget Support | Not started | |
+| [D](#d--multi-widget-support) | Multi‑Widget Support | Implemented | [9ec62de](https://github.com/abarletta/a-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08) |
 | [E](#e--multi-column-favorites) | Multi‑Column Favorites | Not started | |
 | [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
 | [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/a-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
@@ -72,7 +72,7 @@ Allow users to add multiple widgets within the same widget slot and switch betwe
 - Requires redesign of widget management and corresponding settings UI.
 
 ### Status
-Not started.
+Implemented in commit [9ec62de9dcd5aa615332aefec9ac2368d3d62b08](https://github.com/abarletta/a-launcher/commit/9ec62de9dcd5aa615332aefec9ac2368d3d62b08).
 
 ---
 
