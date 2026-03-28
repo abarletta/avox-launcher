@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Appearance"
+            android:text="@string/settings_appearance"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Font"
+            android:text="@string/font_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -38,7 +38,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Font Size"
+            android:text="@string/font_size_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -69,7 +69,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Item Spacing"
+            android:text="@string/spacing_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -84,7 +84,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Content Alignment"
+            android:text="@string/alignment_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -99,7 +99,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Horizontal Margin"
+            android:text="@string/horizontal_margin_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -130,7 +130,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Vertical Margin"
+            android:text="@string/vertical_margin_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -161,7 +161,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Icon Display"
+            android:text="@string/icon_mode_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -176,7 +176,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Icon Size"
+            android:text="@string/icon_size_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -207,7 +207,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Icon Pack"
+            android:text="@string/icon_pack_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -223,7 +223,7 @@
             android:id="@+id/nerdFontPickButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pick Nerd Font TTF"
+            android:text="@string/nerd_font_pick_label"
             android:layout_marginBottom="24dp" />
 
         <!-- Hide Status Bar -->

@@ -17,27 +17,6 @@ import androidx.fragment.app.Fragment
 
 class SettingsWallpaperFragment : Fragment() {
 
-    private val themeOptions = listOf(
-        "light" to "Light",
-        "dark" to "Dark",
-        "system" to "Follow System"
-    )
-
-    private val wallpaperEffectOptions = listOf(
-        MainActivity.WALLPAPER_EFFECT_DARKEN to "Darken",
-        MainActivity.WALLPAPER_EFFECT_BLUR to "Blur",
-        MainActivity.WALLPAPER_EFFECT_COLOR to "Color Tint"
-    )
-
-    private val colorTintOptions = listOf(
-        "#1A237E" to "Indigo",
-        "#1B5E20" to "Green",
-        "#B71C1C" to "Red",
-        "#4A148C" to "Purple",
-        "#004D40" to "Teal",
-        "#E65100" to "Orange"
-    )
-
     private val pickWallpaper = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             try {
@@ -55,6 +34,24 @@ class SettingsWallpaperFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val themeOptions = listOf(
+            "light" to getString(R.string.option_light),
+            "dark" to getString(R.string.option_dark),
+            "system" to getString(R.string.option_follow_system)
+        )
+        val wallpaperEffectOptions = listOf(
+            MainActivity.WALLPAPER_EFFECT_DARKEN to getString(R.string.option_darken),
+            MainActivity.WALLPAPER_EFFECT_BLUR to getString(R.string.option_blur),
+            MainActivity.WALLPAPER_EFFECT_COLOR to getString(R.string.color_tint_label)
+        )
+        val colorTintOptions = listOf(
+            "#1A237E" to getString(R.string.option_indigo),
+            "#1B5E20" to getString(R.string.option_green),
+            "#B71C1C" to getString(R.string.option_red),
+            "#4A148C" to getString(R.string.option_purple),
+            "#004D40" to getString(R.string.option_teal),
+            "#E65100" to getString(R.string.option_orange)
+        )
 
         // Theme
         setupSpinner(
@@ -94,10 +91,10 @@ class SettingsWallpaperFragment : Fragment() {
         val darknessValue = view.findViewById<TextView>(R.id.darknessValue)
         val currentDarkness = prefs.getInt(MainActivity.PREF_DARKNESS, MainActivity.DEFAULT_DARKNESS)
         darknessSeekBar.progress = currentDarkness
-        darknessValue.text = "$currentDarkness%"
+        darknessValue.text = getString(R.string.settings_value_percent, currentDarkness)
         darknessSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                darknessValue.text = "$progress%"
+                darknessValue.text = getString(R.string.settings_value_percent, progress)
                 prefs.edit().putInt(MainActivity.PREF_DARKNESS, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -109,10 +106,10 @@ class SettingsWallpaperFragment : Fragment() {
         val blurRadiusValue = view.findViewById<TextView>(R.id.blurRadiusValue)
         val currentBlur = prefs.getInt(MainActivity.PREF_BLUR_RADIUS, MainActivity.DEFAULT_BLUR_RADIUS)
         blurRadiusSeekBar.progress = currentBlur
-        blurRadiusValue.text = "$currentBlur"
+        blurRadiusValue.text = currentBlur.toString()
         blurRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                blurRadiusValue.text = "$progress"
+                blurRadiusValue.text = progress.toString()
                 prefs.edit().putInt(MainActivity.PREF_BLUR_RADIUS, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}

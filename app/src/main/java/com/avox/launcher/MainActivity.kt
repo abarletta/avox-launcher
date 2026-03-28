@@ -2197,6 +2197,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_DARKNESS = "wallpaper_darkness"
         const val PREF_FONT_SIZE = "font_size"
         const val PREF_THEME = "theme"
+        const val PREF_LANGUAGE = "app_language"
         const val PREF_NOTIF_MODE = "notification_mode"
         const val PREF_WIDGET_ORDER = "widget_order"
         const val PREF_WIDGET_IDS_OLD = "widget_ids"

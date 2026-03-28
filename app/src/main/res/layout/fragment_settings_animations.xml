@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Animations"
+            android:text="@string/settings_animations"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sidebar Animation"
+            android:text="@string/animation_style_label"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wave Shift"
+                android:text="@string/wave_shift_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -74,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wave Scale"
+                android:text="@string/wave_scale_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -104,7 +104,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wave Radius"
+                android:text="@string/wave_radius_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -143,7 +143,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Highlight Intensity"
+                android:text="@string/highlight_intensity_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -182,7 +182,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fade Radius"
+                android:text="@string/fade_radius_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />

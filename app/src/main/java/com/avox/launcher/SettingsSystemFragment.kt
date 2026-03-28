@@ -48,18 +48,6 @@ class SettingsSystemFragment : Fragment() {
         val nerdTypeface: Typeface?
     )
 
-    private val notifOptions = listOf(
-        MainActivity.NOTIF_MODE_COUNT to "Badge Count",
-        MainActivity.NOTIF_MODE_TEXT to "Notification Text",
-        MainActivity.NOTIF_MODE_NONE to "Off"
-    )
-
-    private val blockCountOptions = listOf(
-        2 to "2 (default)",
-        3 to "3",
-        4 to "4"
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         screenMode = arguments?.getString(ARG_MODE, MODE_HOME) ?: MODE_HOME
@@ -76,6 +64,16 @@ class SettingsSystemFragment : Fragment() {
         val descriptionView = view.findViewById<TextView>(R.id.systemDescription)
         val titleView = view.findViewById<TextView>(R.id.systemTitle)
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val notifOptions = listOf(
+            MainActivity.NOTIF_MODE_COUNT to getString(R.string.option_badge_count),
+            MainActivity.NOTIF_MODE_TEXT to getString(R.string.option_notification_text),
+            MainActivity.NOTIF_MODE_NONE to getString(R.string.option_off)
+        )
+        val blockCountOptions = listOf(
+            2 to getString(R.string.block_count_option_default, 2),
+            3 to getString(R.string.block_count_option_number, 3),
+            4 to getString(R.string.block_count_option_number, 4)
+        )
 
         val showNotifications = screenMode == MODE_NOTIFICATIONS
         val showWidgets = screenMode == MODE_WIDGETS
@@ -777,7 +775,7 @@ class SettingsSystemFragment : Fragment() {
                     info.minHeight.coerceAtLeast(MainActivity.MIN_WIDGET_HEIGHT_DP)
                 }
                 val heightValue = TextView(requireContext()).apply {
-                    text = "${currentDp}dp"
+                    text = getString(R.string.settings_value_dp, currentDp)
                     setTextColor(Color.WHITE)
                     textSize = 13f
                     minWidth = (40 * density).toInt()
@@ -789,7 +787,7 @@ class SettingsSystemFragment : Fragment() {
                     setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                         override fun onProgressChanged(sb: SeekBar?, progress: Int, fromUser: Boolean) {
                             val dpVal = progress + MainActivity.MIN_WIDGET_HEIGHT_DP
-                            heightValue.text = "${dpVal}dp"
+                            heightValue.text = getString(R.string.settings_value_dp, dpVal)
                             val px = (dpVal * density).toInt()
                             prefs.edit()
                                 .putInt("widget_h_$widgetId", px)

@@ -8,10 +8,13 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.view.LayoutInflater
 import android.view.View
+import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -55,6 +58,33 @@ class SettingsMenuFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val activity = requireActivity() as SettingsActivity
+        val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val languageOptions = listOf(
+            LauncherApp.LANGUAGE_TAG_SYSTEM to getString(R.string.option_system_default),
+            LauncherApp.LANGUAGE_TAG_ENGLISH to getString(R.string.option_english)
+        )
+
+        setupSpinner(
+            view.findViewById(R.id.languageSpinner),
+            languageOptions.map { it.second },
+            languageOptions.indexOfFirst {
+                it.first == (
+                    prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)
+                        ?: LauncherApp.LANGUAGE_TAG_SYSTEM
+                )
+            }.coerceAtLeast(0)
+        ) { pos ->
+            val selectedLanguage = languageOptions[pos].first
+            val savedLanguage = prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)
+                ?: LauncherApp.LANGUAGE_TAG_SYSTEM
+            if (selectedLanguage == savedLanguage) {
+                return@setupSpinner
+            }
+
+            prefs.edit().putString(MainActivity.PREF_LANGUAGE, selectedLanguage).apply()
+            LauncherApp.applyLanguagePreference(requireContext())
+        }
+
         view.findViewById<View>(R.id.cardAppearance).setOnClickListener { activity.showFragment(SettingsAppearanceFragment()) }
         view.findViewById<View>(R.id.cardWallpaper).setOnClickListener { activity.showFragment(SettingsWallpaperFragment()) }
         view.findViewById<View>(R.id.cardAnimations).setOnClickListener { activity.showFragment(SettingsAnimationsFragment()) }
@@ -121,13 +151,14 @@ class SettingsMenuFragment : Fragment() {
     private fun performRestoreSettingsBackup(parsedBackup: ParsedSettingsBackup) {
         try {
             applySettingsBackup(parsedBackup)
+            val languageChanged = LauncherApp.applyLanguagePreference(requireContext())
             Toast.makeText(requireContext(), R.string.restore_settings_success, Toast.LENGTH_SHORT).show()
             if (!parsedBackup.widgetRestorePlanJson.isNullOrBlank()) {
                 startActivity(Intent(requireContext(), MainActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 })
                 requireActivity().finish()
-            } else {
+            } else if (!languageChanged) {
                 requireActivity().recreate()
             }
         } catch (_: Exception) {
@@ -454,6 +485,27 @@ class SettingsMenuFragment : Fragment() {
             }
         }
         return getString(R.string.restore_settings_selected_file)
+    }
+
+    private fun setupSpinner(spinner: Spinner, items: List<String>, selection: Int, onSelected: (Int) -> Unit) {
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.setSelection(selection)
+        var initialized = false
+        spinner.post {
+            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    if (!initialized) {
+                        initialized = true
+                        return
+                    }
+                    onSelected(position)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+        }
     }
 
     private fun isWidgetPreferenceKey(key: String): Boolean {

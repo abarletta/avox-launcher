@@ -16,34 +16,6 @@ import java.io.File
 
 class SettingsAppearanceFragment : Fragment() {
 
-    private val fontOptions = listOf(
-        "sans-serif" to "Default",
-        "sans-serif-light" to "Light",
-        "sans-serif-thin" to "Thin",
-        "sans-serif-condensed" to "Condensed",
-        "serif" to "Serif",
-        "monospace" to "Monospace",
-        MainActivity.CUSTOM_FONT_KEY to "Custom TTF"
-    )
-
-    private val spacingOptions = listOf(
-        4 to "Compact",
-        8 to "Normal",
-        14 to "Spacious",
-        20 to "Large"
-    )
-
-    private val alignmentOptions = listOf(
-        "left" to "Left",
-        "center" to "Center"
-    )
-
-    private val iconModeOptions = listOf(
-        MainActivity.ICON_MODE_REGULAR to "Regular Icons",
-        MainActivity.ICON_MODE_NERD to "Nerd Font Icons",
-        MainActivity.ICON_MODE_NONE to "No Icons"
-    )
-
     private val pickFont = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
             try {
@@ -75,6 +47,30 @@ class SettingsAppearanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val fontOptions = listOf(
+            "sans-serif" to getString(R.string.option_default),
+            "sans-serif-light" to getString(R.string.option_light),
+            "sans-serif-thin" to getString(R.string.option_thin),
+            "sans-serif-condensed" to getString(R.string.option_condensed),
+            "serif" to getString(R.string.option_serif),
+            "monospace" to getString(R.string.option_monospace),
+            MainActivity.CUSTOM_FONT_KEY to getString(R.string.option_custom_ttf)
+        )
+        val spacingOptions = listOf(
+            4 to getString(R.string.option_compact),
+            8 to getString(R.string.option_normal),
+            14 to getString(R.string.option_spacious),
+            20 to getString(R.string.option_large)
+        )
+        val alignmentOptions = listOf(
+            "left" to getString(R.string.option_left),
+            "center" to getString(R.string.option_center)
+        )
+        val iconModeOptions = listOf(
+            MainActivity.ICON_MODE_REGULAR to getString(R.string.icon_mode_regular),
+            MainActivity.ICON_MODE_NERD to getString(R.string.icon_mode_nerd),
+            MainActivity.ICON_MODE_NONE to getString(R.string.icon_mode_none)
+        )
 
         // Font
         setupSpinner(
@@ -95,11 +91,11 @@ class SettingsAppearanceFragment : Fragment() {
         val fontSizeValue = view.findViewById<TextView>(R.id.fontSizeValue)
         val currentFontSize = prefs.getInt(MainActivity.PREF_FONT_SIZE, MainActivity.DEFAULT_FONT_SIZE)
         fontSizeSeekBar.progress = currentFontSize - 12
-        fontSizeValue.text = "${currentFontSize}sp"
+        fontSizeValue.text = getString(R.string.settings_value_sp, currentFontSize)
         fontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val size = progress + 12
-                fontSizeValue.text = "${size}sp"
+                fontSizeValue.text = getString(R.string.settings_value_sp, size)
                 prefs.edit().putInt(MainActivity.PREF_FONT_SIZE, size).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -129,10 +125,10 @@ class SettingsAppearanceFragment : Fragment() {
         val hMarginValue = view.findViewById<TextView>(R.id.hMarginValue)
         val currentHM = prefs.getInt(MainActivity.PREF_H_MARGIN, MainActivity.DEFAULT_H_MARGIN)
         hMarginSeekBar.progress = currentHM
-        hMarginValue.text = "${currentHM}dp"
+        hMarginValue.text = getString(R.string.settings_value_dp, currentHM)
         hMarginSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                hMarginValue.text = "${progress}dp"
+                hMarginValue.text = getString(R.string.settings_value_dp, progress)
                 prefs.edit().putInt(MainActivity.PREF_H_MARGIN, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -144,10 +140,10 @@ class SettingsAppearanceFragment : Fragment() {
         val vMarginValue = view.findViewById<TextView>(R.id.vMarginValue)
         val currentVM = prefs.getInt(MainActivity.PREF_V_MARGIN, MainActivity.DEFAULT_V_MARGIN)
         vMarginSeekBar.progress = currentVM
-        vMarginValue.text = "${currentVM}dp"
+        vMarginValue.text = getString(R.string.settings_value_dp, currentVM)
         vMarginSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                vMarginValue.text = "${progress}dp"
+                vMarginValue.text = getString(R.string.settings_value_dp, progress)
                 prefs.edit().putInt(MainActivity.PREF_V_MARGIN, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -169,11 +165,11 @@ class SettingsAppearanceFragment : Fragment() {
         val iconSizeValue = view.findViewById<TextView>(R.id.iconSizeValue)
         val currentIconSize = prefs.getInt(MainActivity.PREF_ICON_SIZE, MainActivity.DEFAULT_ICON_SIZE)
         iconSizeSeekBar.progress = currentIconSize - 16
-        iconSizeValue.text = "${currentIconSize}dp"
+        iconSizeValue.text = getString(R.string.settings_value_dp, currentIconSize)
         iconSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 val size = progress + 16
-                iconSizeValue.text = "${size}dp"
+                iconSizeValue.text = getString(R.string.settings_value_dp, size)
                 prefs.edit().putInt(MainActivity.PREF_ICON_SIZE, size).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -182,7 +178,7 @@ class SettingsAppearanceFragment : Fragment() {
 
         // Icon pack
         val installedPacks = IconPackResolver.getInstalledPacks(requireContext())
-        val iconPackOptions = mutableListOf("" to "Default")
+    val iconPackOptions = mutableListOf("" to getString(R.string.option_default))
         iconPackOptions.addAll(installedPacks)
         val currentPack = prefs.getString(MainActivity.PREF_ICON_PACK, "") ?: ""
         setupSpinner(

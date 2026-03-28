@@ -14,18 +14,17 @@ import androidx.fragment.app.Fragment
 
 class SettingsAnimationsFragment : Fragment() {
 
-    private val animStyleOptions = listOf(
-        AlphabetSidebar.STYLE_WAVE to "Wave / Zoom",
-        AlphabetSidebar.STYLE_HIGHLIGHT to "Highlight",
-        AlphabetSidebar.STYLE_FADE to "Fade"
-    )
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_settings_animations, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val animStyleOptions = listOf(
+            AlphabetSidebar.STYLE_WAVE to getString(R.string.option_wave_zoom),
+            AlphabetSidebar.STYLE_HIGHLIGHT to getString(R.string.option_highlight),
+            AlphabetSidebar.STYLE_FADE to getString(R.string.option_fade)
+        )
 
         val waveControls = view.findViewById<View>(R.id.waveControlsContainer)
         val highlightControls = view.findViewById<View>(R.id.highlightControlsContainer)
@@ -54,10 +53,10 @@ class SettingsAnimationsFragment : Fragment() {
         val waveShiftValue = view.findViewById<TextView>(R.id.waveShiftValue)
         val currentShift = prefs.getInt(MainActivity.PREF_WAVE_SHIFT, MainActivity.DEFAULT_WAVE_SHIFT)
         waveShiftSeekBar.progress = currentShift
-        waveShiftValue.text = "$currentShift"
+        waveShiftValue.text = currentShift.toString()
         waveShiftSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                waveShiftValue.text = "$progress"
+                waveShiftValue.text = progress.toString()
                 prefs.edit().putInt(MainActivity.PREF_WAVE_SHIFT, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -69,10 +68,10 @@ class SettingsAnimationsFragment : Fragment() {
         val waveScaleValue = view.findViewById<TextView>(R.id.waveScaleValue)
         val currentScale = prefs.getInt(MainActivity.PREF_WAVE_SCALE, MainActivity.DEFAULT_WAVE_SCALE)
         waveScaleSeekBar.progress = currentScale
-        waveScaleValue.text = "${1f + currentScale / 10f}x"
+        waveScaleValue.text = getString(R.string.settings_value_multiplier, 1f + currentScale / 10f)
         waveScaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                waveScaleValue.text = "${1f + progress / 10f}x"
+                waveScaleValue.text = getString(R.string.settings_value_multiplier, 1f + progress / 10f)
                 prefs.edit().putInt(MainActivity.PREF_WAVE_SCALE, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -84,10 +83,10 @@ class SettingsAnimationsFragment : Fragment() {
         val waveRadiusValue = view.findViewById<TextView>(R.id.waveRadiusValue)
         val currentRadius = prefs.getInt(MainActivity.PREF_WAVE_RADIUS, MainActivity.DEFAULT_WAVE_RADIUS)
         waveRadiusSeekBar.progress = currentRadius
-        waveRadiusValue.text = "$currentRadius"
+        waveRadiusValue.text = currentRadius.toString()
         waveRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                waveRadiusValue.text = "$progress"
+                waveRadiusValue.text = progress.toString()
                 prefs.edit().putInt(MainActivity.PREF_WAVE_RADIUS, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -99,10 +98,10 @@ class SettingsAnimationsFragment : Fragment() {
         val highlightValue = view.findViewById<TextView>(R.id.highlightIntensityValue)
         val currentHighlight = prefs.getInt(MainActivity.PREF_HIGHLIGHT_INTENSITY, MainActivity.DEFAULT_HIGHLIGHT_INTENSITY)
         highlightSeekBar.progress = currentHighlight
-        highlightValue.text = "${currentHighlight / 10f}x"
+        highlightValue.text = getString(R.string.settings_value_multiplier, currentHighlight / 10f)
         highlightSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                highlightValue.text = "${progress / 10f}x"
+                highlightValue.text = getString(R.string.settings_value_multiplier, progress / 10f)
                 prefs.edit().putInt(MainActivity.PREF_HIGHLIGHT_INTENSITY, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -114,10 +113,10 @@ class SettingsAnimationsFragment : Fragment() {
         val fadeValue = view.findViewById<TextView>(R.id.fadeRadiusValue)
         val currentFade = prefs.getInt(MainActivity.PREF_FADE_RADIUS, MainActivity.DEFAULT_FADE_RADIUS)
         fadeSeekBar.progress = currentFade
-        fadeValue.text = "${currentFade / 10f}x"
+        fadeValue.text = getString(R.string.settings_value_multiplier, currentFade / 10f)
         fadeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                fadeValue.text = "${progress / 10f}x"
+                fadeValue.text = getString(R.string.settings_value_multiplier, progress / 10f)
                 prefs.edit().putInt(MainActivity.PREF_FADE_RADIUS, progress).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}

@@ -14,7 +14,7 @@
             android:id="@+id/systemTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
+            android:text="@string/settings_home"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -24,7 +24,7 @@
             android:id="@+id/systemDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Manage favorites, footer actions, and home screen entry points from here."
+            android:text="@string/settings_home_hint"
             android:textColor="#AAAAAA"
             android:textSize="14sp"
             android:layout_marginBottom="24dp" />
@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notification Mode"
+                android:text="@string/notification_mode_label"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -60,7 +60,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Swipe to Dismiss Notifications"
+                    android:text="@string/notif_swipe_label"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
@@ -139,7 +139,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Footer Quick Actions"
+                android:text="@string/footer_quick_actions_title"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp" />
@@ -147,7 +147,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Choose up to three footer icons for the home screen. Long-press a footer icon to reconfigure its slot, or long-press empty home space to open launcher settings when all slots are cleared."
+                android:text="@string/footer_quick_actions_summary"
                 android:textColor="#AAAAAA"
                 android:textSize="13sp"
                 android:layout_marginBottom="12dp" />
@@ -155,7 +155,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Footer Notifications"
+                android:text="@string/footer_notifications_title"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
@@ -177,7 +177,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Show Footer Labels"
+                    android:text="@string/footer_show_labels"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
