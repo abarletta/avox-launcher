@@ -14,7 +14,7 @@ Items are added without any particular order, and without consideration for thei
 | [F](#f--better-support-for-horizontal-layout) | Better Support for Horizontal Layout | Not started | |
 | [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/avox-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
 | [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
-| [I](#i--multilangual-support) | Multilangual support | Not started | |  
+| [I](#i--multilangual-support) | Multilangual support | Implemented | [0c587fe](https://github.com/abarletta/avox-launcher/commit/0c587fedf7246e4a5329a76ae13836491bb75ce2) |  
 | [J](#j--better-icon-pack-support) | Better Icon Pack Support | Not started | |
 
 ---
@@ -162,7 +162,7 @@ Add support for multiple languages in the launcher, allowing users to select the
 
 
 ### Status
-Not started.
+Implemented in commit [0c587fedf7246e4a5329a76ae13836491bb75ce2](https://github.com/abarletta/avox-launcher/commit/0c587fedf7246e4a5329a76ae13836491bb75ce2).
 
 ## J — Improved Icon Customization
 
