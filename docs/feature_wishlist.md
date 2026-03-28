@@ -15,6 +15,7 @@ Items are added without any particular order, and without consideration for thei
 | [G](#g--uiux-improvements-and-polish) | UI/UX Improvements and Polish | In progress | [9a6b299](https://github.com/abarletta/avox-launcher/commit/9a6b299c0057ed5ab4c71eff1638329617686a51) |
 | [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
 | [I](#i--multilangual-support) | Multilangual support | Not started | |  
+| [J](#j--better-icon-pack-support) | Better Icon Pack Support | Not started | |
 
 ---
 
@@ -163,60 +164,63 @@ Add support for multiple languages in the launcher, allowing users to select the
 ### Status
 Not started.
 
-## J - Better Icon Pack Support
+## J — Improved Icon Customization
 
 ### Description
-The launcher currently supports icon packs and consistently applies them across several areas of the UI. However, no fine control is provided to the user over how icons are applied, and no built-in logic ensures that icons are applied consistently across the entire UI. 
-
-The goal of this feature is to improve icon customization and harmonize it across the entire launcher experience as follows:
-- Allow users customize icons for individual apps via the long-press menu. These icons should replace the theme icons for those apps everywhere in the launcher (home screen, app drawer, favorites, etc.).
-- Consistent icon theme (favorites and app drawer icons should be applied everywhere).
-- Provide a MINIMAL built-in icon packs with a simple, clean design that matches the launcher's aesthetic. This should provide some backup icons for users who cannot find a suitable icon pack, or to fill in missing icons from third-party packs. 
+Improve icon customization and ensure consistent icon rendering across the entire launcher. Users should be able to override icons on a per‑app basis, and the launcher should apply a unified icon‑resolution pipeline everywhere (home screen, app drawer, favorites, quick actions, etc.). Add minimal built‑in icon packs to provide clean fallback icons and simple aesthetic themes.
 
 ### Implementation Details
+- Introduce a unified icon‑resolution system with priority:
+  user‑customized icon → third‑party icon pack → built‑in pack → default app icon.
+- Add per‑app icon overrides via the long‑press menu; overrides apply globally across the launcher.
+- Ensure all UI surfaces use the same icon pipeline for consistent theming.
+- Add minimal built‑in icon packs with multiple styles (full, outline, rounded, square) and color themes (dark, light, blue, red, green, yellow, violet).
+- Built‑in packs provide generic category icons to fill gaps in third‑party packs. Required categories:
+  1. phone
+  2. message
+  3. contacts
+  4. email
+  5. shopping
+  6. finance
+  7. document
+  8. calendar
+  9. settings
+  10. gamepad
+  11. tools
+  12. health
+  13. travel/luggage
+  14. music
+  15. movie/video
+  16. education
+  17. gallery/photos
+  18. baby/parenting
+  19. security/locker
+  20. parcel/delivery
+  21. password/credentials
+  22. web browser
+  23. file manager
+  24. camera
+  25. social media
+  26. bolt/flash
+  27. star
+  28. heart
+  29. cloud
+  30. eye/view
+  31. food
+  32. maps/navigation
+  33. news/reading
+  34. sports/activity
 
-This is a two-step implementation workflow:
+### Status
+Not started.
 
-- Step 1:
-  - Redefine the icon management system to allow for per-app icon overrides.
-  - Implement an internal layer that determines the final icon for each app based on the following priority: user‑customized icon > third‑party icon pack icon > default app icon.
-  - Inspect the codebase to make sure that the final icon is applied consistently across all UI elements (home screen, app drawer, favorites, etc.).
-- Step 2:
-  - Design and implement minimal built-in icon packs. Each pack should match a different style and color scheme. 
-  - The packs should be focused on categorization rather than specific apps, providing a small set of icons that can be used as overrides for any app (e.g., a generic "social media" icon, a generic "productivity" icon, etc.).
-  - Styles: full, outline, rounded, square.
-  - Colors: dark, light, blue, red, green, yellow and violet. Use a palette that matches these colors but fits modern design trends (e.g., pastel or muted tones instead of pure colors).
-  - App categories/icon types for each pack: 
-    1. phone icon
-    2. message icon
-    3. contacts icon
-    4. email icon
-    5. shopping cart icon
-    6. finance category
-    7. document icon
-    8. calendar icon
-    9. settings icon
-    10. gamepad icon
-    11. tools icon
-    12. health category
-    13. luggage icon
-    14. music category
-    15. movie icon
-    16. education category
-    17. gallery icon
-    18. baby icon
-    19. locker icon
-    20. parcel icon
-    21. password icon
-    22. web browser category
-    23. file manager category
-    24. camera icon
-    25. social media category
-    26. bolt icon
-    27. star icon
-    28. heart icon
-    29. cloud icon
-    30. eye icon
-    31. food icon
+## K - Gesture Support
 
+### Description
+Add support for customizable gestures on the home screen and app drawer, allowing users to trigger specific actions (e.g., open app drawer, open notifications, launch specific apps) with swipe or tap gestures.
 
+### Implementation Details
+- This should extend the current long-press functionality to:
+  1. Customize the long-press action on the home screen (currently opens the launcher settings).
+  2. Add new gestures (e.g., swipe up, swipe down, double tap) that can be assigned to different actions.
+- Optionally, and only after careful consideration of the added complexity, available actions could include screen lock. This requires the app to request the `DEVICE_ADMIN` permission.
