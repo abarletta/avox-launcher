@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="100dp"
+    android:viewportWidth="108"
+    android:viewportHeight="100">
+
+    <!-- A — Large upward triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8,92 L36,8 L64,92 Z" />
+
+    <!-- V — Small downward triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M76,10 L100,10 L88,30 Z" />
+
+    <!-- O — Small circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M88,40 a10,10 0 1,1 0,20 a10,10 0 1,1 0,-20 Z" />
+
+    <!-- X — Four triangles with diamond gap -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M76,70 L88,74 L82,80 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,70 L88,74 L94,80 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,90 L88,86 L94,80 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M76,90 L88,86 L82,80 Z" />
+
+</vector>
