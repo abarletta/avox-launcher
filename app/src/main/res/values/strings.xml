@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Darkness</string>
     <string name="font_label">Font</string>
     <string name="font_size_label">Font Size</string>
+    <string name="sidebar_font_size_label">Sidebar Font Size</string>
     <string name="spacing_label">Item Spacing</string>
     <string name="theme_label">Theme</string>
     <string name="notification_mode_label">Notification Mode</string>
@@ -164,6 +165,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monospace</string>
     <string name="option_custom_ttf">Custom TTF</string>
+    <string name="font_pick_button">Choose custom TTF</string>
+    <string name="font_reset_button">Use system default</string>
+    <string name="font_status_custom">Custom TTF active</string>
+    <string name="font_status_system_default">System default active</string>
     <string name="option_compact">Compact</string>
     <string name="option_normal">Normal</string>
     <string name="option_spacious">Spacious</string>

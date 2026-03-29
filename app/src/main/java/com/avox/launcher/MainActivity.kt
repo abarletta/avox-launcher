@@ -611,7 +611,8 @@ class MainActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val fontFamily = prefs.getString(PREF_FONT, DEFAULT_FONT) ?: DEFAULT_FONT
-        sidebar.setFontFamily(fontFamily)
+        sidebar.setTypeface(resolveTypeface(fontFamily))
+        sidebar.setTextSizeSp(prefs.getInt(PREF_SIDEBAR_FONT_SIZE, DEFAULT_SIDEBAR_FONT_SIZE))
 
         val animStyle = prefs.getString(PREF_ANIM_STYLE, AlphabetSidebar.STYLE_WAVE) ?: AlphabetSidebar.STYLE_WAVE
         sidebar.setAnimationStyle(animStyle)
@@ -2062,9 +2063,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun resolveTypeface(fontFamily: String): Typeface {
         val app = application as? LauncherApp
-        val custom = app?.customTypeface
-        if (custom != null && fontFamily == CUSTOM_FONT_KEY) return custom
-        return Typeface.create(fontFamily, Typeface.NORMAL)
+        return app?.resolveTypeface(fontFamily) ?: Typeface.create(fontFamily, Typeface.NORMAL)
     }
 
     private inner class WidgetFrame(ctx: Context) : FrameLayout(ctx) {
@@ -2196,6 +2195,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_SPACING = "item_spacing"
         const val PREF_DARKNESS = "wallpaper_darkness"
         const val PREF_FONT_SIZE = "font_size"
+        const val PREF_SIDEBAR_FONT_SIZE = "sidebar_font_size"
         const val PREF_THEME = "theme"
         const val PREF_LANGUAGE = "app_language"
         const val PREF_NOTIF_MODE = "notification_mode"
@@ -2218,6 +2218,7 @@ class MainActivity : AppCompatActivity() {
         const val DEFAULT_SPACING = 12
         const val DEFAULT_DARKNESS = 40
         const val DEFAULT_FONT_SIZE = 22
+        const val DEFAULT_SIDEBAR_FONT_SIZE = 14
         const val DEFAULT_WAVE_SHIFT = 25
         const val DEFAULT_WAVE_SCALE = 8 // represents 1.8x
         const val DEFAULT_WAVE_RADIUS = 3

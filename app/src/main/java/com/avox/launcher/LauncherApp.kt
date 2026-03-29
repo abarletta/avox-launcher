@@ -53,4 +53,12 @@ class LauncherApp : Application() {
             null
         }
     }
+
+    fun resolveTypeface(fontFamily: String?): Typeface {
+        val resolvedFamily = fontFamily?.takeUnless { it.isBlank() } ?: MainActivity.DEFAULT_FONT
+        if (resolvedFamily == MainActivity.CUSTOM_FONT_KEY) {
+            return customTypeface ?: Typeface.create(MainActivity.DEFAULT_FONT, Typeface.NORMAL)
+        }
+        return Typeface.create(MainActivity.DEFAULT_FONT, Typeface.NORMAL)
+    }
 }

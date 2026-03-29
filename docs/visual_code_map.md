@@ -33,6 +33,19 @@ This file maps each visible part of Avox to the code and resources that control 
   - `AppListAdapter` applies those values to each row at bind time.
   - Notification badges and preview text are also composed in the adapter.
 
+## Favorites Grid
+
+- Grid layout: `app/src/main/res/layout/item_favorite_grid.xml`
+  - Controls the grid cell structure with icon and notification badge.
+- Grid container: `app/src/main/res/layout/activity_main.xml`
+  - `favoritesGrid` is the GridView above the app list for multi-column favorites.
+- Grid behavior: `app/src/main/java/com/avox/launcher/MainActivity.kt`
+  - `refreshList()` decides whether to use the favorites grid (adaptive layout) or inline favorites in the app list.
+  - `FavoriteGridAdapter` binds favorite apps to grid cells with icons, badges, and click/long-press handling.
+  - `resolveFavoritesColumnCount()` computes adaptive column count based on screen size and orientation.
+- Favorites management: `app/src/main/java/com/avox/launcher/SettingsSystemFragment.kt`
+  - Favorites picker with app icons, reordering via up/down controls.
+
 ## Icons
 
 - Launcher row icons: `app/src/main/java/com/avox/launcher/MainActivity.kt`
@@ -86,6 +99,25 @@ This file maps each visible part of Avox to the code and resources that control 
   - `updateBottomButton()` swaps between settings and search states.
   - `showSearchBar()` and `hideSearchBar()` control the search field visibility and keyboard.
 
+## Quick Actions Footer
+
+- Action slot model: `app/src/main/java/com/avox/launcher/LauncherQuickActions.kt`
+  - Manages up to 3 footer action slots with system/app intents (launcher settings, wifi, bluetooth, display, apps, system settings, pick custom app).
+  - `resolveFooterAction()` builds the intent and icon for each slot.
+- Footer rendering: `app/src/main/java/com/avox/launcher/MainActivity.kt`
+  - Footer action views are built dynamically from `LauncherQuickActions` at refresh time.
+- Quick action configuration: `app/src/main/java/com/avox/launcher/SettingsSystemFragment.kt`
+  - Quick actions section lets users assign actions to each footer slot.
+
+## Widget Picker
+
+- Picker item layout: `app/src/main/res/layout/item_widget_picker.xml`
+  - Displays widget app name, widget name, dimensions text, and preview icon.
+- Picker header layout: `app/src/main/res/layout/item_widget_picker_header.xml`
+  - Category separator for grouping widgets by source app.
+- Picker behavior: `app/src/main/java/com/avox/launcher/MainActivity.kt`
+  - Widget picker dialog built with list adapter for widget selection.
+
 ## Settings Screens
 
 - Settings activity shell: `app/src/main/java/com/avox/launcher/SettingsActivity.kt`
@@ -112,7 +144,10 @@ This file maps each visible part of Avox to the code and resources that control 
 
 - Want to move or restack launcher elements: edit `app/src/main/res/layout/activity_main.xml`.
 - Want to change app row visuals: edit `app/src/main/res/layout/item_app.xml` and `app/src/main/java/com/avox/launcher/MainActivity.kt`.
+- Want to change favorites grid visuals: edit `app/src/main/res/layout/item_favorite_grid.xml` and `app/src/main/java/com/avox/launcher/MainActivity.kt`.
 - Want to change wallpaper look: edit `app/src/main/java/com/avox/launcher/SettingsWallpaperFragment.kt` and `app/src/main/java/com/avox/launcher/MainActivity.kt`.
 - Want to change sidebar animation: edit `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt`.
 - Want to change settings menu card appearance: edit `app/src/main/res/layout/fragment_settings_menu.xml`.
 - Want to change widget edit visuals: edit `app/src/main/java/com/avox/launcher/MainActivity.kt` inside `createWidgetWrapper(...)`, `enterWidgetEditMode()`, and `exitWidgetEditMode()`.
+- Want to change footer quick actions: edit `app/src/main/java/com/avox/launcher/LauncherQuickActions.kt` for action types, `app/src/main/java/com/avox/launcher/MainActivity.kt` for rendering.
+- Want to add a new language: follow `docs/localization_add_language.md`.

@@ -28,11 +28,35 @@
             android:textSize="16sp"
             android:layout_marginBottom="8dp" />
 
-        <Spinner
-            android:id="@+id/fontSpinner"
+        <TextView
+            android:id="@+id/fontStatusValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/font_status_system_default"
+            android:textColor="#CCFFFFFF"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/fontPickButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/font_pick_button" />
+
+            <Button
+                android:id="@+id/fontResetButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="@string/font_reset_button" />
+        </LinearLayout>
 
         <!-- Font Size -->
         <TextView
@@ -59,6 +83,37 @@
 
             <TextView
                 android:id="@+id/fontSizeValue"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:gravity="end" />
+        </LinearLayout>
+
+        <!-- Sidebar Font Size -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sidebar_font_size_label"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <SeekBar
+                android:id="@+id/sidebarFontSizeSeekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="24" />
+
+            <TextView
+                android:id="@+id/sidebarFontSizeValue"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"

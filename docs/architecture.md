@@ -35,23 +35,27 @@ The product is apps-first, not widget-first.
 - `SettingsAppearanceFragment.kt` — font, font size, spacing, alignment, margins, block count, icon mode (regular/nerd/none), icon size, icon pack, nerd font picker
 - `SettingsWallpaperFragment.kt` — theme, wallpaper effects (darken/blur/color), darkness, blur radius, color tint, wallpaper select
 - `SettingsAnimationsFragment.kt` — sidebar animation style with per-style controls (wave/highlight/fade)
-- `SettingsSystemFragment.kt` — notification mode, swipe toggle, favorites picker, widget management (add, remove, resize)
+- `SettingsSystemFragment.kt` — notification mode, swipe toggle, favorites management (picker with icons, reorder), widget management (add, remove, resize, full-width, controls), quick actions setup
 - `AlphabetSidebar.kt` — custom View with wave/highlight/fade animation styles and configurable intensity/radius
 - `AppActionsSheet.kt` — bottom sheet for long-press actions (app info, Play Store, uninstall, shortcuts)
 - `NotificationService.kt` — NotificationListenerService with per-package dismiss
-- `LauncherApp.kt` — Application subclass for custom font loading
+- `LauncherApp.kt` — Application subclass for custom font loading and language preference application
 - `IconPackResolver.kt` — discovers installed icon packs, resolves per-app icons with safe fallback
+- `LauncherQuickActions.kt` — quick actions singleton managing 3 footer slots with system/app intents
 
 ### Layout files
 
-- `activity_main.xml` — FrameLayout with darkOverlay, widgetContainer, appList, searchBar, alphabetSidebar, bottomButton
+- `activity_main.xml` — FrameLayout with darkOverlay, widgetContainer, favoritesGrid, appList, searchBar, alphabetSidebar, footer actions
 - `activity_settings.xml` — FrameLayout with wallpaper overlay and fragment container
 - `fragment_settings_menu.xml` — category cards for settings navigation
 - `fragment_settings_appearance.xml` — appearance controls layout
 - `fragment_settings_wallpaper.xml` — wallpaper controls layout
 - `fragment_settings_animations.xml` — animation controls layout
-- `fragment_settings_system.xml` — system/notifications/widgets layout
+- `fragment_settings_system.xml` — system/notifications/widgets/favorites layout
 - `item_app.xml` — app row with dynamic icon sizing, name, notification text, badge
+- `item_favorite_grid.xml` — favorites grid cell with icon and badge
+- `item_widget_picker.xml` — widget picker row with app name, widget name, dimensions, icon
+- `item_widget_picker_header.xml` — widget picker category header
 - `sheet_app_actions.xml` — bottom sheet for app actions
 - `item_shortcut.xml` — shortcut row in actions sheet
 
@@ -83,9 +87,11 @@ The product is apps-first, not widget-first.
 Implemented:
 
 - Vertical app list with favorites and section headers in expanded view
+- Multi-column favorites grid (adaptive column count by screen size/orientation)
 - Widget host with add/bind/configure/restore/resize
-- Widget management in SettingsActivity (list, remove, height adjustment)
-- Settings activity with wallpaper-matched background
+- Multi-widget slots with horizontal swipe navigation between widgets in the same slot
+- Widget management in settings (list, remove, height adjustment, full-width toggle, controls)
+- Settings activity with wallpaper-matched background and fragment-based navigation
 - Wallpaper effects: darken, blur (downscale-upscale), color tint
 - Notification badges (count) and inline text
 - Swipe-to-dismiss notifications
@@ -98,6 +104,10 @@ Implemented:
 - Nerd font icon prefixes
 - App long-press actions (info, store, uninstall, shortcuts)
 - Local search filtering
+- Quick actions footer (up to 3 customizable action slots)
+- Settings backup and restore (JSON export/import)
+- Language selection with 11 locale translations
+- Home screen long-press to open settings
 
 Not implemented:
 
@@ -146,17 +156,16 @@ Favorites persistence (if implemented):
 
 Explicitly out of scope:
 
-- Widgets
 - Folders
-- Settings UI
-- Custom animation systems
-- Gesture systems beyond default behavior
-- Theming systems
-- Notification centers
+- Multiple home screens
+- Gesture systems beyond swipe-to-dismiss and home long-press
 - Feed pages
 - Smart recommendations
 - Plugin or extension architecture
-- General-purpose customization
+- General-purpose customization beyond current feature set
+- Background processing unless required for correctness
+- Extra Gradle modules
+- Migration to Compose unless explicitly requested
 
 ---
 

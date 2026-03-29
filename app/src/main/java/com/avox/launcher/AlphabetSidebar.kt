@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import kotlin.math.abs
+import kotlin.math.roundToInt
 import kotlin.math.max
 import kotlin.math.cos
 import kotlin.math.exp
@@ -35,7 +36,8 @@ class AlphabetSidebar @JvmOverloads constructor(
     }
 
     var onLetterSelected: ((String) -> Unit)? = null
-    private var fontFamily: String = "sans-serif-light"
+    private var typeface: Typeface = Typeface.create("sans-serif-light", Typeface.NORMAL)
+    private var textSizeSp = 14f
 
     // Animation state
     private var isTouching = false
@@ -55,7 +57,7 @@ class AlphabetSidebar @JvmOverloads constructor(
         interpolator = DecelerateInterpolator()
         addUpdateListener {
             animStrength = it.animatedValue as Float
-            invalidate()
+            postInvalidateOnAnimation()
         }
     }
 
@@ -65,8 +67,13 @@ class AlphabetSidebar @JvmOverloads constructor(
         invalidate()
     }
 
-    fun setFontFamily(family: String) {
-        fontFamily = family
+    fun setTypeface(typeface: Typeface?) {
+        this.typeface = typeface ?: Typeface.DEFAULT
+        invalidate()
+    }
+
+    fun setTextSizeSp(sizeSp: Int) {
+        textSizeSp = sizeSp.toFloat().coerceAtLeast(8f)
         invalidate()
     }
 
@@ -100,10 +107,20 @@ class AlphabetSidebar @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun getTouchIndex(availableHeight: Float): Int {
-        if (!isTouching && animStrength <= 0f) return -1
-        val relativeY = touchY - paddingTop
-        return (relativeY / availableHeight * items.size).toInt().coerceIn(0, items.size - 1)
+    private fun getTouchPosition(availableHeight: Float): Float {
+        if (!isTouching && animStrength <= 0f) return -1f
+        val relativeY = (touchY - paddingTop).coerceIn(0f, availableHeight)
+        return relativeY / availableHeight * items.size - 0.5f
+    }
+
+    private fun getWaveInfluence(distance: Float): Float {
+        if (distance > waveRadius + 1f) return 0f
+        val t = distance / (waveRadius + 1f) * (PI / 2.0)
+        return (cos(t) * exp(-5.0 * t * t)).toFloat().coerceAtLeast(0f)
+    }
+
+    private fun getHighlightInfluence(distance: Float): Float {
+        return (1f - distance.coerceIn(0f, 1f)) * animStrength
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -112,43 +129,39 @@ class AlphabetSidebar @JvmOverloads constructor(
         val availableHeight = (height - paddingTop - paddingBottom).toFloat()
         val itemHeight = availableHeight / items.size
         @Suppress("DEPRECATION")
-        val baseTextSize = 14f * resources.displayMetrics.scaledDensity
-        val typeface = Typeface.create(fontFamily, Typeface.NORMAL)
+        val baseTextSize = textSizeSp * resources.displayMetrics.scaledDensity
         val baseX = width / 2f
-        val touchIndex = getTouchIndex(availableHeight)
+        val touchPosition = getTouchPosition(availableHeight)
 
         when (animStyle) {
-            STYLE_WAVE -> drawWave(canvas, touchIndex, baseX, baseTextSize, typeface, itemHeight)
-            STYLE_HIGHLIGHT -> drawHighlight(canvas, touchIndex, baseX, baseTextSize, typeface, itemHeight)
-            STYLE_FADE -> drawFade(canvas, touchIndex, baseX, baseTextSize, typeface, itemHeight)
-            else -> drawWave(canvas, touchIndex, baseX, baseTextSize, typeface, itemHeight)
+            STYLE_WAVE -> drawWave(canvas, touchPosition, baseX, baseTextSize, typeface, itemHeight)
+            STYLE_HIGHLIGHT -> drawHighlight(canvas, touchPosition, baseX, baseTextSize, typeface, itemHeight)
+            STYLE_FADE -> drawFade(canvas, touchPosition, baseX, baseTextSize, typeface, itemHeight)
+            else -> drawWave(canvas, touchPosition, baseX, baseTextSize, typeface, itemHeight)
         }
     }
 
-    private fun drawWave(canvas: Canvas, touchIndex: Int, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
+    private fun drawWave(canvas: Canvas, touchPosition: Float, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
         for (i in items.indices) {
             val centerY = paddingTop + itemHeight * (i + 0.5f)
             var scale = 1f
             var shiftX = 0f
+            var localInfluence = 0f
 
-            if (touchIndex >= 0 && animStrength > 0f) {
-                val dist = abs(i - touchIndex)
-                if (dist <= waveRadius) {
-                    val h = (i - touchIndex).toDouble()
-                    val t = h / (waveRadius + 1).toDouble() * (PI / 2.0)
-                    val influenceD = cos(t) * exp(-5.0 * t * t) * animStrength.toDouble()
-                    val influence = influenceD.toFloat()
-                    scale = 1f + (maxScaleFactor - 1f) * influence
-                    shiftX = -maxShiftPx * influence
+            if (touchPosition >= 0f && animStrength > 0f) {
+                val dist = abs(i - touchPosition)
+                localInfluence = getWaveInfluence(dist) * animStrength
+                if (localInfluence > 0f) {
+                    scale = 1f + (maxScaleFactor - 1f) * localInfluence
+                    shiftX = -maxShiftPx * localInfluence
                 }
             }
 
             paint.textSize = baseTextSize * scale
             paint.typeface = typeface
-            paint.alpha = if (touchIndex >= 0 && animStrength > 0f) {
-                val dist = abs(i - touchIndex)
-                if (dist <= waveRadius) 255
-                else max(120, (255 * (1f - animStrength * 0.4f)).toInt())
+            paint.alpha = if (touchPosition >= 0f && animStrength > 0f) {
+                val baseAlpha = max(120, (255 * (1f - animStrength * 0.4f)).toInt())
+                (baseAlpha + (255 - baseAlpha) * localInfluence).roundToInt().coerceIn(baseAlpha, 255)
             } else 255
 
             val x = baseX + shiftX
@@ -157,23 +170,20 @@ class AlphabetSidebar @JvmOverloads constructor(
         }
     }
 
-    private fun drawHighlight(canvas: Canvas, touchIndex: Int, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
+    private fun drawHighlight(canvas: Canvas, touchPosition: Float, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
         for (i in items.indices) {
             val centerY = paddingTop + itemHeight * (i + 0.5f)
-            val isSelected = i == touchIndex && animStrength > 0f
+            val influence = if (touchPosition >= 0f) getHighlightInfluence(abs(i - touchPosition)) else 0f
+            val baseAlpha = if (touchPosition >= 0f && animStrength > 0f) {
+                max(100, (255 * (1f - animStrength * highlightIntensity)).toInt())
+            } else {
+                255
+            }
 
             paint.typeface = typeface
-            if (isSelected) {
-                paint.textSize = baseTextSize * (1f + highlightIntensity * animStrength)
-                paint.alpha = 255
-                paint.isFakeBoldText = true
-            } else {
-                paint.textSize = baseTextSize
-                paint.alpha = if (touchIndex >= 0 && animStrength > 0f) {
-                    max(100, (255 * (1f - animStrength * highlightIntensity)).toInt())
-                } else 255
-                paint.isFakeBoldText = false
-            }
+            paint.textSize = baseTextSize * (1f + highlightIntensity * influence)
+            paint.alpha = (baseAlpha + (255 - baseAlpha) * influence).roundToInt().coerceIn(baseAlpha, 255)
+            paint.isFakeBoldText = influence > 0.6f
 
             val y = centerY - (paint.descent() + paint.ascent()) / 2f
             canvas.drawText(items[i], baseX, y, paint)
@@ -181,15 +191,15 @@ class AlphabetSidebar @JvmOverloads constructor(
         paint.isFakeBoldText = false
     }
 
-    private fun drawFade(canvas: Canvas, touchIndex: Int, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
+    private fun drawFade(canvas: Canvas, touchPosition: Float, baseX: Float, baseTextSize: Float, typeface: Typeface, itemHeight: Float) {
         for (i in items.indices) {
             val centerY = paddingTop + itemHeight * (i + 0.5f)
 
             paint.textSize = baseTextSize
             paint.typeface = typeface
 
-            if (touchIndex >= 0 && animStrength > 0f) {
-                val dist = abs(i - touchIndex)
+            if (touchPosition >= 0f && animStrength > 0f) {
+                val dist = abs(i - touchPosition)
                 val maxDist = items.size / 2f * fadeRadiusFactor
                 val fadeRatio = (dist / maxDist).coerceIn(0f, 1f)
                 paint.alpha = max(40, (255 * (1f - fadeRatio * animStrength)).toInt())
@@ -220,7 +230,7 @@ class AlphabetSidebar @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 touchY = event.y
-                invalidate()
+                postInvalidateOnAnimation()
                 onLetterSelected?.invoke(items[index])
                 return true
             }
@@ -239,12 +249,14 @@ class AlphabetSidebar @JvmOverloads constructor(
         animator.cancel()
         animator.setFloatValues(animStrength, 1f)
         animator.start()
+        postInvalidateOnAnimation()
     }
 
     private fun animateOut() {
         animator.cancel()
         animator.setFloatValues(animStrength, 0f)
         animator.start()
+        postInvalidateOnAnimation()
     }
 
     override fun performClick(): Boolean {

@@ -36,6 +36,22 @@ Its purpose is to tell Copilot exactly where to look in `docs/` before answering
   - Visual ownership map for the launcher UI
   - Use when changing layout, icons, typography, widget chrome, settings screen visuals, or animations
 
+- `docs/feature_wishlist.md`
+  - Feature ideas with implementation status
+  - Use when the question is about planned or potential features
+
+- `docs/missing_features.md`
+  - Feature checklist with implementation status and clarification history
+  - Use when the question is about what is implemented versus deferred
+
+- `docs/localization_add_language.md`
+  - Step-by-step guide for adding a new language translation
+  - Use when adding locale support or onboarding contributors for translations
+
+- `docs/known_issues.md`
+  - Known artifact/code inconsistencies and technical debt
+  - Use when triaging bugs, reviewing configuration, or assessing project health
+
 ## Required Read Sets
 
 - For repository context or loaded-context questions:

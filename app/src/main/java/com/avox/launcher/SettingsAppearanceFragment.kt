@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Spinner
 import android.widget.TextView
@@ -15,6 +16,9 @@ import androidx.fragment.app.Fragment
 import java.io.File
 
 class SettingsAppearanceFragment : Fragment() {
+
+    private var fontStatusView: TextView? = null
+    private var resetFontButton: Button? = null
 
     private val pickFont = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
@@ -26,6 +30,7 @@ class SettingsAppearanceFragment : Fragment() {
                 (requireActivity().application as? LauncherApp)?.loadCustomFont()
                 val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
                 prefs.edit().putString(MainActivity.PREF_FONT, MainActivity.CUSTOM_FONT_KEY).apply()
+                refreshFontControls()
             } catch (_: Exception) { }
         }
     }
@@ -47,15 +52,6 @@ class SettingsAppearanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val fontOptions = listOf(
-            "sans-serif" to getString(R.string.option_default),
-            "sans-serif-light" to getString(R.string.option_light),
-            "sans-serif-thin" to getString(R.string.option_thin),
-            "sans-serif-condensed" to getString(R.string.option_condensed),
-            "serif" to getString(R.string.option_serif),
-            "monospace" to getString(R.string.option_monospace),
-            MainActivity.CUSTOM_FONT_KEY to getString(R.string.option_custom_ttf)
-        )
         val spacingOptions = listOf(
             4 to getString(R.string.option_compact),
             8 to getString(R.string.option_normal),
@@ -72,19 +68,24 @@ class SettingsAppearanceFragment : Fragment() {
             MainActivity.ICON_MODE_NONE to getString(R.string.icon_mode_none)
         )
 
-        // Font
-        setupSpinner(
-            view.findViewById(R.id.fontSpinner), fontOptions.map { it.second },
-            fontOptions.indexOfFirst { it.first == (prefs.getString(MainActivity.PREF_FONT, MainActivity.DEFAULT_FONT) ?: MainActivity.DEFAULT_FONT) }
-                .coerceAtLeast(0)
-        ) { pos ->
-            val key = fontOptions[pos].first
-            if (key == MainActivity.CUSTOM_FONT_KEY) {
-                pickFont.launch("font/*")
-            } else {
-                prefs.edit().putString(MainActivity.PREF_FONT, key).apply()
+        val currentFont = prefs.getString(MainActivity.PREF_FONT, MainActivity.DEFAULT_FONT) ?: MainActivity.DEFAULT_FONT
+        if (currentFont != MainActivity.DEFAULT_FONT && currentFont != MainActivity.CUSTOM_FONT_KEY) {
+            prefs.edit().putString(MainActivity.PREF_FONT, MainActivity.DEFAULT_FONT).apply()
+        }
+
+        fontStatusView = view.findViewById(R.id.fontStatusValue)
+        resetFontButton = view.findViewById<Button>(R.id.fontResetButton).apply {
+            setOnClickListener {
+                File(requireContext().filesDir, "custom_font.ttf").delete()
+                (requireActivity().application as? LauncherApp)?.loadCustomFont()
+                prefs.edit().putString(MainActivity.PREF_FONT, MainActivity.DEFAULT_FONT).apply()
+                refreshFontControls()
             }
         }
+        view.findViewById<Button>(R.id.fontPickButton).setOnClickListener {
+            pickFont.launch("font/*")
+        }
+        refreshFontControls()
 
         // Font size
         val fontSizeSeekBar = view.findViewById<SeekBar>(R.id.fontSizeSeekBar)
@@ -97,6 +98,25 @@ class SettingsAppearanceFragment : Fragment() {
                 val size = progress + 12
                 fontSizeValue.text = getString(R.string.settings_value_sp, size)
                 prefs.edit().putInt(MainActivity.PREF_FONT_SIZE, size).apply()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
+
+        // Sidebar font size
+        val sidebarFontSizeSeekBar = view.findViewById<SeekBar>(R.id.sidebarFontSizeSeekBar)
+        val sidebarFontSizeValue = view.findViewById<TextView>(R.id.sidebarFontSizeValue)
+        val currentSidebarFontSize = prefs.getInt(
+            MainActivity.PREF_SIDEBAR_FONT_SIZE,
+            MainActivity.DEFAULT_SIDEBAR_FONT_SIZE
+        )
+        sidebarFontSizeSeekBar.progress = currentSidebarFontSize - 8
+        sidebarFontSizeValue.text = getString(R.string.settings_value_sp, currentSidebarFontSize)
+        sidebarFontSizeSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                val size = progress + 8
+                sidebarFontSizeValue.text = getString(R.string.settings_value_sp, size)
+                prefs.edit().putInt(MainActivity.PREF_SIDEBAR_FONT_SIZE, size).apply()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
@@ -216,5 +236,20 @@ class SettingsAppearanceFragment : Fragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
+    }
+
+    private fun refreshFontControls() {
+        val context = context ?: return
+        val prefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val usingCustomFont =
+            (prefs.getString(MainActivity.PREF_FONT, MainActivity.DEFAULT_FONT) ?: MainActivity.DEFAULT_FONT) == MainActivity.CUSTOM_FONT_KEY &&
+                File(context.filesDir, "custom_font.ttf").exists()
+
+        fontStatusView?.text = if (usingCustomFont) {
+            getString(R.string.font_status_custom)
+        } else {
+            getString(R.string.font_status_system_default)
+        }
+        resetFontButton?.isEnabled = usingCustomFont
     }
 }

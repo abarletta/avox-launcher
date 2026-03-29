@@ -40,16 +40,39 @@ For the first repository-aware turn, prefer reading the full core docs set above
 
 - One Android app module only: `app`
 - Kotlin + AppCompat + XML views
-- Main launcher activity: `app/src/main/java/com/avox/launcher/MainActivity.kt`
-- Settings activity: `app/src/main/java/com/avox/launcher/SettingsActivity.kt`
-- Custom sidebar view: `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt`
-- App actions sheet: `app/src/main/java/com/avox/launcher/AppActionsSheet.kt`
-- Notification service: `app/src/main/java/com/avox/launcher/NotificationService.kt`
-- Icon pack helper: `app/src/main/java/com/avox/launcher/IconPackResolver.kt`
-- Application class: `app/src/main/java/com/avox/launcher/LauncherApp.kt`
-- Layouts in `app/src/main/res/layout/`
-- Strings and theme in `app/src/main/res/values/`
-- No fragments, no Compose, no Navigation Component, no dependency injection, no extra modules
+- Fragments used only in SettingsActivity; no Compose, no Navigation Component, no dependency injection, no extra modules
+- 13 Kotlin source files, 13 layout XMLs, 11 locale translations
+
+### Source files
+
+- `app/src/main/java/com/avox/launcher/MainActivity.kt` — launcher screen, app list, favorites grid, widgets, wallpaper effects, notification data, swipe gestures, sidebar, search
+- `app/src/main/java/com/avox/launcher/SettingsActivity.kt` — fragment host with back navigation and theme application
+- `app/src/main/java/com/avox/launcher/SettingsMenuFragment.kt` — top-level settings menu, language selection, backup/restore
+- `app/src/main/java/com/avox/launcher/SettingsAppearanceFragment.kt` — font, font size, spacing, alignment, icon mode/size/pack, nerd font
+- `app/src/main/java/com/avox/launcher/SettingsWallpaperFragment.kt` — theme, wallpaper effects (darken/blur/color)
+- `app/src/main/java/com/avox/launcher/SettingsAnimationsFragment.kt` — sidebar animation style and per-style controls
+- `app/src/main/java/com/avox/launcher/SettingsSystemFragment.kt` — notification mode, favorites, widget management, quick actions
+- `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt` — custom View with wave/highlight/fade animations
+- `app/src/main/java/com/avox/launcher/AppActionsSheet.kt` — bottom sheet for long-press actions
+- `app/src/main/java/com/avox/launcher/NotificationService.kt` — notification listener with per-package dismiss
+- `app/src/main/java/com/avox/launcher/LauncherApp.kt` — Application subclass for custom font loading and language preference
+- `app/src/main/java/com/avox/launcher/IconPackResolver.kt` — icon pack discovery and resolution
+- `app/src/main/java/com/avox/launcher/LauncherQuickActions.kt` — quick actions singleton for footer action slots
+
+### Key layouts
+
+- `app/src/main/res/layout/activity_main.xml` — launcher layout with widget container, favorites grid, app list, sidebar, search bar, footer actions
+- `app/src/main/res/layout/activity_settings.xml` — settings layout with fragment container
+- `app/src/main/res/layout/fragment_settings_menu.xml`, `fragment_settings_appearance.xml`, `fragment_settings_wallpaper.xml`, `fragment_settings_animations.xml`, `fragment_settings_system.xml` — settings screen layouts
+- `app/src/main/res/layout/item_app.xml` — app list row
+- `app/src/main/res/layout/item_favorite_grid.xml` — favorites grid cell
+- `app/src/main/res/layout/item_widget_picker.xml`, `item_widget_picker_header.xml` — widget picker items
+- `app/src/main/res/layout/sheet_app_actions.xml`, `item_shortcut.xml` — app actions bottom sheet
+
+### Resources
+
+- Strings and theme in `app/src/main/res/values/` (strings.xml, themes.xml, arrays.xml, launcher_identity.xml)
+- 11 locale translations: da, de, es, fi, fr, it, nb, nl, pl, pt, sv
 
 Copilot should preserve this shape unless a change is explicitly requested and justified.
 

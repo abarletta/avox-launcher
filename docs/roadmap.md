@@ -25,9 +25,10 @@ Every addition must justify its existence.
 The launcher is post initial scope with the following implemented features:
 
 - Single home screen with vertical app list (section headers in expanded view)
-- Favorites at top
+- Favorites at top with multi-column grid layout (adaptive columns by screen/orientation)
 - Widget host (add/bind/configure/restore/resize)
-- Full settings activity
+- Multi-widget slots with horizontal swipe between widgets
+- Full settings activity with fragment-based navigation
 - Wallpaper effects (darken, blur, color tint)
 - Notification badges and inline text
 - Swipe-to-dismiss notifications
@@ -40,6 +41,10 @@ The launcher is post initial scope with the following implemented features:
 - Nerd font icon prefixes
 - App long-press actions (info, store, uninstall, shortcuts)
 - Local app search
+- Quick actions footer (up to 3 customizable slots)
+- Settings backup and restore (JSON export/import)
+- Language selection with 11 locale translations (da, de, es, fi, fr, it, nb, nl, pl, pt, sv)
+- Home screen long-press to open settings
 - Settings screen with wallpaper-matched background
 
 All user-reported issues from `docs/user_reported_issues.md` are resolved.
