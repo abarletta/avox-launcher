@@ -30,7 +30,7 @@
     <string name="widget_no_providers">Brak dostępnych widżetów</string>
     <string name="widget_bind_failed">Nie udało się dodać widżetu</string>
     <string name="widget_manage_label">Zarządzaj widżetami</string>
-    <string name="widget_empty_hint">Naciśnij i przytrzymaj, aby dodać widżety</string>
+    <string name="widget_empty_hint">Naciśnij i przytrzymaj, aby dodać widżet</string>
     <string name="widget_height_label">Wysokość</string>
     <string name="widget_remove_label">Usuń</string>
     <string name="widget_none_label">Nie dodano żadnych widżetów</string>
@@ -44,7 +44,7 @@
     <string name="widget_slot_swipe_hint">Przesuń w lewo lub w prawo na ekranie głównym, aby
         przełączać się między
         %1$d widżetami w tym slocie.</string>
-    <string name="widget_add_slot_label">Dodaj slot widżetu</string>
+    <string name="widget_add_slot_label">Utwórz slot widżetu</string>
     <string name="widget_add_to_slot_label">Dodaj widżet do tego slotu</string>
     <string name="widget_slot_indicator_toggle_label">Pokaż wskaźnik slotu</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -52,7 +52,7 @@
     <string name="animation_style_label">Animacja paska bocznego</string>
     <string name="wave_shift_label">Przesunięcie tekstu</string>
     <string name="wave_scale_label">Skala powiększenia</string>
-    <string name="wave_radius_label">Promień fali</string>
+    <string name="wave_radius_label">Szerokość fali (długość fali)</string>
     <string name="highlight_intensity_label">Intensywność podświetlenia</string>
     <string name="fade_radius_label">Promień zanikania</string>
     <string name="wallpaper_effect_label">Efekt tapety</string>
@@ -66,13 +66,11 @@
     <string name="favorites_label">Ulubione</string>
     <string name="favorites_select_label">Wybierz ulubione</string>
     <string name="favorites_add_label">Dodaj ulubione</string>
-    <string name="favorites_manage_hint">Tutaj sprawdzisz bieżącą listę ulubionych, zmienisz jej
-        kolejność
-        i dodasz więcej aplikacji z ich prawdziwymi ikonami.</string>
+    <string name="favorites_manage_hint">Sprawdź listę ulubionych, zmień kolejność aplikacji albo
+        dodaj kolejne.</string>
     <string name="favorites_layout_label">Układ ulubionych</string>
-    <string name="favorites_layout_hint">Siatka adaptacyjna używa do 2 kolumn na telefonach w
-        pionie,
-        rozszerza się w poziomie i zachowuje stary układ jednokolumnowy.</string>
+    <string name="favorites_layout_hint">Siatka adaptacyjna to alternatywa dla układu
+        jednokolumnowego. Używa do 2 kolumn na telefonach w pionie i rozszerza się w poziomie.</string>
     <string name="favorites_layout_adaptive">Siatka adaptacyjna</string>
     <string name="favorites_layout_single">Jedna kolumna</string>
     <string name="favorites_min_max">Wybierz od 3 do 10 ulubionych</string>
@@ -100,25 +98,21 @@
     <string name="settings_notifications">Powiadomienia</string>
     <string name="settings_notifications_summary">Tryb plakietek, gesty przesuwania</string>
     <string name="settings_home">Ekran główny</string>
-    <string name="settings_home_summary">Ulubione, działania stopki, punkty wejścia ekranu głównego</string>
+    <string name="settings_home_summary">Ulubione, układ ekranu głównego, szybkie działania</string>
     <string name="settings_widgets">Widżety</string>
     <string name="settings_widgets_summary">Sloty widżetów, stosy przewijania, rozmiar, sterowanie</string>
     <string name="settings_menu_title">Ustawienia launchera</string>
     <string name="settings_language_title">Język</string>
-    <string name="settings_language_summary">Używaj języka systemowego, jeśli jest obsługiwany, albo
-        wymuś
-        angielski.</string>
+    <string name="settings_language_summary">Używaj języka systemowego, jeśli jest obsługiwany,
+        albo wybierz język ręcznie.</string>
     <string name="settings_backup_title">Kopia zapasowa i przywracanie</string>
-    <string name="settings_backup_summary">Eksportuj preferencje launchera do pliku JSON lub
-        przywróć je
-        później. Pozycje widżetów są uwzględnione, ale zostaną przywrócone tylko wtedy, gdy ich
-        powiązania nadal istnieją na tym urządzeniu.</string>
-    <string name="settings_notifications_hint">Tutaj ustawisz liczbę plakietek i tekst powiadomień.
-        Jeśli
-        aktualizacje przestaną działać, ponownie otwórz dostęp do powiadomień z tego ekranu.</string>
-    <string name="settings_home_hint">Tutaj zarządzisz ulubionymi, działaniami stopki i punktami
-        wejścia
-        ekranu głównego.</string>
+    <string name="settings_backup_summary">Eksportuj preferencje launchera albo przywróć je z
+        wcześniejszej kopii zapasowej.</string>
+    <string name="settings_notifications_hint">Skonfiguruj liczbę plakietek i tekst powiadomień
+        wyświetlane na ikonach aplikacji. Jeśli powiadomienia przestaną się aktualizować,
+        ponownie otwórz dostęp do powiadomień z tego ekranu.</string>
+    <string name="settings_home_hint">Zarządzaj ulubionymi aplikacjami, układem ekranu głównego i
+        szybkimi działaniami.</string>
     <string name="settings_widgets_hint">Zarządzaj slotami widżetów, dodawaj wiele widżetów do tego
         samego
         slotu i przesuwaj się między ułożonymi widżetami z ekranu głównego.</string>
@@ -130,7 +124,7 @@
     <string name="widget_bind_not_supported">Powiązanie widżetu nie jest obsługiwane na tym
         urządzeniu.</string>
     <string name="hide_status_bar_label">Ukryj pasek stanu</string>
-    <string name="footer_action_slot_label">Działanie stopki %1$d</string>
+    <string name="footer_action_slot_label">Szybkie działanie %1$d</string>
     <string name="footer_action_not_set">Nie ustawiono</string>
     <string name="footer_action_unavailable">Aplikacja niedostępna</string>
     <string name="footer_action_choose">Wybierz</string>
@@ -138,15 +132,13 @@
     <string name="footer_action_pick_title">Wybierz szybkie działanie</string>
     <string name="footer_action_pick_app_title">Wybierz aplikację</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Szybkie działania stopki</string>
-    <string name="footer_quick_actions_summary">Wybierz maksymalnie trzy ikony stopki dla ekranu
-        głównego.
-        Naciśnij i przytrzymaj ikonę stopki, aby ponownie skonfigurować jej slot, albo naciśnij i
-        przytrzymaj puste miejsce na ekranie głównym, aby otworzyć ustawienia launchera, gdy
-        wszystkie
-        sloty są wyczyszczone.</string>
-    <string name="footer_notifications_title">Powiadomienia stopki</string>
-    <string name="footer_show_labels">Pokaż etykiety stopki</string>
+    <string name="footer_quick_actions_title">Szybkie działania</string>
+    <string name="footer_quick_actions_summary">Wybierz maksymalnie trzy szybkie działania do
+        dolnej części ekranu głównego.
+        Aby ponownie skonfigurować jedno z nich, naciśnij i przytrzymaj jego ikonę albo naciśnij i
+        przytrzymaj puste miejsce na ekranie głównym, aby otworzyć ustawienia launchera.</string>
+    <string name="footer_notifications_title">Powiadomienia na ikonach szybkich działań</string>
+    <string name="footer_show_labels">Pokaż etykiety szybkich działań</string>
     <string name="quick_action_launcher_settings">Ustawienia launchera</string>
     <string name="quick_action_system_settings">Ustawienia systemowe</string>
     <string name="quick_action_wifi_settings">Ustawienia Wi-Fi</string>
@@ -158,9 +150,9 @@
     <string name="backup_settings_success">Kopia ustawień została zapisana.</string>
     <string name="backup_settings_failed">Nie udało się zapisać kopii ustawień.</string>
     <string name="backup_settings_share_title">Kopia zapisana</string>
-    <string name="backup_settings_share_message">Kopia ustawień jest gotowa. Udostępnij ją teraz
-        przez
-        systemowy arkusz udostępniania, jeśli chcesz przenieść ją na inne urządzenie.</string>
+    <string name="backup_settings_share_message">Kopia ustawień jest gotowa. Gdy zamkniesz tę
+        wiadomość, możesz użyć systemowego arkusza udostępniania, aby przenieść ją na inne
+        urządzenie.</string>
     <string name="backup_settings_share_action">Udostępnij</string>
     <string name="backup_settings_share_chooser_title">Udostępnij kopię ustawień</string>
     <string name="backup_settings_share_failed">Kopia została zapisana, ale udostępnianie nie jest
@@ -169,14 +161,13 @@
     <string name="restore_settings_success">Ustawienia zostały przywrócone.</string>
     <string name="restore_settings_failed">Nie udało się przywrócić ustawień.</string>
     <string name="restore_settings_button">Przywróć ustawienia</string>
-    <string name="restore_settings_invalid">Ten plik nie jest prawidłową kopią launchera.</string>
-    <string name="restore_settings_incompatible">Ta kopia została utworzona przez nieobsługiwaną
-        wersję launchera.</string>
+    <string name="restore_settings_invalid">Wybrany plik nie jest prawidłową kopią launchera.</string>
+    <string name="restore_settings_incompatible">Wybrana kopia została utworzona przez
+        nieobsługiwaną wersję launchera.</string>
     <string name="restore_settings_confirm_title">Przywróć ustawienia</string>
     <string name="restore_settings_confirm_message">Przywrócić %2$d ustawień z %1$s? To zastąpi
-        zapisane
-        preferencje launchera. Pozycje widżetów zostaną przywrócone tylko wtedy, gdy ich powiązania
-        nadal istnieją na tym urządzeniu.</string>
+        bieżące ustawienia launchera. Widżety zostaną przywrócone tylko wtedy, gdy ich powiązania
+        są nadal dostępne na tym urządzeniu.</string>
     <string name="restore_settings_confirm_action">Przywróć</string>
     <string name="restore_settings_selected_file">wybraną kopię</string>
     <string name="option_default">Domyślne</string>

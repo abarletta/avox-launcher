@@ -30,7 +30,7 @@
     <string name="widget_no_providers">Keine Widgets verfügbar</string>
     <string name="widget_bind_failed">Widget konnte nicht hinzugefügt werden</string>
     <string name="widget_manage_label">Widgets verwalten</string>
-    <string name="widget_empty_hint">Zum Hinzufügen von Widgets lange drücken</string>
+    <string name="widget_empty_hint">Lange drücken, um ein Widget hinzuzufügen</string>
     <string name="widget_height_label">Höhe</string>
     <string name="widget_remove_label">Entfernen</string>
     <string name="widget_none_label">Keine Widgets hinzugefügt</string>
@@ -44,7 +44,7 @@
     <string name="widget_slot_swipe_hint">Wische auf dem Startbildschirm nach links oder rechts, um
         zwischen
         den %1$d Widgets in diesem Slot zu wechseln.</string>
-    <string name="widget_add_slot_label">Widget-Slot hinzufügen</string>
+    <string name="widget_add_slot_label">Widget-Slot erstellen</string>
     <string name="widget_add_to_slot_label">Widget zu diesem Slot hinzufügen</string>
     <string name="widget_slot_indicator_toggle_label">Slot-Anzeige anzeigen</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -52,7 +52,7 @@
     <string name="animation_style_label">Seitenleistenanimation</string>
     <string name="wave_shift_label">Textverschiebung</string>
     <string name="wave_scale_label">Zoomfaktor</string>
-    <string name="wave_radius_label">Wellenradius</string>
+    <string name="wave_radius_label">Wellenbreite (Wellenlänge)</string>
     <string name="highlight_intensity_label">Hervorhebungsintensität</string>
     <string name="fade_radius_label">Verblassradius</string>
     <string name="wallpaper_effect_label">Hintergrundeffekt</string>
@@ -66,13 +66,12 @@
     <string name="favorites_label">Favoriten</string>
     <string name="favorites_select_label">Favoriten auswählen</string>
     <string name="favorites_add_label">Favorit hinzufügen</string>
-    <string name="favorites_manage_hint">Hier kannst du die aktuelle Favoritenliste prüfen, direkt
-        neu anordnen
-        und weitere Apps mit ihren echten Symbolen hinzufügen.</string>
+    <string name="favorites_manage_hint">Prüfe die Favoritenliste, ordne Apps neu oder füge
+        weitere hinzu.</string>
     <string name="favorites_layout_label">Favoritenlayout</string>
-    <string name="favorites_layout_hint">Das adaptive Raster nutzt auf Smartphones im Hochformat bis
-        zu 2 Spalten,
-        erweitert sich im Querformat und behält das alte einspaltige Layout bei.</string>
+    <string name="favorites_layout_hint">Das adaptive Raster ist eine Alternative zum einspaltigen
+        Layout. Es nutzt auf Smartphones im Hochformat bis zu 2 Spalten und erweitert sich im
+        Querformat.</string>
     <string name="favorites_layout_adaptive">Adaptives Raster</string>
     <string name="favorites_layout_single">Eine Spalte</string>
     <string name="favorites_min_max">Wähle 3 bis 10 Favoriten</string>
@@ -101,24 +100,21 @@
     <string name="settings_notifications">Benachrichtigungen</string>
     <string name="settings_notifications_summary">Badge-Modus, Wischgesten</string>
     <string name="settings_home">Startbildschirm</string>
-    <string name="settings_home_summary">Favoriten, Footer-Aktionen, Startbildschirm-Zugriffe</string>
+    <string name="settings_home_summary">Favoriten, Startbildschirm-Layout, Schnellaktionen</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widget-Slots, Wischstapel, Größe, Steuerelemente</string>
     <string name="settings_menu_title">Launcher-Einstellungen</string>
     <string name="settings_language_title">Sprache</string>
     <string name="settings_language_summary">Verwende die Systemsprache, wenn sie unterstützt wird,
-        oder erzwinge
-        Englisch.</string>
+        oder wähle eine Sprache manuell aus.</string>
     <string name="settings_backup_title">Sichern &amp; Wiederherstellen</string>
-    <string name="settings_backup_summary">Exportiere Launcher-Einstellungen in eine JSON-Datei oder
-        stelle sie später
-        wieder her. Widget-Platzierungen sind enthalten, werden aber nur wiederhergestellt, wenn
-        ihre Verknüpfungen auf diesem Gerät noch existieren.</string>
-    <string name="settings_notifications_hint">Badge-Zähler und Benachrichtigungstext werden hier
-        konfiguriert. Öffne
-        den Benachrichtigungszugriff von diesem Bildschirm erneut, wenn Aktualisierungen ausbleiben.</string>
-    <string name="settings_home_hint">Verwalte hier Favoriten, Footer-Aktionen und Zugriffe auf den
-        Startbildschirm.</string>
+    <string name="settings_backup_summary">Exportiere Launcher-Einstellungen oder stelle sie aus
+        einer früheren Sicherung wieder her.</string>
+    <string name="settings_notifications_hint">Konfiguriere Badge-Anzahl und
+        Benachrichtigungstext auf App-Symbolen. Wenn Benachrichtigungen nicht mehr aktualisiert
+        werden, öffne den Benachrichtigungszugriff von diesem Bildschirm aus erneut.</string>
+    <string name="settings_home_hint">Verwalte Favoriten, das Startbildschirm-Layout und
+        Schnellaktionen.</string>
     <string name="settings_widgets_hint">Verwalte Widget-Slots, füge mehrere Widgets zum selben Slot
         hinzu und
         wische auf dem Startbildschirm zwischen gestapelten Widgets.</string>
@@ -129,7 +125,7 @@
         Geräteeinstellungen.</string>
     <string name="widget_bind_not_supported">Widget-Bindung wird auf diesem Gerät nicht unterstützt.</string>
     <string name="hide_status_bar_label">Statusleiste ausblenden</string>
-    <string name="footer_action_slot_label">Footer-Aktion %1$d</string>
+    <string name="footer_action_slot_label">Schnellaktion %1$d</string>
     <string name="footer_action_not_set">Nicht festgelegt</string>
     <string name="footer_action_unavailable">App nicht verfügbar</string>
     <string name="footer_action_choose">Auswählen</string>
@@ -137,14 +133,13 @@
     <string name="footer_action_pick_title">Schnellaktion auswählen</string>
     <string name="footer_action_pick_app_title">App auswählen</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Footer-Schnellaktionen</string>
-    <string name="footer_quick_actions_summary">Wähle bis zu drei Footer-Symbole für den
-        Startbildschirm.
-        Halte ein Footer-Symbol gedrückt, um seinen Slot neu zu konfigurieren, oder halte einen
-        leeren Bereich des Startbildschirms gedrückt, um die Launcher-Einstellungen zu öffnen,
-        wenn alle Slots geleert sind.</string>
-    <string name="footer_notifications_title">Footer-Benachrichtigungen</string>
-    <string name="footer_show_labels">Footer-Beschriftungen anzeigen</string>
+    <string name="footer_quick_actions_title">Schnellaktionen</string>
+    <string name="footer_quick_actions_summary">Wähle bis zu drei Schnellaktionen für den unteren
+        Bereich des Startbildschirms.
+        Um eine neu zu konfigurieren, halte ihr Symbol gedrückt oder halte einen leeren Bereich des
+        Startbildschirms gedrückt, um die Launcher-Einstellungen zu öffnen.</string>
+    <string name="footer_notifications_title">Benachrichtigungen auf Schnellaktionssymbolen</string>
+    <string name="footer_show_labels">Beschriftungen für Schnellaktionen anzeigen</string>
     <string name="quick_action_launcher_settings">Launcher-Einstellungen</string>
     <string name="quick_action_system_settings">Systemeinstellungen</string>
     <string name="quick_action_wifi_settings">WLAN-Einstellungen</string>
@@ -156,9 +151,9 @@
     <string name="backup_settings_success">Einstellungs-Backup gespeichert.</string>
     <string name="backup_settings_failed">Einstellungs-Backup konnte nicht gespeichert werden.</string>
     <string name="backup_settings_share_title">Backup gespeichert</string>
-    <string name="backup_settings_share_message">Dein Einstellungs-Backup ist bereit. Teile es jetzt
-        über
-        die Systemfreigabe, wenn du es auf ein anderes Gerät übertragen möchtest.</string>
+    <string name="backup_settings_share_message">Dein Einstellungs-Backup ist bereit. Wenn du diese
+        Meldung schließt, kannst du die Systemfreigabe verwenden, um es auf ein anderes Gerät zu
+        übertragen.</string>
     <string name="backup_settings_share_action">Teilen</string>
     <string name="backup_settings_share_chooser_title">Einstellungs-Backup teilen</string>
     <string name="backup_settings_share_failed">Das Backup wurde gespeichert, aber Teilen ist auf
@@ -167,14 +162,14 @@
     <string name="restore_settings_success">Einstellungen wiederhergestellt.</string>
     <string name="restore_settings_failed">Einstellungen konnten nicht wiederhergestellt werden.</string>
     <string name="restore_settings_button">Einstellungen wiederherstellen</string>
-    <string name="restore_settings_invalid">Diese Datei ist kein gültiges Launcher-Backup.</string>
-    <string name="restore_settings_incompatible">Dieses Backup wurde von einer nicht unterstützten
-        Launcher-Version erstellt.</string>
+    <string name="restore_settings_invalid">Die ausgewählte Datei ist kein gültiges
+        Launcher-Backup.</string>
+    <string name="restore_settings_incompatible">Das ausgewählte Backup wurde von einer nicht
+        unterstützten Launcher-Version erstellt.</string>
     <string name="restore_settings_confirm_title">Einstellungen wiederherstellen</string>
     <string name="restore_settings_confirm_message">%2$d Einstellungen aus %1$s wiederherstellen?
-        Dadurch
-        werden deine gespeicherten Launcher-Einstellungen ersetzt. Widget-Platzierungen werden nur
-        wiederhergestellt, wenn ihre Verknüpfungen auf diesem Gerät noch existieren.</string>
+        Dadurch werden deine aktuellen Launcher-Einstellungen ersetzt. Widgets werden nur
+        wiederhergestellt, wenn ihre Verknüpfungen auf diesem Gerät noch verfügbar sind.</string>
     <string name="restore_settings_confirm_action">Wiederherstellen</string>
     <string name="restore_settings_selected_file">dem ausgewählten Backup</string>
     <string name="option_default">Standard</string>

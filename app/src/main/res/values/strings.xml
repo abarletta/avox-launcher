@@ -29,19 +29,19 @@
     <string name="widget_no_providers">No widgets available</string>
     <string name="widget_bind_failed">Failed to add widget</string>
     <string name="widget_manage_label">Manage Widgets</string>
-    <string name="widget_empty_hint">Long-press to add widgets</string>
+    <string name="widget_empty_hint">Long-press to add a widget</string>
     <string name="widget_height_label">Height</string>
     <string name="widget_remove_label">Remove</string>
     <string name="widget_none_label">No widgets added</string>
     <string name="widget_full_width_label">Full width</string>
     <string name="widget_settings_shortcut_label">Widget settings</string>
     <string name="widget_controls_label">Controls</string>
-    <string name="widget_controls_unavailable">This widget does not expose extra controls.</string>
+    <string name="widget_controls_unavailable">This widget does not provide extra controls.</string>
     <string name="widget_slot_label">Widget Slot %1$d</string>
     <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
     <string name="widget_slot_swipe_hint">Swipe left or right on the home screen to switch between
         the %1$d widgets in this slot.</string>
-    <string name="widget_add_slot_label">Add Widget Slot</string>
+    <string name="widget_add_slot_label">Create Widget Slot</string>
     <string name="widget_add_to_slot_label">Add Widget To This Slot</string>
     <string name="widget_slot_indicator_toggle_label">Show Slot Indicator</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -49,7 +49,7 @@
     <string name="animation_style_label">Sidebar Animation</string>
     <string name="wave_shift_label">Text Shift</string>
     <string name="wave_scale_label">Zoom Scale</string>
-    <string name="wave_radius_label">Wave Radius</string>
+    <string name="wave_radius_label">Wave Width (Wavelength)</string>
     <string name="highlight_intensity_label">Highlight Intensity</string>
     <string name="fade_radius_label">Fade Radius</string>
     <string name="wallpaper_effect_label">Wallpaper Effect</string>
@@ -63,11 +63,10 @@
     <string name="favorites_label">Favorites</string>
     <string name="favorites_select_label">Select Favorites</string>
     <string name="favorites_add_label">Add Favorite</string>
-    <string name="favorites_manage_hint">Review the current favorites list here, reorder it
-        directly, and add more apps with their real icons.</string>
+    <string name="favorites_manage_hint">Review the favorites list, reorder apps, or add more.</string>
     <string name="favorites_layout_label">Favorites Layout</string>
-    <string name="favorites_layout_hint">Adaptive grid uses up to 2 columns on phones in portrait,
-        expands in landscape, and keeps the old single-column layout available.</string>
+    <string name="favorites_layout_hint">Adaptive grid is an alternative to the single-column
+        layout. It uses up to two columns on phones in portrait and expands in landscape.</string>
     <string name="favorites_layout_adaptive">Adaptive Grid</string>
     <string name="favorites_layout_single">Single Column</string>
     <string name="favorites_min_max">Select 3 to 10 favorites</string>
@@ -94,29 +93,27 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_summary">Badge mode, swipe gestures</string>
     <string name="settings_home">Home</string>
-    <string name="settings_home_summary">Favorites, footer actions, home entry points</string>
+    <string name="settings_home_summary">Favorites, home layout, quick actions</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widget slots, swipe stacks, size, controls</string>
     <string name="settings_menu_title">Launcher settings</string>
     <string name="settings_language_title">Language</string>
-    <string name="settings_language_summary">Use the system language when supported, or force
-        English.</string>
+    <string name="settings_language_summary">Use the system language when supported, or choose one
+        manually.</string>
     <string name="settings_backup_title">Backup &amp; Restore</string>
-    <string name="settings_backup_summary">Export launcher preferences to a JSON file, or restore
-        them later. Widget placements are included, but only restore when their bindings still
-        exist on this device.</string>
-    <string name="settings_notifications_hint">Badge counts and notification text are configured
-        here. Reopen notification access from this screen if updates stop.</string>
-    <string name="settings_home_hint">Manage favorites, footer actions, and home screen entry points
-        from here.</string>
+    <string name="settings_backup_summary">Export launcher preferences or restore them from a
+        previous backup.</string>
+    <string name="settings_notifications_hint">Configure badge counts and notification text shown
+        on app icons. If notifications stop updating, reopen notification access from this screen.</string>
+    <string name="settings_home_hint">Manage favorite apps, home layout, and quick actions.</string>
     <string name="settings_widgets_hint">Manage widget slots, add multiple widgets to the same slot,
         and swipe between stacked widgets from the home screen.</string>
-    <string name="widget_space_hint">This controls how much vertical space widgets may use on the
-        home screen before the app list takes over.</string>
+    <string name="widget_space_hint">Control how much vertical space widgets can use on the home
+        screen before the app list takes over.</string>
     <string name="widget_bind_denied">Widget binding was denied. Check device settings.</string>
     <string name="widget_bind_not_supported">Widget binding is not supported on this device.</string>
     <string name="hide_status_bar_label">Hide Status Bar</string>
-    <string name="footer_action_slot_label">Footer action %1$d</string>
+    <string name="footer_action_slot_label">Quick action %1$d</string>
     <string name="footer_action_not_set">Not set</string>
     <string name="footer_action_unavailable">Unavailable app</string>
     <string name="footer_action_choose">Choose</string>
@@ -124,12 +121,13 @@
     <string name="footer_action_pick_title">Choose quick action</string>
     <string name="footer_action_pick_app_title">Choose app</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Footer Quick Actions</string>
-    <string name="footer_quick_actions_summary">Choose up to three footer icons for the home screen.
-        Long-press a footer icon to reconfigure its slot, or long-press empty home space to open
-        launcher settings when all slots are cleared.</string>
-    <string name="footer_notifications_title">Footer Notifications</string>
-    <string name="footer_show_labels">Show Footer Labels</string>
+    <string name="footer_quick_actions_title">Quick Actions</string>
+    <string name="footer_quick_actions_summary">Choose up to three quick actions for the bottom of
+        the home screen.
+        To reconfigure one, long-press its icon, or long-press empty space on the home screen to
+        open launcher settings.</string>
+    <string name="footer_notifications_title">Notifications on Quick Action Icons</string>
+    <string name="footer_show_labels">Show Quick Action Labels</string>
     <string name="quick_action_launcher_settings">Launcher settings</string>
     <string name="quick_action_system_settings">System settings</string>
     <string name="quick_action_wifi_settings">Wi-Fi settings</string>
@@ -141,22 +139,22 @@
     <string name="backup_settings_success">Settings backup saved.</string>
     <string name="backup_settings_failed">Unable to save settings backup.</string>
     <string name="backup_settings_share_title">Backup saved</string>
-    <string name="backup_settings_share_message">Your settings backup is ready. Share it now with
-        the system share sheet if you want to move it to another device.</string>
+    <string name="backup_settings_share_message">Your settings backup is ready. When you close this
+        message, you can use the system share sheet to move it to another device.</string>
     <string name="backup_settings_share_action">Share</string>
     <string name="backup_settings_share_chooser_title">Share settings backup</string>
-    <string name="backup_settings_share_failed">Backup saved, but sharing is not available on this
-        device.</string>
+    <string name="backup_settings_share_failed">The backup was saved, but sharing is not available
+        on this device.</string>
     <string name="restore_settings_success">Settings restored.</string>
     <string name="restore_settings_failed">Unable to restore settings.</string>
     <string name="restore_settings_button">Restore Settings</string>
-    <string name="restore_settings_invalid">That file is not a valid launcher backup.</string>
-    <string name="restore_settings_incompatible">That backup was created by an unsupported launcher
-        version.</string>
+    <string name="restore_settings_invalid">The selected file is not a valid launcher backup.</string>
+    <string name="restore_settings_incompatible">The selected backup was created by an unsupported
+        launcher version.</string>
     <string name="restore_settings_confirm_title">Restore settings</string>
     <string name="restore_settings_confirm_message">Restore %2$d settings from %1$s? This replaces
-        your saved launcher preferences. Widget placements restore only when their bindings still
-        exist on this device.</string>
+        your current launcher settings. Widgets are restored only if their bindings are still
+        available on this device.</string>
     <string name="restore_settings_confirm_action">Restore</string>
     <string name="restore_settings_selected_file">the selected backup</string>
     <string name="option_default">Default</string>

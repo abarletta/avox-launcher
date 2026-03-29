@@ -29,7 +29,7 @@
     <string name="widget_no_providers">Geen widgets beschikbaar</string>
     <string name="widget_bind_failed">Widget toevoegen mislukt</string>
     <string name="widget_manage_label">Widgets beheren</string>
-    <string name="widget_empty_hint">Houd ingedrukt om widgets toe te voegen</string>
+    <string name="widget_empty_hint">Houd ingedrukt om een widget toe te voegen</string>
     <string name="widget_height_label">Hoogte</string>
     <string name="widget_remove_label">Verwijderen</string>
     <string name="widget_none_label">Geen widgets toegevoegd</string>
@@ -42,7 +42,7 @@
     <string name="widget_slot_swipe_hint">Veeg op het startscherm naar links of rechts om te
         wisselen tussen
         de %1$d widgets in dit slot.</string>
-    <string name="widget_add_slot_label">Widgetslot toevoegen</string>
+    <string name="widget_add_slot_label">Widgetslot maken</string>
     <string name="widget_add_to_slot_label">Widget aan dit slot toevoegen</string>
     <string name="widget_slot_indicator_toggle_label">Slotindicator tonen</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -50,7 +50,7 @@
     <string name="animation_style_label">Animatie van zijbalk</string>
     <string name="wave_shift_label">Tekstverschuiving</string>
     <string name="wave_scale_label">Zoomschaal</string>
-    <string name="wave_radius_label">Golfstraal</string>
+    <string name="wave_radius_label">Golfbreedte (golflengte)</string>
     <string name="highlight_intensity_label">Intensiteit van markering</string>
     <string name="fade_radius_label">Vervaagstraal</string>
     <string name="wallpaper_effect_label">Achtergrondeffect</string>
@@ -64,12 +64,12 @@
     <string name="favorites_label">Favorieten</string>
     <string name="favorites_select_label">Favorieten selecteren</string>
     <string name="favorites_add_label">Favoriet toevoegen</string>
-    <string name="favorites_manage_hint">Bekijk hier de huidige favorietenlijst, wijzig de volgorde
-        direct en voeg meer apps toe met hun echte iconen.</string>
+    <string name="favorites_manage_hint">Bekijk de favorietenlijst, wijzig de volgorde van apps of
+        voeg er meer toe.</string>
     <string name="favorites_layout_label">Layout van favorieten</string>
-    <string name="favorites_layout_hint">Adaptief raster gebruikt maximaal 2 kolommen op telefoons
-        in portretstand,
-        breidt uit in landschap en houdt de oude lay-out met één kolom beschikbaar.</string>
+    <string name="favorites_layout_hint">Het adaptieve raster is een alternatief voor de lay-out
+        met één kolom. Het gebruikt maximaal 2 kolommen op telefoons in portretstand en breidt uit
+        in landschap.</string>
     <string name="favorites_layout_adaptive">Adaptief raster</string>
     <string name="favorites_layout_single">Eén kolom</string>
     <string name="favorites_min_max">Selecteer 3 tot 10 favorieten</string>
@@ -96,24 +96,21 @@
     <string name="settings_notifications">Meldingen</string>
     <string name="settings_notifications_summary">Badgemodus, veegbewegingen</string>
     <string name="settings_home">Startscherm</string>
-    <string name="settings_home_summary">Favorieten, footeracties, toegangspunten op startscherm</string>
+    <string name="settings_home_summary">Favorieten, startschermlay-out, snelle acties</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widgetslots, veegstapels, grootte, bediening</string>
     <string name="settings_menu_title">Launcher-instellingen</string>
     <string name="settings_language_title">Taal</string>
     <string name="settings_language_summary">Gebruik de systeemtaal als die wordt ondersteund, of
-        forceer
-        Engels.</string>
+        kies handmatig een taal.</string>
     <string name="settings_backup_title">Back-up en herstellen</string>
-    <string name="settings_backup_summary">Exporteer launcher-voorkeuren naar een JSON-bestand of
-        herstel ze
-        later. Widgetposities worden meegenomen, maar alleen hersteld als hun koppelingen nog op
-        dit apparaat bestaan.</string>
-    <string name="settings_notifications_hint">Badgeaantallen en meldingstekst stel je hier in. Open
-        vanaf dit
-        scherm opnieuw meldingstoegang als updates stoppen.</string>
-    <string name="settings_home_hint">Beheer hier favorieten, footeracties en toegangspunten op het
-        startscherm.</string>
+    <string name="settings_backup_summary">Exporteer launcher-voorkeuren of herstel ze vanuit een
+        eerdere back-up.</string>
+    <string name="settings_notifications_hint">Configureer badgeaantallen en meldingstekst die op
+        apppictogrammen worden getoond. Open meldingstoegang opnieuw vanaf dit scherm als
+        meldingen niet meer worden bijgewerkt.</string>
+    <string name="settings_home_hint">Beheer favoriete apps, de startschermlay-out en snelle
+        acties.</string>
     <string name="settings_widgets_hint">Beheer widgetslots, voeg meerdere widgets toe aan hetzelfde
         slot
         en veeg vanaf het startscherm tussen gestapelde widgets.</string>
@@ -125,7 +122,7 @@
     <string name="widget_bind_not_supported">Koppeling van widgets wordt niet ondersteund op dit
         apparaat.</string>
     <string name="hide_status_bar_label">Statusbalk verbergen</string>
-    <string name="footer_action_slot_label">Footeractie %1$d</string>
+    <string name="footer_action_slot_label">Snelle actie %1$d</string>
     <string name="footer_action_not_set">Niet ingesteld</string>
     <string name="footer_action_unavailable">App niet beschikbaar</string>
     <string name="footer_action_choose">Kiezen</string>
@@ -133,14 +130,13 @@
     <string name="footer_action_pick_title">Snelle actie kiezen</string>
     <string name="footer_action_pick_app_title">App kiezen</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Snelle footeracties</string>
-    <string name="footer_quick_actions_summary">Kies maximaal drie footerpictogrammen voor het
-        startscherm.
-        Houd een footerpictogram ingedrukt om het slot opnieuw in te stellen, of houd lege ruimte
-        op het startscherm ingedrukt om launcher-instellingen te openen wanneer alle slots leeg
-        zijn.</string>
-    <string name="footer_notifications_title">Footermeldingen</string>
-    <string name="footer_show_labels">Footerlabels tonen</string>
+    <string name="footer_quick_actions_title">Snelle acties</string>
+    <string name="footer_quick_actions_summary">Kies maximaal drie snelle acties voor de onderkant
+        van het startscherm.
+        Houd het bijbehorende pictogram ingedrukt om er een opnieuw in te stellen, of houd lege
+        ruimte op het startscherm ingedrukt om de launcher-instellingen te openen.</string>
+    <string name="footer_notifications_title">Meldingen op pictogrammen van snelle acties</string>
+    <string name="footer_show_labels">Labels van snelle acties tonen</string>
     <string name="quick_action_launcher_settings">Launcher-instellingen</string>
     <string name="quick_action_system_settings">Systeeminstellingen</string>
     <string name="quick_action_wifi_settings">Wi-Fi-instellingen</string>
@@ -152,25 +148,24 @@
     <string name="backup_settings_success">Back-up van instellingen opgeslagen.</string>
     <string name="backup_settings_failed">Kan back-up van instellingen niet opslaan.</string>
     <string name="backup_settings_share_title">Back-up opgeslagen</string>
-    <string name="backup_settings_share_message">De back-up van je instellingen is klaar. Deel die
-        nu via
-        het systeemdeelvenster als je hem naar een ander apparaat wilt verplaatsen.</string>
+    <string name="backup_settings_share_message">De back-up van je instellingen is klaar. Zodra je
+        dit bericht sluit, kun je het systeemdeelvenster gebruiken om die naar een ander apparaat
+        te verplaatsen.</string>
     <string name="backup_settings_share_action">Delen</string>
     <string name="backup_settings_share_chooser_title">Back-up van instellingen delen</string>
-    <string name="backup_settings_share_failed">Back-up opgeslagen, maar delen is niet beschikbaar
-        op dit
-        apparaat.</string>
+    <string name="backup_settings_share_failed">De back-up is opgeslagen, maar delen is niet
+        beschikbaar op dit apparaat.</string>
     <string name="restore_settings_success">Instellingen hersteld.</string>
     <string name="restore_settings_failed">Kan instellingen niet herstellen.</string>
     <string name="restore_settings_button">Instellingen herstellen</string>
-    <string name="restore_settings_invalid">Dat bestand is geen geldige launcher-back-up.</string>
-    <string name="restore_settings_incompatible">Die back-up is gemaakt door een niet-ondersteunde
-        launcher-versie.</string>
+    <string name="restore_settings_invalid">Het geselecteerde bestand is geen geldige
+        launcher-back-up.</string>
+    <string name="restore_settings_incompatible">De geselecteerde back-up is gemaakt door een
+        niet-ondersteunde launcher-versie.</string>
     <string name="restore_settings_confirm_title">Instellingen herstellen</string>
     <string name="restore_settings_confirm_message">%2$d instellingen herstellen uit %1$s? Hiermee
-        vervang je
-        je opgeslagen launcher-voorkeuren. Widgetposities worden alleen hersteld als hun koppelingen
-        nog op dit apparaat bestaan.</string>
+        vervang je je huidige launcher-instellingen. Widgets worden alleen hersteld als hun
+        koppelingen nog beschikbaar zijn op dit apparaat.</string>
     <string name="restore_settings_confirm_action">Herstellen</string>
     <string name="restore_settings_selected_file">de geselecteerde back-up</string>
     <string name="option_default">Standaard</string>

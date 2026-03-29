@@ -30,20 +30,20 @@
     <string name="widget_no_providers">Aucun widget disponible</string>
     <string name="widget_bind_failed">Impossible d’ajouter le widget</string>
     <string name="widget_manage_label">Gérer les widgets</string>
-    <string name="widget_empty_hint">Appui long pour ajouter des widgets</string>
+    <string name="widget_empty_hint">Appui long pour ajouter un widget</string>
     <string name="widget_height_label">Hauteur</string>
     <string name="widget_remove_label">Supprimer</string>
     <string name="widget_none_label">Aucun widget ajouté</string>
     <string name="widget_full_width_label">Pleine largeur</string>
     <string name="widget_settings_shortcut_label">Paramètres du widget</string>
     <string name="widget_controls_label">Commandes</string>
-    <string name="widget_controls_unavailable">Ce widget n’expose pas de commandes supplémentaires.</string>
+    <string name="widget_controls_unavailable">Ce widget n’offre pas de commandes supplémentaires.</string>
     <string name="widget_slot_label">Emplacement de widget %1$d</string>
     <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
     <string name="widget_slot_swipe_hint">Balayez vers la gauche ou la droite sur l’écran d’accueil
         pour passer entre
         les %1$d widgets de cet emplacement.</string>
-    <string name="widget_add_slot_label">Ajouter un emplacement de widget</string>
+    <string name="widget_add_slot_label">Créer un emplacement de widget</string>
     <string name="widget_add_to_slot_label">Ajouter un widget à cet emplacement</string>
     <string name="widget_slot_indicator_toggle_label">Afficher l’indicateur d’emplacement</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -51,7 +51,7 @@
     <string name="animation_style_label">Animation de la barre latérale</string>
     <string name="wave_shift_label">Décalage du texte</string>
     <string name="wave_scale_label">Niveau de zoom</string>
-    <string name="wave_radius_label">Rayon de l’onde</string>
+    <string name="wave_radius_label">Largeur de l’onde (longueur d’onde)</string>
     <string name="highlight_intensity_label">Intensité de surbrillance</string>
     <string name="fade_radius_label">Rayon d’estompage</string>
     <string name="wallpaper_effect_label">Effet du fond d’écran</string>
@@ -65,13 +65,12 @@
     <string name="favorites_label">Favoris</string>
     <string name="favorites_select_label">Sélectionner les favoris</string>
     <string name="favorites_add_label">Ajouter un favori</string>
-    <string name="favorites_manage_hint">Consultez ici la liste actuelle des favoris, réorganisez-la
-        directement
-        et ajoutez d’autres applis avec leurs vraies icônes.</string>
+    <string name="favorites_manage_hint">Consultez la liste des favoris, réorganisez les applis ou
+        ajoutez-en d’autres.</string>
     <string name="favorites_layout_label">Disposition des favoris</string>
-    <string name="favorites_layout_hint">La grille adaptative utilise jusqu’à 2 colonnes sur
-        téléphone en portrait,
-        s’étend en paysage et conserve l’ancien affichage sur une seule colonne.</string>
+    <string name="favorites_layout_hint">La grille adaptative est une alternative à la disposition
+        sur une seule colonne. Elle utilise jusqu’à 2 colonnes sur téléphone en portrait et
+        s’étend en paysage.</string>
     <string name="favorites_layout_adaptive">Grille adaptative</string>
     <string name="favorites_layout_single">Une seule colonne</string>
     <string name="favorites_min_max">Sélectionnez 3 à 10 favoris</string>
@@ -99,25 +98,22 @@
     <string name="settings_notifications">Notifications</string>
     <string name="settings_notifications_summary">Mode badge, gestes de balayage</string>
     <string name="settings_home">Accueil</string>
-    <string name="settings_home_summary">Favoris, actions du pied de page, raccourcis d’accueil</string>
+    <string name="settings_home_summary">Favoris, disposition de l’accueil, actions rapides</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Emplacements de widgets, piles balayables, taille,
         commandes</string>
     <string name="settings_menu_title">Paramètres du launcher</string>
     <string name="settings_language_title">Langue</string>
-    <string name="settings_language_summary">Utiliser la langue du système lorsqu’elle est prise en
-        charge, ou forcer
-        l’anglais.</string>
+    <string name="settings_language_summary">Utilisez la langue du système lorsqu’elle est prise en
+        charge, ou choisissez-en une manuellement.</string>
     <string name="settings_backup_title">Sauvegarde et restauration</string>
-    <string name="settings_backup_summary">Exportez les préférences du launcher vers un fichier
-        JSON, ou restaurez-les
-        plus tard. Les emplacements des widgets sont inclus, mais ne sont restaurés que si leurs
-        liaisons existent encore sur cet appareil.</string>
-    <string name="settings_notifications_hint">Le nombre de badges et le texte des notifications
-        sont configurés ici.
-        Rouvrez l’accès aux notifications depuis cet écran si les mises à jour cessent.</string>
-    <string name="settings_home_hint">Gérez ici les favoris, les actions du pied de page et les
-        raccourcis d’accueil.</string>
+    <string name="settings_backup_summary">Exportez les préférences du launcher ou restaurez-les à
+        partir d’une sauvegarde précédente.</string>
+    <string name="settings_notifications_hint">Configurez le nombre de badges et le texte des
+        notifications affichés sur les icônes des applis. Si les notifications cessent de se mettre
+        à jour, rouvrez l’accès aux notifications depuis cet écran.</string>
+    <string name="settings_home_hint">Gérez les applis favorites, la disposition de l’accueil et
+        les actions rapides.</string>
     <string name="settings_widgets_hint">Gérez les emplacements de widgets, ajoutez plusieurs
         widgets au même
         emplacement et balayez entre les widgets empilés depuis l’écran d’accueil.</string>
@@ -129,7 +125,7 @@
     <string name="widget_bind_not_supported">La liaison des widgets n’est pas prise en charge sur
         cet appareil.</string>
     <string name="hide_status_bar_label">Masquer la barre d’état</string>
-    <string name="footer_action_slot_label">Action du pied de page %1$d</string>
+    <string name="footer_action_slot_label">Action rapide %1$d</string>
     <string name="footer_action_not_set">Non défini</string>
     <string name="footer_action_unavailable">Appli indisponible</string>
     <string name="footer_action_choose">Choisir</string>
@@ -137,14 +133,13 @@
     <string name="footer_action_pick_title">Choisir une action rapide</string>
     <string name="footer_action_pick_app_title">Choisir une application</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Actions rapides du pied de page</string>
-    <string name="footer_quick_actions_summary">Choisissez jusqu’à trois icônes de pied de page pour
-        l’écran d’accueil.
-        Faites un appui long sur une icône du pied de page pour reconfigurer son emplacement, ou
-        faites un appui long sur un espace vide de l’accueil pour ouvrir les paramètres du launcher
-        quand tous les emplacements sont effacés.</string>
-    <string name="footer_notifications_title">Notifications du pied de page</string>
-    <string name="footer_show_labels">Afficher les libellés du pied de page</string>
+    <string name="footer_quick_actions_title">Actions rapides</string>
+    <string name="footer_quick_actions_summary">Choisissez jusqu’à trois actions rapides pour le
+        bas de l’écran d’accueil.
+        Pour en reconfigurer une, faites un appui long sur son icône, ou faites un appui long sur
+        un espace vide de l’accueil pour ouvrir les paramètres du launcher.</string>
+    <string name="footer_notifications_title">Notifications sur les icônes d’actions rapides</string>
+    <string name="footer_show_labels">Afficher les libellés des actions rapides</string>
     <string name="quick_action_launcher_settings">Paramètres du launcher</string>
     <string name="quick_action_system_settings">Paramètres système</string>
     <string name="quick_action_wifi_settings">Paramètres Wi-Fi</string>
@@ -156,25 +151,24 @@
     <string name="backup_settings_success">Sauvegarde des paramètres enregistrée.</string>
     <string name="backup_settings_failed">Impossible d’enregistrer la sauvegarde des paramètres.</string>
     <string name="backup_settings_share_title">Sauvegarde enregistrée</string>
-    <string name="backup_settings_share_message">La sauvegarde de vos paramètres est prête.
-        Partagez-la maintenant
-        avec la feuille de partage du système si vous voulez la déplacer vers un autre appareil.</string>
+    <string name="backup_settings_share_message">La sauvegarde de vos paramètres est prête. Quand
+        vous fermerez ce message, vous pourrez utiliser la feuille de partage du système pour la
+        déplacer vers un autre appareil.</string>
     <string name="backup_settings_share_action">Partager</string>
     <string name="backup_settings_share_chooser_title">Partager la sauvegarde des paramètres</string>
-    <string name="backup_settings_share_failed">La sauvegarde est enregistrée, mais le partage n’est
-        pas disponible
-        sur cet appareil.</string>
+    <string name="backup_settings_share_failed">La sauvegarde a été enregistrée, mais le partage
+        n’est pas disponible sur cet appareil.</string>
     <string name="restore_settings_success">Paramètres restaurés.</string>
     <string name="restore_settings_failed">Impossible de restaurer les paramètres.</string>
     <string name="restore_settings_button">Restaurer les paramètres</string>
-    <string name="restore_settings_invalid">Ce fichier n’est pas une sauvegarde valide du launcher.</string>
-    <string name="restore_settings_incompatible">Cette sauvegarde a été créée par une version du
-        launcher non prise en charge.</string>
+    <string name="restore_settings_invalid">Le fichier sélectionné n’est pas une sauvegarde valide
+        du launcher.</string>
+    <string name="restore_settings_incompatible">La sauvegarde sélectionnée a été créée par une
+        version du launcher non prise en charge.</string>
     <string name="restore_settings_confirm_title">Restaurer les paramètres</string>
     <string name="restore_settings_confirm_message">Restaurer %2$d paramètres depuis %1$s ? Cela
-        remplace
-        les préférences enregistrées du launcher. Les emplacements des widgets ne sont restaurés
-        que si leurs liaisons existent encore sur cet appareil.</string>
+        remplace vos paramètres actuels du launcher. Les widgets ne sont restaurés que si leurs
+        liaisons sont encore disponibles sur cet appareil.</string>
     <string name="restore_settings_confirm_action">Restaurer</string>
     <string name="restore_settings_selected_file">la sauvegarde sélectionnée</string>
     <string name="option_default">Par défaut</string>

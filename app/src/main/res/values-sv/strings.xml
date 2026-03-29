@@ -29,7 +29,7 @@
     <string name="widget_no_providers">Inga widgets tillgängliga</string>
     <string name="widget_bind_failed">Det gick inte att lägga till widgeten</string>
     <string name="widget_manage_label">Hantera widgets</string>
-    <string name="widget_empty_hint">Tryck länge för att lägga till widgets</string>
+    <string name="widget_empty_hint">Tryck länge för att lägga till en widget</string>
     <string name="widget_height_label">Höjd</string>
     <string name="widget_remove_label">Ta bort</string>
     <string name="widget_none_label">Inga widgets tillagda</string>
@@ -42,7 +42,7 @@
     <string name="widget_slot_swipe_hint">Svep åt vänster eller höger på startskärmen för att växla
         mellan
         de %1$d widgetarna i den här platsen.</string>
-    <string name="widget_add_slot_label">Lägg till widgetplats</string>
+    <string name="widget_add_slot_label">Skapa widgetplats</string>
     <string name="widget_add_to_slot_label">Lägg till widget i den här platsen</string>
     <string name="widget_slot_indicator_toggle_label">Visa platsindikator</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -50,7 +50,7 @@
     <string name="animation_style_label">Sidofältsanimation</string>
     <string name="wave_shift_label">Textförskjutning</string>
     <string name="wave_scale_label">Zoomskala</string>
-    <string name="wave_radius_label">Vågradie</string>
+    <string name="wave_radius_label">Vågbredd (våglängd)</string>
     <string name="highlight_intensity_label">Markeringsintensitet</string>
     <string name="fade_radius_label">Toningsradie</string>
     <string name="wallpaper_effect_label">Bakgrundseffekt</string>
@@ -64,13 +64,12 @@
     <string name="favorites_label">Favoriter</string>
     <string name="favorites_select_label">Välj favoriter</string>
     <string name="favorites_add_label">Lägg till favorit</string>
-    <string name="favorites_manage_hint">Granska den aktuella favoritlistan här, ändra ordningen
-        direkt
-        och lägg till fler appar med deras riktiga ikoner.</string>
+    <string name="favorites_manage_hint">Granska favoritlistan, ändra ordningen på apparna eller
+        lägg till fler.</string>
     <string name="favorites_layout_label">Favoritlayout</string>
-    <string name="favorites_layout_hint">Adaptivt rutnät använder upp till 2 kolumner på telefoner i
-        stående läge,
-        utökas i liggande läge och behåller den gamla enkolumnslayouten.</string>
+    <string name="favorites_layout_hint">Det adaptiva rutnätet är ett alternativ till layouten med
+        en kolumn. Det använder upp till 2 kolumner på telefoner i stående läge och utökas i
+        liggande läge.</string>
     <string name="favorites_layout_adaptive">Adaptivt rutnät</string>
     <string name="favorites_layout_single">En kolumn</string>
     <string name="favorites_min_max">Välj 3 till 10 favoriter</string>
@@ -98,23 +97,21 @@
     <string name="settings_notifications">Notifieringar</string>
     <string name="settings_notifications_summary">Märkesläge, svepgester</string>
     <string name="settings_home">Hem</string>
-    <string name="settings_home_summary">Favoriter, sidfotsåtgärder, ingångar på startskärmen</string>
+    <string name="settings_home_summary">Favoriter, startskärmslayout, snabbåtgärder</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widgetplatser, svepstaplar, storlek, kontroller</string>
     <string name="settings_menu_title">Launcher-inställningar</string>
     <string name="settings_language_title">Språk</string>
-    <string name="settings_language_summary">Använd systemspråket när det stöds, eller tvinga
-        engelska.</string>
+    <string name="settings_language_summary">Använd systemspråket när det stöds, eller välj språk
+        manuellt.</string>
     <string name="settings_backup_title">Säkerhetskopiera och återställ</string>
-    <string name="settings_backup_summary">Exportera launcher-inställningar till en JSON-fil eller
-        återställ dem
-        senare. Widgetplaceringar följer med, men återställs bara om deras bindningar fortfarande
-        finns på den här enheten.</string>
-    <string name="settings_notifications_hint">Antal märken och notifieringstext ställs in här.
-        Öppna aviseringstillgång
-        igen från den här skärmen om uppdateringar slutar komma.</string>
-    <string name="settings_home_hint">Hantera favoriter, sidfotsåtgärder och ingångar på
-        startskärmen här.</string>
+    <string name="settings_backup_summary">Exportera launcher-inställningar eller återställ dem
+        från en tidigare säkerhetskopia.</string>
+    <string name="settings_notifications_hint">Ställ in antal märken och notifieringstext som
+        visas på appikoner. Om notifieringar slutar uppdateras, öppna aviseringstillgång igen från
+        den här skärmen.</string>
+    <string name="settings_home_hint">Hantera favoritappar, startskärmslayout och
+        snabbåtgärder.</string>
     <string name="settings_widgets_hint">Hantera widgetplatser, lägg till flera widgets i samma
         plats
         och svep mellan staplade widgets från startskärmen.</string>
@@ -124,7 +121,7 @@
     <string name="widget_bind_denied">Widgetbindning nekades. Kontrollera enhetsinställningarna.</string>
     <string name="widget_bind_not_supported">Widgetbindning stöds inte på den här enheten.</string>
     <string name="hide_status_bar_label">Dölj statusfält</string>
-    <string name="footer_action_slot_label">Sidfotsåtgärd %1$d</string>
+    <string name="footer_action_slot_label">Snabbåtgärd %1$d</string>
     <string name="footer_action_not_set">Inte inställd</string>
     <string name="footer_action_unavailable">Appen är inte tillgänglig</string>
     <string name="footer_action_choose">Välj</string>
@@ -132,12 +129,13 @@
     <string name="footer_action_pick_title">Välj snabbåtgärd</string>
     <string name="footer_action_pick_app_title">Välj app</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Snabbåtgärder i sidfot</string>
-    <string name="footer_quick_actions_summary">Välj upp till tre sidfotsikoner för startskärmen.
-        Tryck länge på en sidfotsikon för att konfigurera platsen igen, eller tryck länge på en
-        tom yta på startskärmen för att öppna launcher-inställningar när alla platser är tomma.</string>
-    <string name="footer_notifications_title">Sidfotsnotifieringar</string>
-    <string name="footer_show_labels">Visa sidfotsetiketter</string>
+    <string name="footer_quick_actions_title">Snabbåtgärder</string>
+    <string name="footer_quick_actions_summary">Välj upp till tre snabbåtgärder för nederdelen av
+        startskärmen.
+        Om du vill konfigurera om en av dem, tryck länge på dess ikon eller tryck länge på en tom
+        yta på startskärmen för att öppna launcher-inställningar.</string>
+    <string name="footer_notifications_title">Notifieringar på snabbåtgärdsikoner</string>
+    <string name="footer_show_labels">Visa etiketter för snabbåtgärder</string>
     <string name="quick_action_launcher_settings">Launcher-inställningar</string>
     <string name="quick_action_system_settings">Systeminställningar</string>
     <string name="quick_action_wifi_settings">Wi-Fi-inställningar</string>
@@ -149,9 +147,9 @@
     <string name="backup_settings_success">Säkerhetskopia av inställningar sparad.</string>
     <string name="backup_settings_failed">Det gick inte att spara säkerhetskopian av inställningar.</string>
     <string name="backup_settings_share_title">Säkerhetskopia sparad</string>
-    <string name="backup_settings_share_message">Säkerhetskopian av dina inställningar är klar. Dela
-        den nu
-        via systemets delningspanel om du vill flytta den till en annan enhet.</string>
+    <string name="backup_settings_share_message">Säkerhetskopian av dina inställningar är klar. När
+        du stänger det här meddelandet kan du använda systemets delningspanel för att flytta den
+        till en annan enhet.</string>
     <string name="backup_settings_share_action">Dela</string>
     <string name="backup_settings_share_chooser_title">Dela säkerhetskopia av inställningar</string>
     <string name="backup_settings_share_failed">Säkerhetskopian sparades, men delning är inte
@@ -160,14 +158,14 @@
     <string name="restore_settings_success">Inställningar återställda.</string>
     <string name="restore_settings_failed">Det gick inte att återställa inställningarna.</string>
     <string name="restore_settings_button">Återställ inställningar</string>
-    <string name="restore_settings_invalid">Den filen är inte en giltig launcher-säkerhetskopia.</string>
-    <string name="restore_settings_incompatible">Den säkerhetskopian skapades av en launcher-version
-        som inte stöds.</string>
+    <string name="restore_settings_invalid">Den valda filen är inte en giltig
+        launcher-säkerhetskopia.</string>
+    <string name="restore_settings_incompatible">Den valda säkerhetskopian skapades av en
+        launcher-version som inte stöds.</string>
     <string name="restore_settings_confirm_title">Återställ inställningar</string>
-    <string name="restore_settings_confirm_message">Återställa %2$d inställningar från %1$s? Det här
-        ersätter
-        dina sparade launcher-inställningar. Widgetplaceringar återställs bara om deras bindningar
-        fortfarande finns på den här enheten.</string>
+    <string name="restore_settings_confirm_message">Återställa %2$d inställningar från %1$s? Det
+        här ersätter dina nuvarande launcher-inställningar. Widgets återställs bara om deras
+        bindningar fortfarande är tillgängliga på den här enheten.</string>
     <string name="restore_settings_confirm_action">Återställ</string>
     <string name="restore_settings_selected_file">den valda säkerhetskopian</string>
     <string name="option_default">Standard</string>

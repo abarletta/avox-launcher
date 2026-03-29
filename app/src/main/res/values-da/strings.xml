@@ -29,7 +29,7 @@
     <string name="widget_no_providers">Ingen widgets tilgængelige</string>
     <string name="widget_bind_failed">Kunne ikke tilføje widget</string>
     <string name="widget_manage_label">Administrer widgets</string>
-    <string name="widget_empty_hint">Hold nede for at tilføje widgets</string>
+    <string name="widget_empty_hint">Hold nede for at tilføje en widget</string>
     <string name="widget_height_label">Højde</string>
     <string name="widget_remove_label">Fjern</string>
     <string name="widget_none_label">Ingen widgets tilføjet</string>
@@ -42,7 +42,7 @@
     <string name="widget_slot_swipe_hint">Stryg til venstre eller højre på startskærmen for at
         skifte mellem
         de %1$d widgets i denne plads.</string>
-    <string name="widget_add_slot_label">Tilføj widgetplads</string>
+    <string name="widget_add_slot_label">Opret widgetplads</string>
     <string name="widget_add_to_slot_label">Tilføj widget til denne plads</string>
     <string name="widget_slot_indicator_toggle_label">Vis pladsindikator</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -50,7 +50,7 @@
     <string name="animation_style_label">Sidebjælkeanimation</string>
     <string name="wave_shift_label">Tekstforskydning</string>
     <string name="wave_scale_label">Zoomskala</string>
-    <string name="wave_radius_label">Bølgeradius</string>
+    <string name="wave_radius_label">Bølgebredde (bølgelængde)</string>
     <string name="highlight_intensity_label">Markeringsintensitet</string>
     <string name="fade_radius_label">Faderadius</string>
     <string name="wallpaper_effect_label">Baggrundseffekt</string>
@@ -64,13 +64,11 @@
     <string name="favorites_label">Favoritter</string>
     <string name="favorites_select_label">Vælg favoritter</string>
     <string name="favorites_add_label">Tilføj favorit</string>
-    <string name="favorites_manage_hint">Gennemgå den aktuelle favoritliste her, omarranger den
-        direkte,
-        og tilføj flere apps med deres rigtige ikoner.</string>
+    <string name="favorites_manage_hint">Gennemgå favoritlisten, omarranger apps, eller tilføj
+        flere.</string>
     <string name="favorites_layout_label">Favoritlayout</string>
-    <string name="favorites_layout_hint">Adaptivt gitter bruger op til 2 kolonner på telefoner i
-        portræt,
-        udvider i landskab og bevarer det gamle layout med én kolonne.</string>
+    <string name="favorites_layout_hint">Det adaptive gitter er et alternativ til layoutet med én
+        kolonne. Det bruger op til 2 kolonner på telefoner i portræt og udvider i landskab.</string>
     <string name="favorites_layout_adaptive">Adaptivt gitter</string>
     <string name="favorites_layout_single">Én kolonne</string>
     <string name="favorites_min_max">Vælg 3 til 10 favoritter</string>
@@ -97,24 +95,21 @@
     <string name="settings_notifications">Notifikationer</string>
     <string name="settings_notifications_summary">Badge-tilstand, strygebevægelser</string>
     <string name="settings_home">Hjem</string>
-    <string name="settings_home_summary">Favoritter, footer-handlinger, adgangspunkter til
-        startskærmen</string>
+    <string name="settings_home_summary">Favoritter, startskærmslayout, hurtighandlinger</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widgetpladser, strygestakke, størrelse, kontroller</string>
     <string name="settings_menu_title">Launcher-indstillinger</string>
     <string name="settings_language_title">Sprog</string>
-    <string name="settings_language_summary">Brug systemsproget, når det understøttes, eller tving
-        engelsk.</string>
+    <string name="settings_language_summary">Brug systemsproget, når det understøttes, eller vælg
+        et sprog manuelt.</string>
     <string name="settings_backup_title">Backup og gendannelse</string>
-    <string name="settings_backup_summary">Eksportér launcher-præferencer til en JSON-fil, eller
-        gendan dem senere.
-        Widgetplaceringer er inkluderet, men gendannes kun, når deres bindinger stadig findes på
-        denne enhed.</string>
-    <string name="settings_notifications_hint">Badge-tal og notifikationstekst konfigureres her. Åbn
-        notifikationsadgang
-        igen fra denne skærm, hvis opdateringer stopper.</string>
-    <string name="settings_home_hint">Administrer favoritter, footer-handlinger og adgangspunkter
-        til startskærmen herfra.</string>
+    <string name="settings_backup_summary">Eksportér launcher-indstillinger, eller gendan dem fra
+        en tidligere backup.</string>
+    <string name="settings_notifications_hint">Konfigurer badge-antal og notifikationstekst, der
+        vises på appikoner. Hvis notifikationer holder op med at blive opdateret, kan du åbne
+        notifikationsadgang igen fra denne skærm.</string>
+    <string name="settings_home_hint">Administrer favoritapps, startskærmslayout og
+        hurtighandlinger.</string>
     <string name="settings_widgets_hint">Administrer widgetpladser, tilføj flere widgets til samme
         plads,
         og stryg mellem stablede widgets fra startskærmen.</string>
@@ -124,7 +119,7 @@
     <string name="widget_bind_denied">Widgetbinding blev afvist. Tjek enhedsindstillingerne.</string>
     <string name="widget_bind_not_supported">Widgetbinding understøttes ikke på denne enhed.</string>
     <string name="hide_status_bar_label">Skjul statuslinje</string>
-    <string name="footer_action_slot_label">Footer-handling %1$d</string>
+    <string name="footer_action_slot_label">Hurtighandling %1$d</string>
     <string name="footer_action_not_set">Ikke angivet</string>
     <string name="footer_action_unavailable">Utilgængelig app</string>
     <string name="footer_action_choose">Vælg</string>
@@ -132,12 +127,13 @@
     <string name="footer_action_pick_title">Vælg hurtighandling</string>
     <string name="footer_action_pick_app_title">Vælg app</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Footer-hurtighandlinger</string>
-    <string name="footer_quick_actions_summary">Vælg op til tre footer-ikoner til startskærmen.
-        Hold et footer-ikon nede for at konfigurere dets plads igen, eller hold et tomt område
-        på startskærmen nede for at åbne launcher-indstillinger, når alle pladser er ryddet.</string>
-    <string name="footer_notifications_title">Footer-notifikationer</string>
-    <string name="footer_show_labels">Vis footer-etiketter</string>
+    <string name="footer_quick_actions_title">Hurtighandlinger</string>
+    <string name="footer_quick_actions_summary">Vælg op til tre hurtighandlinger til den nederste
+        del af startskærmen.
+        Hold ikonet nede for at konfigurere en igen, eller hold et tomt område på startskærmen
+        nede for at åbne launcher-indstillinger.</string>
+    <string name="footer_notifications_title">Notifikationer på hurtighandlingsikoner</string>
+    <string name="footer_show_labels">Vis etiketter for hurtighandlinger</string>
     <string name="quick_action_launcher_settings">Launcher-indstillinger</string>
     <string name="quick_action_system_settings">Systemindstillinger</string>
     <string name="quick_action_wifi_settings">Wi-Fi-indstillinger</string>
@@ -149,24 +145,22 @@
     <string name="backup_settings_success">Backup af indstillinger gemt.</string>
     <string name="backup_settings_failed">Kunne ikke gemme backup af indstillinger.</string>
     <string name="backup_settings_share_title">Backup gemt</string>
-    <string name="backup_settings_share_message">Din backup af indstillinger er klar. Del den nu via
-        systemets
-        deleark, hvis du vil flytte den til en anden enhed.</string>
+    <string name="backup_settings_share_message">Din backup af indstillinger er klar. Når du lukker
+        denne besked, kan du bruge systemets deleark til at flytte den til en anden enhed.</string>
     <string name="backup_settings_share_action">Del</string>
     <string name="backup_settings_share_chooser_title">Del backup af indstillinger</string>
-    <string name="backup_settings_share_failed">Backup gemt, men deling er ikke tilgængelig på denne
-        enhed.</string>
+    <string name="backup_settings_share_failed">Backupen blev gemt, men deling er ikke
+        tilgængelig på denne enhed.</string>
     <string name="restore_settings_success">Indstillinger gendannet.</string>
     <string name="restore_settings_failed">Kunne ikke gendanne indstillinger.</string>
     <string name="restore_settings_button">Gendan indstillinger</string>
-    <string name="restore_settings_invalid">Den fil er ikke en gyldig launcher-backup.</string>
-    <string name="restore_settings_incompatible">Den backup blev oprettet af en launcher-version,
-        der ikke understøttes.</string>
+    <string name="restore_settings_invalid">Den valgte fil er ikke en gyldig launcher-backup.</string>
+    <string name="restore_settings_incompatible">Den valgte backup blev oprettet af en
+        launcher-version, der ikke understøttes.</string>
     <string name="restore_settings_confirm_title">Gendan indstillinger</string>
     <string name="restore_settings_confirm_message">Gendan %2$d indstillinger fra %1$s? Dette
-        erstatter
-        dine gemte launcher-præferencer. Widgetplaceringer gendannes kun, når deres bindinger stadig
-        findes på denne enhed.</string>
+        erstatter dine aktuelle launcher-indstillinger. Widgets gendannes kun, hvis deres bindinger
+        stadig er tilgængelige på denne enhed.</string>
     <string name="restore_settings_confirm_action">Gendan</string>
     <string name="restore_settings_selected_file">den valgte backup</string>
     <string name="option_default">Standard</string>

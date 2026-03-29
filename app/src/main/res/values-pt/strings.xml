@@ -30,7 +30,7 @@
     <string name="widget_no_providers">Nenhum widget disponível</string>
     <string name="widget_bind_failed">Falha ao adicionar widget</string>
     <string name="widget_manage_label">Gerenciar widgets</string>
-    <string name="widget_empty_hint">Toque e segure para adicionar widgets</string>
+    <string name="widget_empty_hint">Toque e segure para adicionar um widget</string>
     <string name="widget_height_label">Altura</string>
     <string name="widget_remove_label">Remover</string>
     <string name="widget_none_label">Nenhum widget adicionado</string>
@@ -43,7 +43,7 @@
     <string name="widget_slot_swipe_hint">Deslize para a esquerda ou para a direita na tela inicial
         para alternar
         entre os %1$d widgets neste slot.</string>
-    <string name="widget_add_slot_label">Adicionar slot de widget</string>
+    <string name="widget_add_slot_label">Criar slot de widget</string>
     <string name="widget_add_to_slot_label">Adicionar widget a este slot</string>
     <string name="widget_slot_indicator_toggle_label">Mostrar indicador de slot</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -51,7 +51,7 @@
     <string name="animation_style_label">Animação da barra lateral</string>
     <string name="wave_shift_label">Deslocamento do texto</string>
     <string name="wave_scale_label">Escala de zoom</string>
-    <string name="wave_radius_label">Raio da onda</string>
+    <string name="wave_radius_label">Largura da onda (comprimento de onda)</string>
     <string name="highlight_intensity_label">Intensidade do destaque</string>
     <string name="fade_radius_label">Raio do esmaecimento</string>
     <string name="wallpaper_effect_label">Efeito do papel de parede</string>
@@ -65,13 +65,11 @@
     <string name="favorites_label">Favoritos</string>
     <string name="favorites_select_label">Selecionar favoritos</string>
     <string name="favorites_add_label">Adicionar favorito</string>
-    <string name="favorites_manage_hint">Revise a lista atual de favoritos aqui, reordene-a
-        diretamente
-        e adicione mais apps com seus ícones reais.</string>
+    <string name="favorites_manage_hint">Revise a lista de favoritos, reordene os apps ou adicione
+        mais.</string>
     <string name="favorites_layout_label">Layout dos favoritos</string>
-    <string name="favorites_layout_hint">A grade adaptativa usa até 2 colunas em telefones no modo
-        retrato,
-        se expande no modo paisagem e mantém o layout antigo de coluna única disponível.</string>
+    <string name="favorites_layout_hint">A grade adaptativa é uma alternativa ao layout de coluna
+        única. Ela usa até 2 colunas em telefones no modo retrato e se expande na paisagem.</string>
     <string name="favorites_layout_adaptive">Grade adaptativa</string>
     <string name="favorites_layout_single">Coluna única</string>
     <string name="favorites_min_max">Selecione de 3 a 10 favoritos</string>
@@ -98,24 +96,21 @@
     <string name="settings_notifications">Notificações</string>
     <string name="settings_notifications_summary">Modo de badge, gestos de deslizar</string>
     <string name="settings_home">Início</string>
-    <string name="settings_home_summary">Favoritos, ações do rodapé, acessos da tela inicial</string>
+    <string name="settings_home_summary">Favoritos, layout da tela inicial, ações rápidas</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Slots de widget, pilhas deslizáveis, tamanho, controles</string>
     <string name="settings_menu_title">Configurações do launcher</string>
     <string name="settings_language_title">Idioma</string>
-    <string name="settings_language_summary">Usar o idioma do sistema quando houver suporte ou
-        forçar
-        inglês.</string>
+    <string name="settings_language_summary">Use o idioma do sistema quando houver suporte ou
+        escolha um idioma manualmente.</string>
     <string name="settings_backup_title">Backup e restauração</string>
-    <string name="settings_backup_summary">Exporte as preferências do launcher para um arquivo JSON
-        ou restaure-as
-        mais tarde. As posições dos widgets são incluídas, mas só são restauradas quando os vínculos
-        ainda existem neste dispositivo.</string>
-    <string name="settings_notifications_hint">A contagem de badges e o texto das notificações são
-        configurados
-        aqui. Reabra o acesso às notificações nesta tela se as atualizações pararem.</string>
-    <string name="settings_home_hint">Gerencie favoritos, ações do rodapé e acessos da tela inicial
-        aqui.</string>
+    <string name="settings_backup_summary">Exporte as preferências do launcher ou restaure-as a
+        partir de um backup anterior.</string>
+    <string name="settings_notifications_hint">Configure a contagem de badges e o texto das
+        notificações exibidos nos ícones dos apps. Se as notificações pararem de atualizar, reabra
+        o acesso às notificações nesta tela.</string>
+    <string name="settings_home_hint">Gerencie os apps favoritos, o layout da tela inicial e as
+        ações rápidas.</string>
     <string name="settings_widgets_hint">Gerencie slots de widget, adicione vários widgets ao mesmo
         slot
         e deslize entre widgets empilhados na tela inicial.</string>
@@ -127,7 +122,7 @@
     <string name="widget_bind_not_supported">O vínculo de widgets não é compatível neste
         dispositivo.</string>
     <string name="hide_status_bar_label">Ocultar barra de status</string>
-    <string name="footer_action_slot_label">Ação do rodapé %1$d</string>
+    <string name="footer_action_slot_label">Ação rápida %1$d</string>
     <string name="footer_action_not_set">Não definido</string>
     <string name="footer_action_unavailable">App indisponível</string>
     <string name="footer_action_choose">Escolher</string>
@@ -135,15 +130,13 @@
     <string name="footer_action_pick_title">Escolher ação rápida</string>
     <string name="footer_action_pick_app_title">Escolher app</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Ações rápidas do rodapé</string>
-    <string name="footer_quick_actions_summary">Escolha até três ícones de rodapé para a tela
-        inicial.
-        Toque e segure um ícone do rodapé para reconfigurar seu slot ou toque e segure um espaço
-        vazio da tela inicial para abrir as configurações do launcher quando todos os slots
-        estiverem
-        vazios.</string>
-    <string name="footer_notifications_title">Notificações do rodapé</string>
-    <string name="footer_show_labels">Mostrar rótulos do rodapé</string>
+    <string name="footer_quick_actions_title">Ações rápidas</string>
+    <string name="footer_quick_actions_summary">Escolha até três ações rápidas para a parte
+        inferior da tela inicial.
+        Para reconfigurar uma, toque e segure o ícone correspondente ou toque e segure um espaço
+        vazio da tela inicial para abrir as configurações do launcher.</string>
+    <string name="footer_notifications_title">Notificações nos ícones de ações rápidas</string>
+    <string name="footer_show_labels">Mostrar rótulos das ações rápidas</string>
     <string name="quick_action_launcher_settings">Configurações do launcher</string>
     <string name="quick_action_system_settings">Configurações do sistema</string>
     <string name="quick_action_wifi_settings">Configurações de Wi-Fi</string>
@@ -155,25 +148,24 @@
     <string name="backup_settings_success">Backup das configurações salvo.</string>
     <string name="backup_settings_failed">Não foi possível salvar o backup das configurações.</string>
     <string name="backup_settings_share_title">Backup salvo</string>
-    <string name="backup_settings_share_message">O backup das configurações está pronto.
-        Compartilhe-o agora
-        pela folha de compartilhamento do sistema se quiser movê-lo para outro dispositivo.</string>
+    <string name="backup_settings_share_message">O backup das configurações está pronto. Quando
+        você fechar esta mensagem, poderá usar a folha de compartilhamento do sistema para movê-lo
+        para outro dispositivo.</string>
     <string name="backup_settings_share_action">Compartilhar</string>
     <string name="backup_settings_share_chooser_title">Compartilhar backup das configurações</string>
-    <string name="backup_settings_share_failed">Backup salvo, mas o compartilhamento não está
-        disponível neste
-        dispositivo.</string>
+    <string name="backup_settings_share_failed">O backup foi salvo, mas o compartilhamento não está
+        disponível neste dispositivo.</string>
     <string name="restore_settings_success">Configurações restauradas.</string>
     <string name="restore_settings_failed">Não foi possível restaurar as configurações.</string>
     <string name="restore_settings_button">Restaurar configurações</string>
-    <string name="restore_settings_invalid">Esse arquivo não é um backup válido do launcher.</string>
-    <string name="restore_settings_incompatible">Esse backup foi criado por uma versão do launcher
-        sem suporte.</string>
+    <string name="restore_settings_invalid">O arquivo selecionado não é um backup válido do
+        launcher.</string>
+    <string name="restore_settings_incompatible">O backup selecionado foi criado por uma versão do
+        launcher sem suporte.</string>
     <string name="restore_settings_confirm_title">Restaurar configurações</string>
     <string name="restore_settings_confirm_message">Restaurar %2$d configurações de %1$s? Isso
-        substitui
-        as preferências salvas do launcher. As posições dos widgets só são restauradas quando seus
-        vínculos ainda existem neste dispositivo.</string>
+        substitui as configurações atuais do launcher. Os widgets só são restaurados se seus
+        vínculos ainda estiverem disponíveis neste dispositivo.</string>
     <string name="restore_settings_confirm_action">Restaurar</string>
     <string name="restore_settings_selected_file">o backup selecionado</string>
     <string name="option_default">Padrão</string>

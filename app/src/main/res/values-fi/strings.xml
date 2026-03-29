@@ -30,7 +30,7 @@
     <string name="widget_no_providers">Widgetejä ei ole saatavilla</string>
     <string name="widget_bind_failed">Widgetin lisääminen epäonnistui</string>
     <string name="widget_manage_label">Hallitse widgetejä</string>
-    <string name="widget_empty_hint">Lisää widgetejä painamalla pitkään</string>
+    <string name="widget_empty_hint">Lisää widget painamalla pitkään</string>
     <string name="widget_height_label">Korkeus</string>
     <string name="widget_remove_label">Poista</string>
     <string name="widget_none_label">Widgetejä ei ole lisätty</string>
@@ -42,7 +42,7 @@
     <string name="widget_slot_indicator">◀ %1$d/%2$d ▶</string>
     <string name="widget_slot_swipe_hint">Vaihda tämän paikan %1$d widgetin välillä pyyhkäisemällä
         aloitusnäytössä vasemmalle tai oikealle.</string>
-    <string name="widget_add_slot_label">Lisää widget-paikka</string>
+    <string name="widget_add_slot_label">Luo widget-paikka</string>
     <string name="widget_add_to_slot_label">Lisää widget tähän paikkaan</string>
     <string name="widget_slot_indicator_toggle_label">Näytä paikan ilmaisin</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -50,7 +50,7 @@
     <string name="animation_style_label">Sivupalkin animaatio</string>
     <string name="wave_shift_label">Tekstin siirtymä</string>
     <string name="wave_scale_label">Zoomausaste</string>
-    <string name="wave_radius_label">Aaltosäde</string>
+    <string name="wave_radius_label">Aallon leveys (aallonpituus)</string>
     <string name="highlight_intensity_label">Korostuksen voimakkuus</string>
     <string name="fade_radius_label">Häivytyssäde</string>
     <string name="wallpaper_effect_label">Taustakuvan tehoste</string>
@@ -64,12 +64,12 @@
     <string name="favorites_label">Suosikit</string>
     <string name="favorites_select_label">Valitse suosikit</string>
     <string name="favorites_add_label">Lisää suosikki</string>
-    <string name="favorites_manage_hint">Tarkista nykyinen suosikkilista täällä, muuta järjestystä
-        suoraan ja lisää lisää sovelluksia niiden oikeilla kuvakkeilla.</string>
+    <string name="favorites_manage_hint">Tarkista suosikkilista, järjestä sovelluksia uudelleen
+        tai lisää niitä.</string>
     <string name="favorites_layout_label">Suosikkien asettelu</string>
-    <string name="favorites_layout_hint">Mukautuva ruudukko käyttää puhelimissa pystyasennossa
-        enintään 2 saraketta,
-        laajenee vaaka-asennossa ja säilyttää vanhan yhden sarakkeen asettelun.</string>
+    <string name="favorites_layout_hint">Mukautuva ruudukko on vaihtoehto yhden sarakkeen
+        asettelulle. Se käyttää puhelimissa pystyasennossa enintään 2 saraketta ja laajenee
+        vaaka-asennossa.</string>
     <string name="favorites_layout_adaptive">Mukautuva ruudukko</string>
     <string name="favorites_layout_single">Yksi sarake</string>
     <string name="favorites_min_max">Valitse 3–10 suosikkia</string>
@@ -97,23 +97,21 @@
     <string name="settings_notifications">Ilmoitukset</string>
     <string name="settings_notifications_summary">Merkkitila, pyyhkäisyeleet</string>
     <string name="settings_home">Koti</string>
-    <string name="settings_home_summary">Suosikit, alatunnisteen toiminnot, aloitusnäytön siirtymät</string>
+    <string name="settings_home_summary">Suosikit, aloitusnäytön asettelu, pikatoiminnot</string>
     <string name="settings_widgets">Widgetit</string>
     <string name="settings_widgets_summary">Widget-paikat, pyyhkäisypinot, koko, säätimet</string>
     <string name="settings_menu_title">Launcherin asetukset</string>
     <string name="settings_language_title">Kieli</string>
-    <string name="settings_language_summary">Käytä järjestelmän kieltä, kun sitä tuetaan, tai pakota
-        englanti.</string>
+    <string name="settings_language_summary">Käytä järjestelmän kieltä, kun sitä tuetaan, tai
+        valitse kieli itse.</string>
     <string name="settings_backup_title">Varmuuskopiointi ja palautus</string>
-    <string name="settings_backup_summary">Vie launcherin asetukset JSON-tiedostoon tai palauta ne
-        myöhemmin.
-        Widgetien sijainnit sisältyvät mukaan, mutta ne palautetaan vain, jos niiden sidokset ovat
-        yhä olemassa tällä laitteella.</string>
-    <string name="settings_notifications_hint">Merkkimäärät ja ilmoitusteksti määritetään täällä.
-        Avaa
-        ilmoitusoikeus uudelleen tältä näytöltä, jos päivitykset lakkaavat toimimasta.</string>
-    <string name="settings_home_hint">Hallitse suosikkeja, alatunnisteen toimintoja ja aloitusnäytön
-        siirtymiä täältä.</string>
+    <string name="settings_backup_summary">Vie launcherin asetukset tai palauta ne aiemmasta
+        varmuuskopiosta.</string>
+    <string name="settings_notifications_hint">Määritä sovelluskuvakkeissa näkyvien merkkien määrä
+        ja ilmoitusteksti. Jos ilmoitukset lakkaavat päivittymästä, avaa ilmoitusoikeus uudelleen
+        tältä näytöltä.</string>
+    <string name="settings_home_hint">Hallitse suosikkisovelluksia, aloitusnäytön asettelua ja
+        pikatoimintoja.</string>
     <string name="settings_widgets_hint">Hallitse widget-paikkoja, lisää useita widgetejä samaan
         paikkaan
         ja pyyhkäise pinottujen widgetien välillä aloitusnäytöstä.</string>
@@ -123,7 +121,7 @@
     <string name="widget_bind_denied">Widgetin sidonta evättiin. Tarkista laitteen asetukset.</string>
     <string name="widget_bind_not_supported">Widgetin sidontaa ei tueta tällä laitteella.</string>
     <string name="hide_status_bar_label">Piilota tilarivi</string>
-    <string name="footer_action_slot_label">Alatunnisteen toiminto %1$d</string>
+    <string name="footer_action_slot_label">Pikatoiminto %1$d</string>
     <string name="footer_action_not_set">Ei asetettu</string>
     <string name="footer_action_unavailable">Sovellus ei ole käytettävissä</string>
     <string name="footer_action_choose">Valitse</string>
@@ -131,14 +129,13 @@
     <string name="footer_action_pick_title">Valitse pikatoiminto</string>
     <string name="footer_action_pick_app_title">Valitse sovellus</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Alatunnisteen pikatoiminnot</string>
-    <string name="footer_quick_actions_summary">Valitse enintään kolme alatunnisteen kuvaketta
-        aloitusnäyttöön.
-        Pidä alatunnisteen kuvaketta painettuna, jos haluat määrittää sen paikan uudelleen, tai pidä
-        aloitusnäytön tyhjää kohtaa painettuna avataksesi launcherin asetukset, kun kaikki paikat
-        on tyhjennetty.</string>
-    <string name="footer_notifications_title">Alatunnisteen ilmoitukset</string>
-    <string name="footer_show_labels">Näytä alatunnisteen nimet</string>
+    <string name="footer_quick_actions_title">Pikatoiminnot</string>
+    <string name="footer_quick_actions_summary">Valitse enintään kolme pikatoimintoa
+        aloitusnäytön alaosaan.
+        Määritä toiminto uudelleen pitämällä sen kuvaketta painettuna tai avaa launcherin asetukset
+        pitämällä aloitusnäytön tyhjää kohtaa painettuna.</string>
+    <string name="footer_notifications_title">Ilmoitukset pikatoimintokuvakkeissa</string>
+    <string name="footer_show_labels">Näytä pikatoimintojen nimet</string>
     <string name="quick_action_launcher_settings">Launcherin asetukset</string>
     <string name="quick_action_system_settings">Järjestelmäasetukset</string>
     <string name="quick_action_wifi_settings">Wi-Fi-asetukset</string>
@@ -150,9 +147,8 @@
     <string name="backup_settings_success">Asetusten varmuuskopio tallennettu.</string>
     <string name="backup_settings_failed">Asetusten varmuuskopion tallentaminen epäonnistui.</string>
     <string name="backup_settings_share_title">Varmuuskopio tallennettu</string>
-    <string name="backup_settings_share_message">Asetustesi varmuuskopio on valmis. Jaa se nyt
-        järjestelmän
-        jakonäkymässä, jos haluat siirtää sen toiseen laitteeseen.</string>
+    <string name="backup_settings_share_message">Asetustesi varmuuskopio on valmis. Kun suljet
+        tämän viestin, voit siirtää sen toiseen laitteeseen järjestelmän jakonäkymän avulla.</string>
     <string name="backup_settings_share_action">Jaa</string>
     <string name="backup_settings_share_chooser_title">Jaa asetusten varmuuskopio</string>
     <string name="backup_settings_share_failed">Varmuuskopio tallennettiin, mutta jakaminen ei ole
@@ -161,14 +157,14 @@
     <string name="restore_settings_success">Asetukset palautettu.</string>
     <string name="restore_settings_failed">Asetusten palauttaminen epäonnistui.</string>
     <string name="restore_settings_button">Palauta asetukset</string>
-    <string name="restore_settings_invalid">Tiedosto ei ole kelvollinen launcherin varmuuskopio.</string>
-    <string name="restore_settings_incompatible">Varmuuskopio on luotu launcher-versiolla, jota ei
-        tueta.</string>
+    <string name="restore_settings_invalid">Valittu tiedosto ei ole kelvollinen launcherin
+        varmuuskopio.</string>
+    <string name="restore_settings_incompatible">Valittu varmuuskopio on luotu launcher-versiolla,
+        jota ei tueta.</string>
     <string name="restore_settings_confirm_title">Palauta asetukset</string>
-    <string name="restore_settings_confirm_message">Palautetaanko %2$d asetusta kohteesta %1$s? Tämä
-        korvaa
-        tallennetut launcherin asetuksesi. Widgetien sijainnit palautetaan vain, jos niiden sidokset
-        ovat yhä olemassa tällä laitteella.</string>
+    <string name="restore_settings_confirm_message">Palautetaanko %2$d asetusta kohteesta %1$s?
+        Tämä korvaa nykyiset launcherin asetuksesi. Widgetit palautetaan vain, jos niiden sidokset
+        ovat yhä käytettävissä tällä laitteella.</string>
     <string name="restore_settings_confirm_action">Palauta</string>
     <string name="restore_settings_selected_file">valittu varmuuskopio</string>
     <string name="option_default">Oletus</string>

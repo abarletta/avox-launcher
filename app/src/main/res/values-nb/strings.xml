@@ -29,7 +29,7 @@
     <string name="widget_no_providers">Ingen widgets tilgjengelig</string>
     <string name="widget_bind_failed">Kunne ikke legge til widget</string>
     <string name="widget_manage_label">Administrer widgets</string>
-    <string name="widget_empty_hint">Trykk og hold for å legge til widgets</string>
+    <string name="widget_empty_hint">Trykk og hold for å legge til en widget</string>
     <string name="widget_height_label">Høyde</string>
     <string name="widget_remove_label">Fjern</string>
     <string name="widget_none_label">Ingen widgets lagt til</string>
@@ -42,7 +42,7 @@
     <string name="widget_slot_swipe_hint">Sveip til venstre eller høyre på startskjermen for å bytte
         mellom
         de %1$d widgetene i denne plassen.</string>
-    <string name="widget_add_slot_label">Legg til widgetplass</string>
+    <string name="widget_add_slot_label">Opprett widgetplass</string>
     <string name="widget_add_to_slot_label">Legg til widget i denne plassen</string>
     <string name="widget_slot_indicator_toggle_label">Vis plassindikator</string>
     <string name="widget_picker_details_format">%1$s | %2$ddp x %3$ddp</string>
@@ -50,7 +50,7 @@
     <string name="animation_style_label">Sidefeltanimasjon</string>
     <string name="wave_shift_label">Tekstforskyvning</string>
     <string name="wave_scale_label">Zoomskala</string>
-    <string name="wave_radius_label">Bølgeradius</string>
+    <string name="wave_radius_label">Bølgebredde (bølgelengde)</string>
     <string name="highlight_intensity_label">Uthevingsintensitet</string>
     <string name="fade_radius_label">Faderadius</string>
     <string name="wallpaper_effect_label">Bakgrunnseffekt</string>
@@ -64,13 +64,12 @@
     <string name="favorites_label">Favoritter</string>
     <string name="favorites_select_label">Velg favoritter</string>
     <string name="favorites_add_label">Legg til favoritt</string>
-    <string name="favorites_manage_hint">Se gjennom den nåværende favorittlisten her, endre
-        rekkefølgen
-        direkte og legg til flere apper med de ekte ikonene deres.</string>
+    <string name="favorites_manage_hint">Se gjennom favorittlisten, endre rekkefølgen på apper
+        eller legg til flere.</string>
     <string name="favorites_layout_label">Favorittoppsett</string>
-    <string name="favorites_layout_hint">Adaptivt rutenett bruker opptil 2 kolonner på telefoner i
-        stående modus,
-        utvides i liggende modus og beholder det gamle oppsettet med én kolonne.</string>
+    <string name="favorites_layout_hint">Det adaptive rutenettet er et alternativ til oppsettet
+        med én kolonne. Det bruker opptil 2 kolonner på telefoner i stående modus og utvides i
+        liggende modus.</string>
     <string name="favorites_layout_adaptive">Adaptivt rutenett</string>
     <string name="favorites_layout_single">Én kolonne</string>
     <string name="favorites_min_max">Velg 3 til 10 favoritter</string>
@@ -97,25 +96,21 @@
     <string name="settings_notifications">Varsler</string>
     <string name="settings_notifications_summary">Merkemodus, sveipebevegelser</string>
     <string name="settings_home">Hjem</string>
-    <string name="settings_home_summary">Favoritter, bunnlinjehandlinger, inngangspunkter på
-        startskjermen</string>
+    <string name="settings_home_summary">Favoritter, startskjermoppsett, hurtighandlinger</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widgetplasser, sveipestabler, størrelse, kontroller</string>
     <string name="settings_menu_title">Launcher-innstillinger</string>
     <string name="settings_language_title">Språk</string>
-    <string name="settings_language_summary">Bruk systemspråket når det støttes, eller tving
-        engelsk.</string>
+    <string name="settings_language_summary">Bruk systemspråket når det støttes, eller velg et
+        språk manuelt.</string>
     <string name="settings_backup_title">Sikkerhetskopi og gjenoppretting</string>
-    <string name="settings_backup_summary">Eksporter launcher-innstillinger til en JSON-fil, eller
-        gjenopprett dem
-        senere. Widgetplasseringer er inkludert, men gjenopprettes bare når bindingene deres
-        fortsatt
-        finnes på denne enheten.</string>
-    <string name="settings_notifications_hint">Antall merker og varslingstekst settes opp her. Åpne
-        varslingstilgang
-        igjen fra denne skjermen hvis oppdateringer stopper.</string>
-    <string name="settings_home_hint">Administrer favoritter, bunnlinjehandlinger og inngangspunkter
-        på startskjermen herfra.</string>
+    <string name="settings_backup_summary">Eksporter launcher-innstillinger, eller gjenopprett dem
+        fra en tidligere sikkerhetskopi.</string>
+    <string name="settings_notifications_hint">Konfigurer antall merker og varslingstekst som
+        vises på appikoner. Hvis varsler slutter å oppdatere seg, åpne varslingstilgang på nytt fra
+        denne skjermen.</string>
+    <string name="settings_home_hint">Administrer favorittapper, startskjermoppsett og
+        hurtighandlinger.</string>
     <string name="settings_widgets_hint">Administrer widgetplasser, legg til flere widgets i samme
         plass,
         og sveip mellom stablede widgets fra startskjermen.</string>
@@ -125,7 +120,7 @@
     <string name="widget_bind_denied">Widgetbinding ble avslått. Sjekk enhetsinnstillingene.</string>
     <string name="widget_bind_not_supported">Widgetbinding støttes ikke på denne enheten.</string>
     <string name="hide_status_bar_label">Skjul statuslinje</string>
-    <string name="footer_action_slot_label">Bunnlinjehandling %1$d</string>
+    <string name="footer_action_slot_label">Hurtighandling %1$d</string>
     <string name="footer_action_not_set">Ikke satt</string>
     <string name="footer_action_unavailable">Utilgjengelig app</string>
     <string name="footer_action_choose">Velg</string>
@@ -133,12 +128,13 @@
     <string name="footer_action_pick_title">Velg hurtighandling</string>
     <string name="footer_action_pick_app_title">Velg app</string>
     <string name="footer_badge_overflow">9+</string>
-    <string name="footer_quick_actions_title">Hurtighandlinger i bunnlinjen</string>
-    <string name="footer_quick_actions_summary">Velg opptil tre bunnlinjeikoner for startskjermen.
-        Trykk og hold på et bunnlinjeikon for å konfigurere plassen på nytt, eller trykk og hold
-        på tom plass på startskjermen for å åpne launcher-innstillinger når alle plasser er tømt.</string>
-    <string name="footer_notifications_title">Varsler i bunnlinjen</string>
-    <string name="footer_show_labels">Vis etiketter i bunnlinjen</string>
+    <string name="footer_quick_actions_title">Hurtighandlinger</string>
+    <string name="footer_quick_actions_summary">Velg opptil tre hurtighandlinger for den nederste
+        delen av startskjermen.
+        For å konfigurere en på nytt, trykk og hold på ikonet til handlingen, eller trykk og hold
+        på tom plass på startskjermen for å åpne launcher-innstillinger.</string>
+    <string name="footer_notifications_title">Varsler på hurtighandlingsikoner</string>
+    <string name="footer_show_labels">Vis etiketter for hurtighandlinger</string>
     <string name="quick_action_launcher_settings">Launcher-innstillinger</string>
     <string name="quick_action_system_settings">Systeminnstillinger</string>
     <string name="quick_action_wifi_settings">Wi-Fi-innstillinger</string>
@@ -151,25 +147,23 @@
     <string name="backup_settings_failed">Kunne ikke lagre sikkerhetskopi av innstillinger.</string>
     <string name="backup_settings_share_title">Sikkerhetskopi lagret</string>
     <string name="backup_settings_share_message">Sikkerhetskopien av innstillingene dine er klar.
-        Del den nå via
-        systemets deleark hvis du vil flytte den til en annen enhet.</string>
+        Når du lukker denne meldingen, kan du bruke systemets deleark til å flytte den til en annen
+        enhet.</string>
     <string name="backup_settings_share_action">Del</string>
     <string name="backup_settings_share_chooser_title">Del sikkerhetskopi av innstillinger</string>
-    <string name="backup_settings_share_failed">Sikkerhetskopien er lagret, men deling er ikke
-        tilgjengelig på
-        denne enheten.</string>
+    <string name="backup_settings_share_failed">Sikkerhetskopien ble lagret, men deling er ikke
+        tilgjengelig på denne enheten.</string>
     <string name="restore_settings_success">Innstillinger gjenopprettet.</string>
     <string name="restore_settings_failed">Kunne ikke gjenopprette innstillinger.</string>
     <string name="restore_settings_button">Gjenopprett innstillinger</string>
-    <string name="restore_settings_invalid">Den filen er ikke en gyldig launcher-sikkerhetskopi.</string>
-    <string name="restore_settings_incompatible">Den sikkerhetskopien ble opprettet av en
+    <string name="restore_settings_invalid">Den valgte filen er ikke en gyldig
+        launcher-sikkerhetskopi.</string>
+    <string name="restore_settings_incompatible">Den valgte sikkerhetskopien ble opprettet av en
         launcher-versjon som ikke støttes.</string>
     <string name="restore_settings_confirm_title">Gjenopprett innstillinger</string>
     <string name="restore_settings_confirm_message">Gjenopprette %2$d innstillinger fra %1$s? Dette
-        erstatter
-        de lagrede launcher-innstillingene dine. Widgetplasseringer gjenopprettes bare når
-        bindingene
-        deres fortsatt finnes på denne enheten.</string>
+        erstatter de nåværende launcher-innstillingene dine. Widgets gjenopprettes bare hvis
+        bindingene deres fortsatt er tilgjengelige på denne enheten.</string>
     <string name="restore_settings_confirm_action">Gjenopprett</string>
     <string name="restore_settings_selected_file">den valgte sikkerhetskopien</string>
     <string name="option_default">Standard</string>
