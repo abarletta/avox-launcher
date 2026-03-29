@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Oscuridad</string>
     <string name="font_label">Fuente</string>
     <string name="font_size_label">Tamaño de fuente</string>
+    <string name="sidebar_font_size_label">Tamaño de fuente de la barra lateral</string>
     <string name="spacing_label">Espaciado entre elementos</string>
     <string name="theme_label">Tema</string>
     <string name="notification_mode_label">Modo de notificación</string>
@@ -176,6 +177,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monoespaciada</string>
     <string name="option_custom_ttf">TTF personalizado</string>
+    <string name="font_pick_button">Elegir TTF personalizado</string>
+    <string name="font_reset_button">Usar predeterminado del sistema</string>
+    <string name="font_status_custom">TTF personalizado activo</string>
+    <string name="font_status_system_default">Predeterminado del sistema activo</string>
     <string name="option_compact">Compacto</string>
     <string name="option_normal">Normal</string>
     <string name="option_spacious">Amplio</string>

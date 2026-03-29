@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Mørkhet</string>
     <string name="font_label">Skrifttype</string>
     <string name="font_size_label">Skriftstørrelse</string>
+    <string name="sidebar_font_size_label">Skriftstørrelse for sidepanel</string>
     <string name="spacing_label">Elementavstand</string>
     <string name="theme_label">Tema</string>
     <string name="notification_mode_label">Varslingsmodus</string>
@@ -173,6 +174,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monospace</string>
     <string name="option_custom_ttf">Egendefinert TTF</string>
+    <string name="font_pick_button">Velg egendefinert TTF</string>
+    <string name="font_reset_button">Bruk systemstandard</string>
+    <string name="font_status_custom">Egendefinert TTF aktiv</string>
+    <string name="font_status_system_default">Systemstandard aktiv</string>
     <string name="option_compact">Kompakt</string>
     <string name="option_normal">Normal</string>
     <string name="option_spacious">Romslig</string>

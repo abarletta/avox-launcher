@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Obscurité</string>
     <string name="font_label">Police</string>
     <string name="font_size_label">Taille de la police</string>
+    <string name="sidebar_font_size_label">Taille de la police de la barre latérale</string>
     <string name="spacing_label">Espacement des éléments</string>
     <string name="theme_label">Thème</string>
     <string name="notification_mode_label">Mode de notification</string>
@@ -178,6 +179,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monospace</string>
     <string name="option_custom_ttf">TTF personnalisé</string>
+    <string name="font_pick_button">Choisir un TTF personnalisé</string>
+    <string name="font_reset_button">Utiliser la police par défaut</string>
+    <string name="font_status_custom">TTF personnalisé actif</string>
+    <string name="font_status_system_default">Police par défaut active</string>
     <string name="option_compact">Compact</string>
     <string name="option_normal">Normal</string>
     <string name="option_spacious">Aéré</string>

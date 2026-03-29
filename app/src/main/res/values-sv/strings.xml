@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Mörker</string>
     <string name="font_label">Teckensnitt</string>
     <string name="font_size_label">Teckenstorlek</string>
+    <string name="sidebar_font_size_label">Teckenstorlek för sidofält</string>
     <string name="spacing_label">Objektavstånd</string>
     <string name="theme_label">Tema</string>
     <string name="notification_mode_label">Notifieringsläge</string>
@@ -175,6 +176,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monospace</string>
     <string name="option_custom_ttf">Anpassad TTF</string>
+    <string name="font_pick_button">Välj anpassad TTF</string>
+    <string name="font_reset_button">Använd systemstandard</string>
+    <string name="font_status_custom">Anpassad TTF aktiv</string>
+    <string name="font_status_system_default">Systemstandard aktiv</string>
     <string name="option_compact">Kompakt</string>
     <string name="option_normal">Normal</string>
     <string name="option_spacious">Rymlig</string>

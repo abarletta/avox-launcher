@@ -10,6 +10,7 @@
     <string name="wallpaper_darkness_label">Donkerte</string>
     <string name="font_label">Lettertype</string>
     <string name="font_size_label">Lettergrootte</string>
+    <string name="sidebar_font_size_label">Lettergrootte zijbalk</string>
     <string name="spacing_label">Afstand tussen items</string>
     <string name="theme_label">Thema</string>
     <string name="notification_mode_label">Meldingsmodus</string>
@@ -175,6 +176,10 @@
     <string name="option_serif">Serif</string>
     <string name="option_monospace">Monospace</string>
     <string name="option_custom_ttf">Aangepaste TTF</string>
+    <string name="font_pick_button">Aangepaste TTF kiezen</string>
+    <string name="font_reset_button">Systeemstandaard gebruiken</string>
+    <string name="font_status_custom">Aangepaste TTF actief</string>
+    <string name="font_status_system_default">Systeemstandaard actief</string>
     <string name="option_compact">Compact</string>
     <string name="option_normal">Normaal</string>
     <string name="option_spacious">Ruim</string>
