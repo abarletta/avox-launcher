@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "0.1.0",
-      "outputFile": "avox-launcher-release-unsigned.apk"
+      "versionCode": 2,
+      "versionName": "1.0.0",
+      "outputFile": "app-release.apk"
     }
   ],
   "elementType": "File",
@@ -22,14 +22,14 @@
       "minApi": 28,
       "maxApi": 30,
       "baselineProfiles": [
-        "baselineProfiles/1/avox-launcher-release-unsigned.dm"
+        "baselineProfiles/1/app-release.dm"
       ]
     },
     {
       "minApi": 31,
       "maxApi": 2147483647,
       "baselineProfiles": [
-        "baselineProfiles/0/avox-launcher-release-unsigned.dm"
+        "baselineProfiles/0/app-release.dm"
       ]
     }
   ],
