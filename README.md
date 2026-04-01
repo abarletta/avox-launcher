@@ -4,17 +4,19 @@ Avox is a minimal Android launcher built around a single screen, a vertical app 
 
 ## Download
 
-**[Download Avox Launcher v1.0.0 APK](app/release/app-release.apk)**
+**[Download Avox Launcher APK](https://github.com/abarletta/avox-launcher/releases/latest)**
 
 Requires Android 8.0 (API 26) or higher.
 
 ## Installation
 
-1. Download the APK from the link above (or from the [Releases](https://github.com/abarletta/avox-launcher/releases) page).
-2. On your Android device, enable **Install from unknown sources** for your browser or file manager if prompted.
+1. Download the APK from the link above.
+2. On your Android device, enable **Install from unknown sources** for your browser or file manager if prompted. 
 3. Open the APK and tap **Install**.
 4. After installation, press the Home button and select **Avox** as your launcher.
 5. Grant **Notification Access** when prompted (required for notification badges).
+
+> **Note**: On Samsung devices, you may need to disable the "Auto Blocker" feature from Settings > Security and privacy. This must be done in addition to enabling installing from unknown sources. 
 
 ## Features
 
