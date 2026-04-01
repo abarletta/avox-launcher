@@ -488,14 +488,12 @@ class SettingsMenuFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.setSelection(selection)
-        var initialized = false
+        var lastPosition = selection
         spinner.post {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    if (!initialized) {
-                        initialized = true
-                        return
-                    }
+                    if (position == lastPosition) return
+                    lastPosition = position
                     onSelected(position)
                 }
 

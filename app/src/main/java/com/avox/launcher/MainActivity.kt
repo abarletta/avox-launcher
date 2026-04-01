@@ -82,6 +82,9 @@ class MainActivity : AppCompatActivity() {
     private var widgetsDirty = false
     private var pendingFinalizeWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
+    // App list cache invalidation
+    private var appsDirty = true
+
     // Sidebar state for instant letter switching
     private var currentSidebarLetter: String? = null
 
@@ -112,6 +115,12 @@ class MainActivity : AppCompatActivity() {
             refreshNotificationData()
             refreshList()
             renderFooterActions()
+        }
+    }
+
+    private val packageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            appsDirty = true
         }
     }
 
@@ -265,6 +274,14 @@ class MainActivity : AppCompatActivity() {
             IntentFilter(NotificationService.ACTION_NOTIFICATION_UPDATE),
             RECEIVER_NOT_EXPORTED
         )
+
+        val packageFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_CHANGED)
+            addDataScheme("package")
+        }
+        registerReceiver(packageReceiver, packageFilter, RECEIVER_NOT_EXPORTED)
     }
 
     override fun onStart() {
@@ -274,9 +291,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        allApps = loadLaunchableApps()
+        if (appsDirty) {
+            allApps = loadLaunchableApps()
+            appsDirty = false
+        }
         refreshNotificationData()
-        if (!isExpandedView) showFavorites()
+        refreshDisplayedAppsForCurrentState()
         setupSidebar()
         applySettings()
         applyLayoutPrefs()
@@ -325,6 +345,7 @@ class MainActivity : AppCompatActivity() {
         cancelHomeLongPress()
         try { appWidgetHost.stopListening() } catch (_: Exception) {}
         try { unregisterReceiver(notificationReceiver) } catch (_: Exception) {}
+        try { unregisterReceiver(packageReceiver) } catch (_: Exception) {}
     }
 
     @Deprecated("Use OnBackPressedCallback", ReplaceWith("onBackPressedDispatcher"))
@@ -435,6 +456,12 @@ class MainActivity : AppCompatActivity() {
         animateAppContentTransition()
     }
 
+    private fun showAllApps() {
+        displayedApps.clear()
+        displayedApps.addAll(allApps)
+        animateAppContentTransition()
+    }
+
     private fun showAppsForLetter(letter: String) {
         displayedApps.clear()
         displayedApps.addAll(allApps.filter {
@@ -470,6 +497,7 @@ class MainActivity : AppCompatActivity() {
         displayedApps.clear()
         if (query.isBlank()) {
             if (isExpandedView) {
+                currentSidebarLetter = null
                 displayedApps.addAll(allApps)
             } else {
                 showFavorites()
@@ -481,6 +509,23 @@ class MainActivity : AppCompatActivity() {
             })
         }
         refreshList()
+    }
+
+    private fun refreshDisplayedAppsForCurrentState() {
+        val query = searchBar.text?.toString().orEmpty()
+        if (query.isNotBlank()) {
+            filterApps(query)
+            return
+        }
+        if (!isExpandedView) {
+            showFavorites()
+            return
+        }
+        when (currentSidebarLetter) {
+            SIDEBAR_OTHER -> showNonAlphaApps()
+            null -> showAllApps()
+            else -> showAppsForLetter(currentSidebarLetter!!)
+        }
     }
 
     private var iconPackResolver: IconPackResolver? = null
@@ -2038,12 +2083,10 @@ class MainActivity : AppCompatActivity() {
                     setClassName(packageName, activityName)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                val icon = try { info.loadIcon(packageManager) } catch (_: Exception) { null }
                 AppInfo(
                     label = if (label.isBlank()) packageName else label,
                     packageName = packageName,
-                    launchIntent = launchIntent,
-                    icon = icon
+                    launchIntent = launchIntent
                 )
             }
             .sortedWith(compareBy(String.CASE_INSENSITIVE_ORDER) { it.label })
@@ -2331,9 +2374,21 @@ data class NotifInfo(val count: Int, val latestText: String)
 data class AppInfo(
     val label: String,
     val packageName: String,
-    val launchIntent: Intent,
-    val icon: Drawable? = null
-)
+    val launchIntent: Intent
+) {
+    private var cachedIcon: Drawable? = null
+
+    fun resolveIcon(packageManager: android.content.pm.PackageManager): Drawable? {
+        cachedIcon?.let { return it }
+        val component = launchIntent.component ?: return null
+        cachedIcon = try {
+            packageManager.getActivityIcon(component)
+        } catch (_: Exception) {
+            null
+        }
+        return cachedIcon
+    }
+}
 
 private data class FooterActionIconVisual(
     val drawable: Drawable? = null,
@@ -2454,7 +2509,11 @@ private class AppListAdapter(
         // Icon pack or default icon
         val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
         val packIcon = if (showRegularIcon) iconPackResolver?.resolve(app.packageName) else null
-        val displayIcon = if (showRegularIcon) (packIcon ?: app.icon) else null
+        val displayIcon = if (showRegularIcon) {
+            packIcon ?: app.resolveIcon(view.context.packageManager)
+        } else {
+            null
+        }
         if (displayIcon != null) {
             iconView.setImageDrawable(displayIcon)
             iconView.visibility = View.VISIBLE
@@ -2618,7 +2677,11 @@ private class FavoriteGridAdapter(
         }
 
         val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
-        val displayIcon = if (showRegularIcon) iconPackResolver?.resolve(app.packageName) ?: app.icon else null
+        val displayIcon = if (showRegularIcon) {
+            iconPackResolver?.resolve(app.packageName) ?: app.resolveIcon(view.context.packageManager)
+        } else {
+            null
+        }
         val glyph = if (iconMode == MainActivity.ICON_MODE_NERD && nerdTypeface != null) {
             launcherNerdGlyphs[app.packageName]
         } else {
