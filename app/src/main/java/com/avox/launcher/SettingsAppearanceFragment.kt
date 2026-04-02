@@ -55,6 +55,7 @@ class SettingsAppearanceFragment : Fragment() {
         val spacingOptions = listOf(
             4 to getString(R.string.option_compact),
             8 to getString(R.string.option_normal),
+            MainActivity.DEFAULT_SPACING to getString(R.string.option_default),
             14 to getString(R.string.option_spacious),
             20 to getString(R.string.option_large)
         )

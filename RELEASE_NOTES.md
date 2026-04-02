@@ -86,6 +86,8 @@ Three animation styles with per-style controls:
 - **Fragment-based navigation** across 6 categories: Appearance, Wallpaper, Animations, Notifications, Home, Widgets
 - **Wallpaper-matched settings background** for visual consistency
 - **Backup & restore** — export all settings to shareable JSON file, import with version validation
+- **Consistent settings initialization** — first launch now applies the same validated settings path used by backup restore, so the UI and runtime defaults stay aligned
+- **Density-safe widget restore sizing** — restored widget heights now preserve their intended dp size on different devices
 - Widget state included in backup/restore
 
 ### Localization

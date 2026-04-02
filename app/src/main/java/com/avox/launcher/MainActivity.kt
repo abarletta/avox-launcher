@@ -1509,6 +1509,7 @@ class MainActivity : AppCompatActivity() {
         pendingWidgetRestoreActiveIndices.clear()
 
         val requests = mutableListOf<PendingWidgetRestoreRequest>()
+        val density = resources.displayMetrics.density
         val root = try {
             JSONObject(planJson)
         } catch (_: Exception) {
@@ -1525,11 +1526,15 @@ class MainActivity : AppCompatActivity() {
             for (widgetOffset in 0 until widgetsJson.length()) {
                 val widgetJson = widgetsJson.optJSONObject(widgetOffset) ?: continue
                 val provider = parseWidgetProviderComponent(widgetJson) ?: continue
+                val restoredHeightPx = widgetJson.optInt("heightDp", -1)
+                    .takeIf { it > 0 }
+                    ?.let { (it * density).toInt() }
+                    ?: widgetJson.optInt("heightPx", -1).takeIf { it > 0 }
                 requests.add(
                     PendingWidgetRestoreRequest(
                         targetSlotIndex = slotIndex,
                         provider = provider,
-                        heightPx = widgetJson.optInt("heightPx", -1).takeIf { it > 0 },
+                        heightPx = restoredHeightPx,
                         fullWidth = widgetJson.optBoolean("fullWidth", false)
                     )
                 )

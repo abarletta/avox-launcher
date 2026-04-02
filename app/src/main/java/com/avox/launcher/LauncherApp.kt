@@ -37,6 +37,7 @@ class LauncherApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        LauncherSettings.ensureInitialized(this)
         applyLanguagePreference(this)
         loadCustomFont()
     }

@@ -25,14 +25,9 @@ import org.json.JSONTokener
 
 class SettingsMenuFragment : Fragment() {
 
-    private data class BackupPreference(
-        val type: String,
-        val value: Any
-    )
-
     private data class ParsedSettingsBackup(
         val version: Int,
-        val preferences: LinkedHashMap<String, BackupPreference>,
+        val preferences: LinkedHashMap<String, Any>,
         val widgetRestorePlanJson: String? = null
     )
 
@@ -165,7 +160,7 @@ class SettingsMenuFragment : Fragment() {
     private fun buildSettingsBackupJson(prefs: SharedPreferences): JSONObject {
         val preferencesJson = JSONObject()
         prefs.all.toSortedMap().forEach { (key, value) ->
-            if (!isRestorablePreferenceKey(key) || value == null) {
+            if (!LauncherSettings.isRestorablePreferenceKey(key) || value == null) {
                 return@forEach
             }
             val entry = JSONObject()
@@ -218,6 +213,7 @@ class SettingsMenuFragment : Fragment() {
 
         val appWidgetManager = AppWidgetManager.getInstance(requireContext())
         val packageManager = requireContext().packageManager
+        val density = resources.displayMetrics.density
         val slotsJson = JSONArray()
 
         slots.forEachIndexed { slotIndex, slot ->
@@ -235,6 +231,7 @@ class SettingsMenuFragment : Fragment() {
                 val heightPx = prefs.getInt("widget_h_$widgetId", -1)
                 if (heightPx > 0) {
                     widgetJson.put("heightPx", heightPx)
+                    widgetJson.put("heightDp", (heightPx / density).toInt().coerceAtLeast(1))
                 }
 
                 if (info != null) {
@@ -314,7 +311,7 @@ class SettingsMenuFragment : Fragment() {
         val widgetRestorePlanJson = root.optJSONObject("widgets")
             ?.takeIf { widgets -> (widgets.optJSONArray("slots")?.length() ?: 0) > 0 }
             ?.toString()
-        val parsedPreferences = linkedMapOf<String, BackupPreference>()
+        val parsedPreferences = linkedMapOf<String, Any>()
 
         val preferenceKeys = mutableListOf<String>()
         val keys = preferencesJson.keys()
@@ -323,7 +320,7 @@ class SettingsMenuFragment : Fragment() {
         }
 
         preferenceKeys.sorted().forEach { key ->
-            if (!isRestorablePreferenceKey(key)) {
+            if (!LauncherSettings.isRestorablePreferenceKey(key)) {
                 return@forEach
             }
 
@@ -334,10 +331,7 @@ class SettingsMenuFragment : Fragment() {
                 throw IllegalArgumentException("Preference entry is missing required fields")
             }
 
-            parsedPreferences[key] = BackupPreference(
-                type = type,
-                value = parseBackupValue(type, entry.get("value"))
-            )
+            parsedPreferences[key] = parseBackupValue(type, entry.get("value"))
         }
 
         return ParsedSettingsBackup(
@@ -349,47 +343,11 @@ class SettingsMenuFragment : Fragment() {
 
     private fun applySettingsBackup(parsedBackup: ParsedSettingsBackup) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-        val editor = prefs.edit()
-        val hasWidgetRestorePlan = !parsedBackup.widgetRestorePlanJson.isNullOrBlank()
-        val backupIncludesWidgetState = hasWidgetRestorePlan || parsedBackup.preferences.keys.any(::isWidgetPreferenceKey)
-
-        prefs.all.keys
-            .filter(::isRestorablePreferenceKey)
-            .filter { backupIncludesWidgetState || !isWidgetPreferenceKey(it) }
-            .forEach { editor.remove(it) }
-
-        parsedBackup.preferences.forEach { (key, entry) ->
-            if (hasWidgetRestorePlan && isWidgetPreferenceKey(key)) {
-                return@forEach
-            }
-            when (entry.type) {
-                "boolean" -> editor.putBoolean(key, entry.value as Boolean)
-                "int" -> editor.putInt(key, entry.value as Int)
-                "long" -> editor.putLong(key, entry.value as Long)
-                "float" -> editor.putFloat(key, entry.value as Float)
-                "string" -> editor.putString(key, entry.value as String)
-                "string_set" -> {
-                    val values = entry.value as? Set<*>
-                        ?: throw IllegalArgumentException("Expected string set backup value")
-                    editor.putStringSet(key, LinkedHashSet(values.filterIsInstance<String>()))
-                }
-                else -> throw IllegalArgumentException("Unsupported backup value type")
-            }
-        }
-
-        if (hasWidgetRestorePlan) {
-            editor.putString(MainActivity.PREF_PENDING_WIDGET_RESTORE, parsedBackup.widgetRestorePlanJson)
-        } else {
-            editor.remove(MainActivity.PREF_PENDING_WIDGET_RESTORE)
-        }
-
-        if (backupIncludesWidgetState) {
-            editor.putBoolean(MainActivity.PREF_WIDGETS_DIRTY, true)
-        }
-
-        if (!editor.commit()) {
-            throw IllegalStateException("Failed to commit restored settings")
-        }
+        LauncherSettings.applyRestorablePreferences(
+            prefs,
+            parsedBackup.preferences,
+            parsedBackup.widgetRestorePlanJson
+        )
     }
 
     private fun parseBackupValue(type: String, rawValue: Any): Any {
@@ -500,18 +458,6 @@ class SettingsMenuFragment : Fragment() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
-    }
-
-    private fun isWidgetPreferenceKey(key: String): Boolean {
-        return key == MainActivity.PREF_WIDGET_ORDER ||
-            key.startsWith("widget_h_") ||
-            key.startsWith("widget_fw_")
-    }
-
-    private fun isRestorablePreferenceKey(key: String): Boolean {
-        return key != MainActivity.PREF_WIDGET_IDS_OLD &&
-            key != MainActivity.PREF_PENDING_WIDGET_RESTORE &&
-            key != MainActivity.PREF_WIDGETS_DIRTY
     }
 
     companion object {
