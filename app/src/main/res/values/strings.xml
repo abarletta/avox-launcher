@@ -104,6 +104,7 @@
     <string name="settings_backup_title">Backup &amp; Restore</string>
     <string name="settings_backup_summary">Export launcher preferences or restore them from a
         previous backup.</string>
+    <string name="settings_version_format">Version %1$s</string>
     <string name="settings_notifications_hint">Configure badge counts and notification text shown
         on app icons. If notifications stop updating, reopen notification access from this screen.</string>
     <string name="settings_home_hint">Manage favorite apps, home layout, and quick actions.</string>

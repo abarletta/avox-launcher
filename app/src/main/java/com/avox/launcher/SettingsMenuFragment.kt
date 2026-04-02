@@ -15,6 +15,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -94,6 +95,23 @@ class SettingsMenuFragment : Fragment() {
         view.findViewById<Button>(R.id.restoreSettingsButton).setOnClickListener {
             restoreDocumentLauncher.launch(arrayOf("application/json", "text/plain"))
         }
+        view.findViewById<TextView>(R.id.versionText).text =
+            getString(R.string.settings_version_format, resolveAppVersionName())
+    }
+
+    private fun resolveAppVersionName(): String {
+        val packageManager = requireContext().packageManager
+        val packageName = requireContext().packageName
+        val packageInfo = if (android.os.Build.VERSION.SDK_INT >= 33) {
+            packageManager.getPackageInfo(
+                packageName,
+                android.content.pm.PackageManager.PackageInfoFlags.of(0)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.getPackageInfo(packageName, 0)
+        }
+        return packageInfo.versionName.orEmpty()
     }
 
     private fun saveSettingsBackup(uri: Uri) {
