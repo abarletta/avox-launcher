@@ -161,6 +161,7 @@ object LauncherSettings {
             MainActivity.PREF_HIDE_STATUS_BAR to false,
             MainActivity.PREF_FOOTER_NOTIF_MODE to MainActivity.NOTIF_MODE_NONE,
             MainActivity.PREF_FOOTER_SHOW_LABELS to false,
+            MainActivity.PREF_QUICK_ACTIONS_BOTTOM_OFFSET to MainActivity.DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET,
             MainActivity.PREF_ICON_MODE to MainActivity.ICON_MODE_REGULAR
         )
     }
@@ -236,6 +237,7 @@ object LauncherSettings {
             key == MainActivity.PREF_HIDE_STATUS_BAR -> value as? Boolean ?: false
             key == MainActivity.PREF_FOOTER_NOTIF_MODE -> normalizeStringOption(value, supportedNotificationModes, MainActivity.NOTIF_MODE_NONE)
             key == MainActivity.PREF_FOOTER_SHOW_LABELS -> value as? Boolean ?: false
+            key == MainActivity.PREF_QUICK_ACTIONS_BOTTOM_OFFSET -> normalizeIntRange(value, 0, 120, MainActivity.DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET)
             key == MainActivity.PREF_ICON_MODE -> normalizeStringOption(value, supportedIconModes, MainActivity.ICON_MODE_REGULAR)
             key.startsWith("widget_h_") -> normalizePositiveInt(value)
             key.startsWith("widget_fw_") -> value as? Boolean ?: false

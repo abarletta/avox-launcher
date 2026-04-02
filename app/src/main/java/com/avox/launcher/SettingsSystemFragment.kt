@@ -165,6 +165,25 @@ class SettingsSystemFragment : Fragment() {
                 prefs.edit().putBoolean(MainActivity.PREF_FOOTER_SHOW_LABELS, isChecked).apply()
             }
 
+            val footerBottomOffsetSeekBar = view.findViewById<SeekBar>(R.id.footerBottomOffsetSeekBar)
+            val footerBottomOffsetValue = view.findViewById<TextView>(R.id.footerBottomOffsetValue)
+            val currentFooterBottomOffset = prefs.getInt(
+                MainActivity.PREF_QUICK_ACTIONS_BOTTOM_OFFSET,
+                MainActivity.DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET
+            )
+            footerBottomOffsetSeekBar.progress = currentFooterBottomOffset
+            footerBottomOffsetValue.text = getString(R.string.settings_value_dp, currentFooterBottomOffset)
+            footerBottomOffsetSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    footerBottomOffsetValue.text = getString(R.string.settings_value_dp, progress)
+                    prefs.edit().putInt(MainActivity.PREF_QUICK_ACTIONS_BOTTOM_OFFSET, progress).apply()
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            })
+
             populateFooterActionRows(view)
 
             val requestedFooterSlot = requireActivity().intent.getIntExtra(SettingsActivity.EXTRA_FOOTER_SLOT_INDEX, -1)

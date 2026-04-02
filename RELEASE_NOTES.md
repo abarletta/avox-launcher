@@ -25,6 +25,7 @@ This is the first public release of Avox Launcher. All features below are new.
 - **Alphabet sidebar** for instant letter-based navigation with touch tracking
 - **Local search bar** for filtering installed apps in real time
 - **Quick actions footer** — up to 3 customizable action slots (launcher settings, system settings, Wi-Fi, Bluetooth, display, apps, or any installed app)
+- **Navigation-bar-aware quick actions spacing** with an adjustable extra offset in Settings → Home
 - **Long-press home screen** to open launcher settings
 
 ### Widgets

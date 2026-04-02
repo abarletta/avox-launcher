@@ -42,6 +42,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +63,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchBar: EditText
     private lateinit var widgetContainer: LinearLayout
     private var loadedIconPackPackage: String? = null
+    private var navigationBarInsetBottom = 0
+    private var footerActionsBaseBottomMargin = 0
+    private var bottomButtonBaseBottomMargin = 0
+    private var appListBaseBottomPadding = 0
+    private var favoritesGridBaseBottomPadding = 0
 
     private lateinit var appWidgetHost: AppWidgetHost
     private lateinit var appWidgetManager: AppWidgetManager
@@ -137,6 +144,17 @@ class MainActivity : AppCompatActivity() {
         footerActionsContainer = findViewById(R.id.footerActionsContainer)
         searchBar = findViewById(R.id.searchBar)
         widgetContainer = findViewById(R.id.widgetContainer)
+        footerActionsBaseBottomMargin = (footerActionsContainer.layoutParams as FrameLayout.LayoutParams).bottomMargin
+        bottomButtonBaseBottomMargin = (bottomButton.layoutParams as FrameLayout.LayoutParams).bottomMargin
+        appListBaseBottomPadding = appList.paddingBottom
+        favoritesGridBaseBottomPadding = favoritesGrid.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { _, insets ->
+            navigationBarInsetBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            updateBottomControlsLayout()
+            insets
+        }
+        ViewCompat.requestApplyInsets(rootLayout)
 
         appWidgetManager = AppWidgetManager.getInstance(this)
         widgetHostContext = createWidgetHostContext()
@@ -773,6 +791,44 @@ class MainActivity : AppCompatActivity() {
             }
             widgetContainer.layoutParams = params
         }
+
+        updateBottomControlsLayout()
+    }
+
+    private fun updateBottomControlsLayout() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val density = resources.displayMetrics.density
+        val extraBottomOffsetPx = (prefs.getInt(
+            PREF_QUICK_ACTIONS_BOTTOM_OFFSET,
+            DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET
+        ) * density).toInt()
+        val totalBottomOffset = navigationBarInsetBottom + extraBottomOffsetPx
+
+        (footerActionsContainer.layoutParams as? FrameLayout.LayoutParams)?.let { params ->
+            val updatedMargin = footerActionsBaseBottomMargin + totalBottomOffset
+            if (params.bottomMargin != updatedMargin) {
+                params.bottomMargin = updatedMargin
+                footerActionsContainer.layoutParams = params
+            }
+        }
+
+        (bottomButton.layoutParams as? FrameLayout.LayoutParams)?.let { params ->
+            val updatedMargin = bottomButtonBaseBottomMargin + totalBottomOffset
+            if (params.bottomMargin != updatedMargin) {
+                params.bottomMargin = updatedMargin
+                bottomButton.layoutParams = params
+            }
+        }
+
+        val contentBottomPadding = appListBaseBottomPadding + totalBottomOffset
+        appList.setPadding(appList.paddingLeft, appList.paddingTop, appList.paddingRight, contentBottomPadding)
+        favoritesGrid.setPadding(
+            favoritesGrid.paddingLeft,
+            favoritesGrid.paddingTop,
+            favoritesGrid.paddingRight,
+            favoritesGridBaseBottomPadding + totalBottomOffset
+        )
+        updateSidebarPosition()
     }
 
     private fun applyStatusBarPref() {
@@ -2290,12 +2346,14 @@ class MainActivity : AppCompatActivity() {
         const val PREF_HIDE_STATUS_BAR = "hide_status_bar"
         const val PREF_FOOTER_NOTIF_MODE = "footer_notification_mode"
         const val PREF_FOOTER_SHOW_LABELS = "footer_show_labels"
+        const val PREF_QUICK_ACTIONS_BOTTOM_OFFSET = "quick_actions_bottom_offset"
         const val PREF_ICON_MODE = "icon_mode"
         const val ICON_MODE_REGULAR = "regular"
         const val ICON_MODE_NERD = "nerd"
         const val ICON_MODE_NONE = "none"
         const val DEFAULT_H_MARGIN = 24
         const val DEFAULT_V_MARGIN = 0
+        const val DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET = 0
         const val DEFAULT_BLOCK_COUNT = 2
         const val FAVORITES_LAYOUT_SINGLE = "single"
         const val FAVORITES_LAYOUT_ADAPTIVE = "adaptive"

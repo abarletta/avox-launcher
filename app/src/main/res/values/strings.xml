@@ -129,6 +129,8 @@
         open launcher settings.</string>
     <string name="footer_notifications_title">Notifications on Quick Action Icons</string>
     <string name="footer_show_labels">Show Quick Action Labels</string>
+    <string name="footer_bottom_spacing_title">Quick Actions Bottom Spacing</string>
+    <string name="footer_bottom_spacing_summary">Adds extra space above the detected navigation bar height.</string>
     <string name="quick_action_launcher_settings">Launcher settings</string>
     <string name="quick_action_system_settings">System settings</string>
     <string name="quick_action_wifi_settings">Wi-Fi settings</string>

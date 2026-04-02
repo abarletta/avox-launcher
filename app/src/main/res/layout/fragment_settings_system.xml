@@ -187,6 +187,44 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/footer_bottom_spacing_title"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/footer_bottom_spacing_summary"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <SeekBar
+                    android:id="@+id/footerBottomOffsetSeekBar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:max="120" />
+
+                <TextView
+                    android:id="@+id/footerBottomOffsetValue"
+                    android:layout_width="48dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:gravity="end" />
+            </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/footerQuickActionsContainer"
                 android:layout_width="match_parent"
