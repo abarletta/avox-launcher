@@ -97,7 +97,7 @@
     <string name="settings_home_summary">Favorites, home layout, quick actions</string>
     <string name="settings_widgets">Widgets</string>
     <string name="settings_widgets_summary">Widget slots, swipe stacks, size, controls</string>
-    <string name="settings_menu_title">Launcher settings</string>
+    <string name="settings_menu_title">Avox Launcher settings</string>
     <string name="settings_language_title">Language</string>
     <string name="settings_language_summary">Use the system language when supported, or choose one
         manually.</string>
