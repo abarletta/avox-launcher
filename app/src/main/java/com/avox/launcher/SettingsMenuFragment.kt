@@ -19,6 +19,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import org.json.JSONArray
 import org.json.JSONObject
@@ -57,6 +59,24 @@ class SettingsMenuFragment : Fragment() {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
         val codes = resources.getStringArray(R.array.language_codes).toList()
         val labels = resources.getStringArray(R.array.language_labels).toList()
+        val baseBottomPadding = view.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { appliedView, insets ->
+            val density = resources.displayMetrics.density
+            val extraBottomOffsetPx = (prefs.getInt(
+                MainActivity.PREF_QUICK_ACTIONS_BOTTOM_OFFSET,
+                MainActivity.DEFAULT_QUICK_ACTIONS_BOTTOM_OFFSET
+            ) * density).toInt()
+            val navigationBarInsetBottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+            appliedView.setPadding(
+                appliedView.paddingLeft,
+                appliedView.paddingTop,
+                appliedView.paddingRight,
+                baseBottomPadding + navigationBarInsetBottom + extraBottomOffsetPx
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(view)
 
         val selectedIndex = codes.indexOf(
             prefs.getString(MainActivity.PREF_LANGUAGE, LauncherApp.LANGUAGE_TAG_SYSTEM)

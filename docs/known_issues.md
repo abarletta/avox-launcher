@@ -4,11 +4,13 @@ Status updated on 2026-04-11 based on user feedback and internal testing.
 
 ## 1 - App version number overlaps with navigation bar on devices with a navigation bar
 
+Status: Fixed in code on 2026-04-11 for final release prep.
+
 ### Description
 The app version number in the settings menu overlaps with the navigation bar when present. This wasn't detected before because the reference device used for testing didn't have a navigation bar and the version number is a recent addition to the app. This issue affects the visibility of the version number and can make it difficult for users to read it.
 
-### Proposed fix
-Modify the layout file for the settings menu to add a bottom margin that is equal to or greater than the height of the navigation bar. If suitable, this could use the same setting used for the quick actions bottom spacing to maintain consistency. This solution also avoids modifying string files, which should not be changed if possible, to avoid the burden of updating translations.
+### Resolution
+The settings menu now applies the navigation bar inset plus the existing quick actions bottom offset to the scroll container, which keeps the version label above the system bar without touching localized string resources.
 
 ## 2 - Wallpaper selection has no effect on the home screen
 
