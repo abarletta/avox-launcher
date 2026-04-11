@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     // App list cache invalidation
     private var appsDirty = true
+    private var resetHomeOnNextResume = false
 
     // Sidebar state for instant letter switching
     private var currentSidebarLetter: String? = null
@@ -307,8 +308,19 @@ class MainActivity : AppCompatActivity() {
         appWidgetHost.startListening()
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (!isChangingConfigurations) {
+            resetHomeOnNextResume = true
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        if (resetHomeOnNextResume) {
+            resetLauncherToHomeScreen(refreshUi = false)
+            resetHomeOnNextResume = false
+        }
         if (appsDirty) {
             allApps = loadLaunchableApps()
             appsDirty = false
@@ -356,6 +368,10 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)
+        resetHomeOnNextResume = false
+        resetLauncherToHomeScreen(refreshUi = true)
+        refreshDisplayedAppsForCurrentState()
+        updateBottomButton()
     }
 
     override fun onDestroy() {
@@ -495,6 +511,20 @@ class MainActivity : AppCompatActivity() {
             first != null && !first.isLetter()
         })
         animateAppContentTransition()
+    }
+
+    private fun resetLauncherToHomeScreen(refreshUi: Boolean) {
+        val searchWasVisible = searchBar.visibility == View.VISIBLE
+        val stateChanged = isExpandedView || currentSidebarLetter != null || searchWasVisible
+
+        isExpandedView = false
+        currentSidebarLetter = null
+
+        if (searchWasVisible) {
+            hideSearchBar()
+        } else if (refreshUi && stateChanged) {
+            showFavorites()
+        }
     }
 
     private fun animateAppContentTransition() {

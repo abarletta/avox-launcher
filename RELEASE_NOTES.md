@@ -22,6 +22,7 @@ This is the first public release of Avox Launcher. All features below are new.
 
 - **Vertical app list** with alphabetical section headers
 - **Favorites grid** at top with adaptive multi-column layout (adjusts to screen size and orientation)
+- **Reliable home-page reset** when re-entering the launcher or pressing Home, so the launcher always lands on the home screen instead of reopening the last app-drawer page
 - **Alphabet sidebar** for instant letter-based navigation with touch tracking
 - **Local search bar** for filtering installed apps in real time
 - **Quick actions footer** — up to 3 customizable action slots (launcher settings, system settings, Wi-Fi, Bluetooth, display, apps, or any installed app)
