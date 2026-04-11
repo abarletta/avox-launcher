@@ -141,9 +141,10 @@
         un espace vide de l’accueil pour ouvrir les paramètres du launcher.</string>
     <string name="footer_notifications_title">Notifications sur les icônes d’actions rapides</string>
     <string name="footer_show_labels">Afficher les libellés des actions rapides</string>
-        <string name="footer_bottom_spacing_title">Espacement inférieur des Actions rapides</string>
-        <string name="footer_bottom_spacing_summary">Ajoute un espace supplémentaire en bas au‑dessus de la barre de navigation détectée.</string>
-        <string name="settings_version_format">Version %1$s</string>
+    <string name="footer_bottom_spacing_title">Espacement inférieur des Actions rapides</string>
+    <string name="footer_bottom_spacing_summary">Ajoute un espace supplémentaire en bas au‑dessus de
+        la barre de navigation détectée.</string>
+    <string name="settings_version_format">Version %1$s</string>
     <string name="quick_action_launcher_settings">Paramètres du launcher</string>
     <string name="quick_action_system_settings">Paramètres système</string>
     <string name="quick_action_wifi_settings">Paramètres Wi-Fi</string>

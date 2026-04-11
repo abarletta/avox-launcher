@@ -140,7 +140,8 @@
     <string name="footer_notifications_title">Notificaciones en los iconos de acciones rápidas</string>
     <string name="footer_show_labels">Mostrar etiquetas de acciones rápidas</string>
     <string name="footer_bottom_spacing_title">Espacio inferior de Acciones rápidas</string>
-    <string name="footer_bottom_spacing_summary">Añade espacio extra en la parte inferior por encima de la barra de navegación.</string>
+    <string name="footer_bottom_spacing_summary">Añade espacio extra en la parte inferior por encima
+        de la barra de navegación.</string>
     <string name="settings_version_format">Versión %1$s</string>
     <string name="quick_action_launcher_settings">Ajustes del launcher</string>
     <string name="quick_action_system_settings">Ajustes del sistema</string>

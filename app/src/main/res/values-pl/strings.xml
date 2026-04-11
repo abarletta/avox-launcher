@@ -141,7 +141,8 @@
     <string name="footer_notifications_title">Powiadomienia na ikonach szybkich działań</string>
     <string name="footer_show_labels">Pokaż etykiety szybkich działań</string>
     <string name="footer_bottom_spacing_title">Odstęp pod szybkimi akcjami</string>
-    <string name="footer_bottom_spacing_summary">Dodaje dodatkową przestrzeń na dole nad wykrytą wysokością paska nawigacyjnego.</string>
+    <string name="footer_bottom_spacing_summary">Dodaje dodatkową przestrzeń na dole nad wykrytą
+        wysokością paska nawigacyjnego.</string>
     <string name="settings_version_format">Wersja %1$s</string>
     <string name="quick_action_launcher_settings">Ustawienia launchera</string>
     <string name="quick_action_system_settings">Ustawienia systemowe</string>

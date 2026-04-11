@@ -138,7 +138,8 @@
     <string name="footer_notifications_title">Ilmoitukset pikatoimintokuvakkeissa</string>
     <string name="footer_show_labels">Näytä pikatoimintojen nimet</string>
     <string name="footer_bottom_spacing_title">Alaosan välys pikatoiminnoille</string>
-    <string name="footer_bottom_spacing_summary">Lisää alareunaan ylimääräistä tilaa tunnistetun navigointipalkin yläpuolelle.</string>
+    <string name="footer_bottom_spacing_summary">Lisää alareunaan ylimääräistä tilaa tunnistetun
+        navigointipalkin yläpuolelle.</string>
     <string name="settings_version_format">Versio %1$s</string>
     <string name="quick_action_launcher_settings">Launcherin asetukset</string>
     <string name="quick_action_system_settings">Järjestelmäasetukset</string>

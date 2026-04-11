@@ -138,7 +138,8 @@
     <string name="footer_notifications_title">Notifieringar på snabbåtgärdsikoner</string>
     <string name="footer_show_labels">Visa etiketter för snabbåtgärder</string>
     <string name="footer_bottom_spacing_title">Avstånd under Snabbåtgärder</string>
-    <string name="footer_bottom_spacing_summary">Lägg till extra utrymme längst ned ovanför den upptäckta navigationsfältshöjden.</string>
+    <string name="footer_bottom_spacing_summary">Lägg till extra utrymme längst ned ovanför den
+        upptäckta navigationsfältshöjden.</string>
     <string name="settings_version_format">Version %1$s</string>
     <string name="quick_action_launcher_settings">Launcher-inställningar</string>
     <string name="quick_action_system_settings">Systeminställningar</string>

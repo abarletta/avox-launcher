@@ -139,7 +139,8 @@
     <string name="footer_notifications_title">Meldingen op pictogrammen van snelle acties</string>
     <string name="footer_show_labels">Labels van snelle acties tonen</string>
     <string name="footer_bottom_spacing_title">Ruimte onder Snelle acties</string>
-    <string name="footer_bottom_spacing_summary">Voegt extra ruimte onderaan toe boven de gedetecteerde navigatiebalkhoogte.</string>
+    <string name="footer_bottom_spacing_summary">Voegt extra ruimte onderaan toe boven de
+        gedetecteerde navigatiebalkhoogte.</string>
     <string name="settings_version_format">Versie %1$s</string>
     <string name="quick_action_launcher_settings">Launcher-instellingen</string>
     <string name="quick_action_system_settings">Systeeminstellingen</string>
