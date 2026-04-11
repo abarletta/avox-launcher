@@ -2,6 +2,7 @@ package com.avox.launcher
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +20,7 @@ class SettingsWallpaperFragment : Fragment() {
 
     private val pickWallpaper = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
-            try {
-                val wm = WallpaperManager.getInstance(requireContext())
-                requireContext().contentResolver.openInputStream(uri)?.use { stream ->
-                    wm.setStream(stream)
-                }
-            } catch (_: Exception) { }
+            applySelectedWallpaper(uri)
         }
     }
 
@@ -136,6 +132,22 @@ class SettingsWallpaperFragment : Fragment() {
             "light" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             "dark" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+    }
+
+    private fun applySelectedWallpaper(uri: Uri) {
+        try {
+            val wallpaperManager = WallpaperManager.getInstance(requireContext())
+            requireContext().contentResolver.openInputStream(uri)?.use { stream ->
+                wallpaperManager.setStream(
+                    stream,
+                    null,
+                    true,
+                    WallpaperManager.FLAG_SYSTEM
+                )
+            } ?: error("Unable to open selected wallpaper")
+        } catch (exception: Exception) {
+            android.util.Log.e("Avox", "Failed to apply selected wallpaper", exception)
         }
     }
 

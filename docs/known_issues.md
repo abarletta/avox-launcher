@@ -14,11 +14,13 @@ The settings menu now applies the navigation bar inset plus the existing quick a
 
 ## 2 - Wallpaper selection has no effect on the home screen
 
+Status: Fixed in code on 2026-04-11 for final release prep.
+
 ### Description
 When users select a wallpaper, it does not update on the home screen. The only way to change the wallpaper is to set it through the system settings on both Samsung and Pixel devices.
 
-### Proposed fix
-Investigate the wallpaper selection implementation and ensure that it properly updates the home screen wallpaper when a new wallpaper is selected. This may involve checking for necessary permissions, ensuring that the correct APIs are being called, and testing on multiple devices to confirm that the issue is resolved.
+### Resolution
+Wallpaper selection now requests the required wallpaper-setting permission in the manifest and applies the picked image through WallpaperManager.FLAG_SYSTEM so the launcher updates the home wallpaper directly instead of failing silently.
 
 ## 3 - Wallpaper overlay "blurring" effect does not work
 
