@@ -141,6 +141,9 @@
         Startbildschirms gedrückt, um die Launcher-Einstellungen zu öffnen.</string>
     <string name="footer_notifications_title">Benachrichtigungen auf Schnellaktionssymbolen</string>
     <string name="footer_show_labels">Beschriftungen für Schnellaktionen anzeigen</string>
+    <string name="footer_bottom_spacing_title">Abstand unter Schnellen Aktionen</string>
+    <string name="footer_bottom_spacing_summary">Fügt unten zusätzlichen Abstand über der erkannten Navigationsleiste hinzu.</string>
+    <string name="settings_version_format">Version %1$s</string>
     <string name="quick_action_launcher_settings">Launcher-Einstellungen</string>
     <string name="quick_action_system_settings">Systemeinstellungen</string>
     <string name="quick_action_wifi_settings">WLAN-Einstellungen</string>

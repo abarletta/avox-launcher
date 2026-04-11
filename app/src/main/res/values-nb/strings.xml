@@ -136,6 +136,9 @@
         på tom plass på startskjermen for å åpne launcher-innstillinger.</string>
     <string name="footer_notifications_title">Varsler på hurtighandlingsikoner</string>
     <string name="footer_show_labels">Vis etiketter for hurtighandlinger</string>
+    <string name="footer_bottom_spacing_title">Avstand under Hurtighandlinger</string>
+    <string name="footer_bottom_spacing_summary">Legger til ekstra plass nederst over den oppdagede navigasjonslinjehøyden.</string>
+    <string name="settings_version_format">Versjon %1$s</string>
     <string name="quick_action_launcher_settings">Launcher-innstillinger</string>
     <string name="quick_action_system_settings">Systeminnstillinger</string>
     <string name="quick_action_wifi_settings">Wi-Fi-innstillinger</string>

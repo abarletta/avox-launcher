@@ -135,6 +135,9 @@
         nede for at åbne launcher-indstillinger.</string>
     <string name="footer_notifications_title">Notifikationer på hurtighandlingsikoner</string>
     <string name="footer_show_labels">Vis etiketter for hurtighandlinger</string>
+    <string name="footer_bottom_spacing_title">Plads under Hurtigaktioner</string>
+    <string name="footer_bottom_spacing_summary">Tilføjer ekstra plads i bunden over den registrerede navigationslinje.</string>
+    <string name="settings_version_format">Version %1$s</string>
     <string name="quick_action_launcher_settings">Launcher-indstillinger</string>
     <string name="quick_action_system_settings">Systemindstillinger</string>
     <string name="quick_action_wifi_settings">Wi-Fi-indstillinger</string>

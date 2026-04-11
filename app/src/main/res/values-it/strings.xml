@@ -139,6 +139,9 @@
         vuoto della Home per aprire le impostazioni del launcher.</string>
     <string name="footer_notifications_title">Notifiche sulle icone delle azioni rapide</string>
     <string name="footer_show_labels">Mostra etichette azioni rapide</string>
+    <string name="footer_bottom_spacing_title">Spazio inferiore delle Azioni rapide</string>
+    <string name="footer_bottom_spacing_summary">Aggiunge spazio extra in basso sopra l’altezza della barra di navigazione rilevata.</string>
+    <string name="settings_version_format">Versione %1$s</string>
     <string name="quick_action_launcher_settings">Impostazioni launcher</string>
     <string name="quick_action_system_settings">Impostazioni di sistema</string>
     <string name="quick_action_wifi_settings">Impostazioni Wi-Fi</string>

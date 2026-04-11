@@ -138,6 +138,9 @@
         vazio da tela inicial para abrir as configurações do launcher.</string>
     <string name="footer_notifications_title">Notificações nos ícones de ações rápidas</string>
     <string name="footer_show_labels">Mostrar rótulos das ações rápidas</string>
+    <string name="footer_bottom_spacing_title">Espaçamento inferior das Ações rápidas</string>
+    <string name="footer_bottom_spacing_summary">Adiciona espaço extra na parte inferior acima da altura da barra de navegação detectada.</string>
+    <string name="settings_version_format">Versão %1$s</string>
     <string name="quick_action_launcher_settings">Configurações do launcher</string>
     <string name="quick_action_system_settings">Configurações do sistema</string>
     <string name="quick_action_wifi_settings">Configurações de Wi-Fi</string>
