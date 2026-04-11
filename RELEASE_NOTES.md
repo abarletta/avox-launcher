@@ -71,7 +71,7 @@ This is the first public release of Avox Launcher. All features below are new.
 ### Wallpaper Effects
 
 - **Darken** — adjustable darkness overlay (0–100%)
-- **Blur** — system blur-behind on API 31+, downscale-upscale fallback on older devices
+- **Blur** — sampled wallpaper blur overlay scaled to the current screen size for consistent results across supported Android versions
 - **Color tint** — 6 color presets (Indigo, Green, Red, Purple, Teal, Orange) with darkness control
 - **Wallpaper selection** from device storage
 

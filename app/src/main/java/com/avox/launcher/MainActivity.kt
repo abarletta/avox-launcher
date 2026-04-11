@@ -721,8 +721,7 @@ class MainActivity : AppCompatActivity() {
         val effect = prefs.getString(PREF_WALLPAPER_EFFECT, WALLPAPER_EFFECT_DARKEN) ?: WALLPAPER_EFFECT_DARKEN
         val darkness = prefs.getInt(PREF_DARKNESS, DEFAULT_DARKNESS) / 100f
 
-        // Clear system blur-behind when not using blur effect
-        if (effect != WALLPAPER_EFFECT_BLUR && android.os.Build.VERSION.SDK_INT >= 31) {
+        if (android.os.Build.VERSION.SDK_INT >= 31) {
             window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
             window.attributes = window.attributes.also { it.blurBehindRadius = 0 }
         }
@@ -730,8 +729,11 @@ class MainActivity : AppCompatActivity() {
         when (effect) {
             WALLPAPER_EFFECT_BLUR -> {
                 val radius = prefs.getInt(PREF_BLUR_RADIUS, DEFAULT_BLUR_RADIUS)
-                if (android.os.Build.VERSION.SDK_INT >= 31) {
-                    // Use system blur-behind for reliable wallpaper blurring
+                val blurred = getBlurredWallpaper(radius)
+                if (blurred != null) {
+                    darkOverlay.background = android.graphics.drawable.BitmapDrawable(resources, blurred)
+                    darkOverlay.alpha = 1f
+                } else if (android.os.Build.VERSION.SDK_INT >= 31) {
                     window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
                     window.attributes = window.attributes.also {
                         it.blurBehindRadius = (radius * 4).coerceIn(1, 150)
@@ -739,15 +741,8 @@ class MainActivity : AppCompatActivity() {
                     darkOverlay.setBackgroundColor(Color.BLACK)
                     darkOverlay.alpha = darkness * 0.6f
                 } else {
-                    // Fallback: downscale-upscale blur
-                    val blurred = getBlurredWallpaper(radius)
-                    if (blurred != null) {
-                        darkOverlay.background = android.graphics.drawable.BitmapDrawable(resources, blurred)
-                        darkOverlay.alpha = 1f
-                    } else {
-                        darkOverlay.setBackgroundColor(Color.BLACK)
-                        darkOverlay.alpha = darkness
-                    }
+                    darkOverlay.setBackgroundColor(Color.BLACK)
+                    darkOverlay.alpha = darkness
                 }
             }
             WALLPAPER_EFFECT_COLOR -> {
@@ -772,29 +767,101 @@ class MainActivity : AppCompatActivity() {
 
     private fun getBlurredWallpaper(radius: Int): android.graphics.Bitmap? {
         return try {
-            val wm = android.app.WallpaperManager.getInstance(this)
-            val wallpaper = wm.drawable ?: return null
-            val origW = wallpaper.intrinsicWidth.coerceAtLeast(1)
-            val origH = wallpaper.intrinsicHeight.coerceAtLeast(1)
-            val origBitmap = android.graphics.Bitmap.createBitmap(origW, origH, android.graphics.Bitmap.Config.ARGB_8888)
-            val canvas = android.graphics.Canvas(origBitmap)
-            wallpaper.setBounds(0, 0, origW, origH)
-            wallpaper.draw(canvas)
+            val screenWidth = resources.displayMetrics.widthPixels.coerceAtLeast(1)
+            val screenHeight = resources.displayMetrics.heightPixels.coerceAtLeast(1)
+            val sampleDivisor = radius.coerceIn(1, 25)
+            val sampleWidth = (screenWidth / sampleDivisor).coerceAtLeast(1)
+            val sampleHeight = (screenHeight / sampleDivisor).coerceAtLeast(1)
+            val sourceBitmap = decodeCachedWallpaper(sampleWidth, sampleHeight) ?: return null
+            val sampledBitmap = android.graphics.Bitmap.createBitmap(
+                sampleWidth,
+                sampleHeight,
+                android.graphics.Bitmap.Config.ARGB_8888
+            )
+            val canvas = android.graphics.Canvas(sampledBitmap)
+            val intrinsicWidth = sourceBitmap.width.coerceAtLeast(1)
+            val intrinsicHeight = sourceBitmap.height.coerceAtLeast(1)
+            val scale = maxOf(
+                sampleWidth.toFloat() / intrinsicWidth.toFloat(),
+                sampleHeight.toFloat() / intrinsicHeight.toFloat()
+            )
+            val scaledWidth = (intrinsicWidth * scale).toInt().coerceAtLeast(sampleWidth)
+            val scaledHeight = (intrinsicHeight * scale).toInt().coerceAtLeast(sampleHeight)
+            val left = (sampleWidth - scaledWidth) / 2
+            val top = (sampleHeight - scaledHeight) / 2
+            canvas.drawBitmap(
+                sourceBitmap,
+                null,
+                android.graphics.Rect(left, top, left + scaledWidth, top + scaledHeight),
+                android.graphics.Paint(android.graphics.Paint.FILTER_BITMAP_FLAG)
+            )
+            sourceBitmap.recycle()
 
-            val scale = 1f / radius.coerceIn(1, 25)
-            val smallW = (origW * scale).toInt().coerceAtLeast(1)
-            val smallH = (origH * scale).toInt().coerceAtLeast(1)
-            val small = android.graphics.Bitmap.createScaledBitmap(origBitmap, smallW, smallH, true)
-            origBitmap.recycle()
-
-            val screenW = resources.displayMetrics.widthPixels
-            val screenH = resources.displayMetrics.heightPixels
-            val blurred = android.graphics.Bitmap.createScaledBitmap(small, screenW, screenH, true)
-            small.recycle()
+            val blurred = android.graphics.Bitmap.createScaledBitmap(
+                sampledBitmap,
+                screenWidth,
+                screenHeight,
+                true
+            )
+            if (blurred !== sampledBitmap) {
+                sampledBitmap.recycle()
+            }
             blurred
         } catch (_: Exception) {
             null
         }
+    }
+
+    private fun decodeCachedWallpaper(targetWidth: Int, targetHeight: Int): android.graphics.Bitmap? {
+        val cacheFile = resolveWallpaperCacheFile(this)
+        if (!cacheFile.exists()) return null
+
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        val cachedWallpaperId = prefs.getInt(PREF_WALLPAPER_CACHE_ID, -1)
+        val currentWallpaperId = android.app.WallpaperManager.getInstance(this)
+            .getWallpaperId(android.app.WallpaperManager.FLAG_SYSTEM)
+
+        if (cachedWallpaperId <= 0 || currentWallpaperId <= 0 || cachedWallpaperId != currentWallpaperId) {
+            cacheFile.delete()
+            prefs.edit().remove(PREF_WALLPAPER_CACHE_ID).apply()
+            return null
+        }
+
+        val boundsOptions = android.graphics.BitmapFactory.Options().apply {
+            inJustDecodeBounds = true
+        }
+        android.graphics.BitmapFactory.decodeFile(cacheFile.absolutePath, boundsOptions)
+        if (boundsOptions.outWidth <= 0 || boundsOptions.outHeight <= 0) {
+            cacheFile.delete()
+            prefs.edit().remove(PREF_WALLPAPER_CACHE_ID).apply()
+            return null
+        }
+
+        val decodeOptions = android.graphics.BitmapFactory.Options().apply {
+            inSampleSize = calculateBitmapSampleSize(
+                boundsOptions.outWidth,
+                boundsOptions.outHeight,
+                targetWidth,
+                targetHeight
+            )
+        }
+        return android.graphics.BitmapFactory.decodeFile(cacheFile.absolutePath, decodeOptions)
+    }
+
+    private fun calculateBitmapSampleSize(
+        sourceWidth: Int,
+        sourceHeight: Int,
+        targetWidth: Int,
+        targetHeight: Int
+    ): Int {
+        var sampleSize = 1
+        while (
+            sourceWidth / sampleSize > targetWidth * 2 ||
+            sourceHeight / sampleSize > targetHeight * 2
+        ) {
+            sampleSize *= 2
+        }
+        return sampleSize
     }
 
     private fun applyLayoutPrefs() {
@@ -2366,6 +2433,7 @@ class MainActivity : AppCompatActivity() {
         const val PREF_WALLPAPER_EFFECT = "wallpaper_effect"
         const val PREF_BLUR_RADIUS = "blur_radius"
         const val PREF_COLOR_TINT = "color_tint"
+        const val PREF_WALLPAPER_CACHE_ID = "wallpaper_cache_id"
         const val DEFAULT_BLUR_RADIUS = 15
         const val DEFAULT_COLOR_TINT = "#1A237E"
         const val PREF_NOTIF_SWIPE = "notif_swipe_enabled"
@@ -2409,6 +2477,10 @@ class MainActivity : AppCompatActivity() {
             "com.google.android.youtube",
             "com.google.android.apps.maps"
         )
+
+        fun resolveWallpaperCacheFile(context: Context): java.io.File {
+            return java.io.File(context.filesDir, "selected_wallpaper_cache")
+        }
 
         fun parseWidgetSlots(serialized: String?): MutableList<WidgetSlotSpec> {
             if (serialized.isNullOrBlank()) return mutableListOf()

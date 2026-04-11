@@ -146,9 +146,26 @@ class SettingsWallpaperFragment : Fragment() {
                     WallpaperManager.FLAG_SYSTEM
                 )
             } ?: error("Unable to open selected wallpaper")
+            cacheSelectedWallpaper(uri, wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM))
         } catch (exception: Exception) {
             android.util.Log.e("Avox", "Failed to apply selected wallpaper", exception)
         }
+    }
+
+    private fun cacheSelectedWallpaper(uri: Uri, wallpaperId: Int) {
+        requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
+            MainActivity.resolveWallpaperCacheFile(requireContext())
+                .outputStream()
+                .buffered()
+                .use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+        } ?: error("Unable to cache selected wallpaper")
+
+        requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+            .edit()
+            .putInt(MainActivity.PREF_WALLPAPER_CACHE_ID, wallpaperId)
+            .apply()
     }
 
     private fun setupSpinner(spinner: Spinner, items: List<String>, selection: Int, onSelected: (Int) -> Unit) {

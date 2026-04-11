@@ -24,10 +24,10 @@ Wallpaper selection now requests the required wallpaper-setting permission in th
 
 ## 3 - Wallpaper overlay "blurring" effect does not work
 
+Status: Fixed in code on 2026-04-11 for final release prep.
+
 ### Description
 The wallpaper overlay effect that is supposed to blur the wallpaper does not work as intended. The wallpaper remains clear and unblurred regardless of the selected overlay effect.
 
-### Proposed fix
-Investigate the implementation of the wallpaper overlay effect and ensure that the blurring effect is applied correctly. This may involve checking the rendering logic, verifying that the correct APIs are being used, and testing on multiple devices to confirm that the issue is resolved.
-
-Note that this is a long-standing issue that has been present since the initial implementation of the wallpaper overlay effects. Consider simply removing this functionality if it is deemed too complex or time-consuming to fix, as it is not a critical feature and the other effects (darkening and color overlay) are working correctly.
+### Resolution
+The blur effect now prefers a launcher-managed wallpaper cache created by the wallpaper picker, then renders a screen-sized sampled bitmap and scales it back up for a deterministic blur overlay. If that cached source is unavailable, the launcher still falls back safely instead of breaking the home screen.
