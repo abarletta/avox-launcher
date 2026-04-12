@@ -43,7 +43,7 @@ Requires Android 8.0 (API 26) or higher.
 - **Icons:** regular app icons, Nerd Font icon prefixes, or no icons; adjustable size (16–48dp)
 - **Icon packs:** third-party icon pack support (ADW, Nova, Tesla, GO Launcher formats)
 - **Layout:** content alignment (left/center), horizontal and vertical margins, item spacing
-- **Wallpaper effects:** darken, blur (sampled wallpaper blur overlay), color tint (6 presets)
+- **Wallpaper effects:** darken and color tint (6 presets)
 - **Sidebar animations:** wave/zoom, highlight, or fade — each with per-style controls
 - **Status bar:** option to hide
 

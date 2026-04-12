@@ -29,7 +29,7 @@ The launcher is post initial scope with the following implemented features:
 - Widget host (add/bind/configure/restore/resize)
 - Multi-widget slots with horizontal swipe between widgets
 - Full settings activity with fragment-based navigation
-- Wallpaper effects (darken, blur, color tint)
+- Wallpaper effects (darken, color tint)
 - Notification badges and inline text
 - Swipe-to-dismiss notifications
 - Three sidebar animation styles (wave, highlight, fade)

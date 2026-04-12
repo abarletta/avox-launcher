@@ -88,7 +88,7 @@
     <string name="settings_appearance">Appearance</string>
     <string name="settings_appearance_summary">Font, size, spacing, alignment, margins</string>
     <string name="settings_wallpaper">Wallpaper</string>
-    <string name="settings_wallpaper_summary">Theme, effects, darkness, blur</string>
+    <string name="settings_wallpaper_summary">Theme, effects, darkness</string>
     <string name="settings_animations">Animations</string>
     <string name="settings_animations_summary">Sidebar animation style and controls</string>
     <string name="settings_notifications">Notifications</string>

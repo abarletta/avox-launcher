@@ -87,45 +87,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Blur Controls -->
-        <LinearLayout
-            android:id="@+id/blurControlsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginBottom="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/blur_radius_label"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <SeekBar
-                    android:id="@+id/blurRadiusSeekBar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="25" />
-
-                <TextView
-                    android:id="@+id/blurRadiusValue"
-                    android:layout_width="48dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="#FFFFFF"
-                    android:gravity="end" />
-            </LinearLayout>
-        </LinearLayout>
-
         <!-- Color Tint Controls -->
         <LinearLayout
             android:id="@+id/colorControlsContainer"

@@ -92,7 +92,7 @@
     <string name="settings_appearance">Apariencia</string>
     <string name="settings_appearance_summary">Fuente, tamaño, espaciado, alineación, márgenes</string>
     <string name="settings_wallpaper">Fondo de pantalla</string>
-    <string name="settings_wallpaper_summary">Tema, efectos, oscuridad, desenfoque</string>
+    <string name="settings_wallpaper_summary">Tema, efectos, oscuridad</string>
     <string name="settings_animations">Animaciones</string>
     <string name="settings_animations_summary">Estilo de animación de la barra lateral y controles</string>
     <string name="settings_notifications">Notificaciones</string>

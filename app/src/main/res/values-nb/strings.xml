@@ -91,7 +91,7 @@
     <string name="settings_appearance">Utseende</string>
     <string name="settings_appearance_summary">Skrifttype, størrelse, avstand, justering, marger</string>
     <string name="settings_wallpaper">Bakgrunn</string>
-    <string name="settings_wallpaper_summary">Tema, effekter, mørkhet, uskarphet</string>
+    <string name="settings_wallpaper_summary">Tema, effekter, mørkhet</string>
     <string name="settings_animations">Animasjoner</string>
     <string name="settings_animations_summary">Animasjonsstil for sidefelt og kontroller</string>
     <string name="settings_notifications">Varsler</string>

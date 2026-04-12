@@ -25,7 +25,7 @@
 - [x] Customizable app icons from third-party icon packs.
 - [x] Customizable font size.
 - [x] Customizable fonts from TTF files.
-- [x] Wallpaper overlay effects: darken, blur, and color tint with per-effect controls.
+- [x] Wallpaper overlay effects: darken and color tint with per-effect controls.
 - [x] Wallpaper selection control.
 - [x] Icon size control.
 
@@ -91,7 +91,7 @@ I already added font, spacing, wallpaper darkness and a Settings screen. Confirm
 ### Answer:
 In addition to what you listed above, I want:
 - Controllable font size (currently missing).
-- Custom wallpaper overlay effects (currently only supports darkening, but may add blur and color overlay in the future).
+- Custom wallpaper overlay effects (currently supports darkening and color overlay; blur is deferred).
 
 ## 7 - Animations
 ### Question:

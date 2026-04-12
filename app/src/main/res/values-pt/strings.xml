@@ -91,7 +91,7 @@
     <string name="settings_appearance">Aparência</string>
     <string name="settings_appearance_summary">Fonte, tamanho, espaçamento, alinhamento, margens</string>
     <string name="settings_wallpaper">Papel de parede</string>
-    <string name="settings_wallpaper_summary">Tema, efeitos, escurecimento, desfoque</string>
+    <string name="settings_wallpaper_summary">Tema, efeitos, escurecimento</string>
     <string name="settings_animations">Animações</string>
     <string name="settings_animations_summary">Estilo de animação da barra lateral e controles</string>
     <string name="settings_notifications">Notificações</string>

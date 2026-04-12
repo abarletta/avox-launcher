@@ -95,7 +95,7 @@
     <string name="settings_appearance">Darstellung</string>
     <string name="settings_appearance_summary">Schriftart, Größe, Abstand, Ausrichtung, Ränder</string>
     <string name="settings_wallpaper">Hintergrund</string>
-    <string name="settings_wallpaper_summary">Thema, Effekte, Dunkelheit, Unschärfe</string>
+    <string name="settings_wallpaper_summary">Thema, Effekte, Dunkelheit</string>
     <string name="settings_animations">Animationen</string>
     <string name="settings_animations_summary">Seitenleistenanimation und Steuerelemente</string>
     <string name="settings_notifications">Benachrichtigungen</string>

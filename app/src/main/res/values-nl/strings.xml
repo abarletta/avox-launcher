@@ -91,7 +91,7 @@
     <string name="settings_appearance">Weergave</string>
     <string name="settings_appearance_summary">Lettertype, grootte, afstand, uitlijning, marges</string>
     <string name="settings_wallpaper">Achtergrond</string>
-    <string name="settings_wallpaper_summary">Thema, effecten, donkerte, vervaging</string>
+    <string name="settings_wallpaper_summary">Thema, effecten, donkerte</string>
     <string name="settings_animations">Animaties</string>
     <string name="settings_animations_summary">Animatiestijl van zijbalk en bediening</string>
     <string name="settings_notifications">Meldingen</string>

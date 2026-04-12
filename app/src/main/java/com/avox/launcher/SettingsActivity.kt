@@ -1,5 +1,6 @@
 package com.avox.launcher
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,7 @@ class SettingsActivity : AppCompatActivity() {
         applyThemeFromPrefs()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-        val prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE)
-        findViewById<View>(R.id.settingsOverlay).alpha =
-            prefs.getInt(MainActivity.PREF_DARKNESS, MainActivity.DEFAULT_DARKNESS) / 100f
+        applyWallpaperOverlay()
 
         if (savedInstanceState == null) {
             val initialFragment = when (intent.getStringExtra(EXTRA_OPEN_SCREEN)) {
@@ -34,6 +32,11 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settingsContainer, initialFragment)
                 .commit()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        applyWallpaperOverlay()
     }
 
     fun showFragment(fragment: Fragment) {
@@ -54,6 +57,36 @@ class SettingsActivity : AppCompatActivity() {
         } else {
             @Suppress("DEPRECATION")
             super.onBackPressed()
+        }
+    }
+
+    fun applyWallpaperOverlay() {
+        val overlay = findViewById<View>(R.id.settingsOverlay)
+        val prefs = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE)
+        val effect = prefs.getString(MainActivity.PREF_WALLPAPER_EFFECT, MainActivity.WALLPAPER_EFFECT_DARKEN)
+            ?: MainActivity.WALLPAPER_EFFECT_DARKEN
+        val darkness = prefs.getInt(MainActivity.PREF_DARKNESS, MainActivity.DEFAULT_DARKNESS) / 100f
+
+        when (effect) {
+            MainActivity.WALLPAPER_EFFECT_COLOR -> {
+                val tintColor = prefs.getString(MainActivity.PREF_COLOR_TINT, MainActivity.DEFAULT_COLOR_TINT)
+                    ?: MainActivity.DEFAULT_COLOR_TINT
+                try {
+                    val parsed = Color.parseColor(tintColor)
+                    val alpha = (darkness.coerceAtLeast(0.35f) * 255).toInt().coerceIn(0, 255)
+                    overlay.setBackgroundColor(
+                        Color.argb(alpha, Color.red(parsed), Color.green(parsed), Color.blue(parsed))
+                    )
+                    overlay.alpha = 1f
+                } catch (_: IllegalArgumentException) {
+                    overlay.setBackgroundColor(Color.BLACK)
+                    overlay.alpha = darkness
+                }
+            }
+            else -> {
+                overlay.setBackgroundColor(Color.BLACK)
+                overlay.alpha = darkness
+            }
         }
     }
 

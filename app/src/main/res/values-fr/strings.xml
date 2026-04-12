@@ -93,7 +93,7 @@
     <string name="settings_appearance">Apparence</string>
     <string name="settings_appearance_summary">Police, taille, espacement, alignement, marges</string>
     <string name="settings_wallpaper">Fond d’écran</string>
-    <string name="settings_wallpaper_summary">Thème, effets, obscurité, flou</string>
+    <string name="settings_wallpaper_summary">Thème, effets, obscurité</string>
     <string name="settings_animations">Animations</string>
     <string name="settings_animations_summary">Style d’animation de la barre latérale et commandes</string>
     <string name="settings_notifications">Notifications</string>

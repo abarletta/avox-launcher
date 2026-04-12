@@ -93,7 +93,7 @@
     <string name="settings_appearance">Wygląd</string>
     <string name="settings_appearance_summary">Czcionka, rozmiar, odstępy, wyrównanie, marginesy</string>
     <string name="settings_wallpaper">Tapeta</string>
-    <string name="settings_wallpaper_summary">Motyw, efekty, przyciemnienie, rozmycie</string>
+    <string name="settings_wallpaper_summary">Motyw, efekty, przyciemnienie</string>
     <string name="settings_animations">Animacje</string>
     <string name="settings_animations_summary">Styl animacji paska bocznego i sterowanie</string>
     <string name="settings_notifications">Powiadomienia</string>

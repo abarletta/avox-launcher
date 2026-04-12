@@ -53,6 +53,21 @@ class LauncherSettingsTest {
         assertEquals(30, prefs.getInt(MainActivity.PREF_FONT_SIZE, -1))
     }
 
+    @Test
+    fun applyRestorablePreferences_normalizesRemovedBlurEffectToDarken() {
+        val prefs = InMemorySharedPreferences()
+
+        LauncherSettings.applyRestorablePreferences(
+            prefs,
+            linkedMapOf(MainActivity.PREF_WALLPAPER_EFFECT to MainActivity.WALLPAPER_EFFECT_BLUR)
+        )
+
+        assertEquals(
+            MainActivity.WALLPAPER_EFFECT_DARKEN,
+            prefs.getString(MainActivity.PREF_WALLPAPER_EFFECT, null)
+        )
+    }
+
     private class InMemorySharedPreferences : SharedPreferences {
         private val values = linkedMapOf<String, Any?>()
 

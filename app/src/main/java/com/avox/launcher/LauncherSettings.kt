@@ -29,7 +29,6 @@ object LauncherSettings {
     )
     private val supportedWallpaperEffects = setOf(
         MainActivity.WALLPAPER_EFFECT_DARKEN,
-        MainActivity.WALLPAPER_EFFECT_BLUR,
         MainActivity.WALLPAPER_EFFECT_COLOR
     )
     private val supportedColorTints = setOf(

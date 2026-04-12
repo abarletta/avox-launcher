@@ -60,7 +60,7 @@ Current implementation files:
 - `app/src/main/java/com/avox/launcher/SettingsActivity.kt` — fragment host activity with back navigation, theme application, and deep-link to specific settings screens
 - `app/src/main/java/com/avox/launcher/SettingsMenuFragment.kt` — top-level menu with category cards, language selection, backup/restore
 - `app/src/main/java/com/avox/launcher/SettingsAppearanceFragment.kt` — font, font size, spacing, alignment, margins, icon mode (regular/nerd/none), icon size, icon pack, nerd font picker, status bar toggle
-- `app/src/main/java/com/avox/launcher/SettingsWallpaperFragment.kt` — theme (light/dark/system), wallpaper effects (darken/blur/color), darkness, blur radius, color tint, wallpaper select
+- `app/src/main/java/com/avox/launcher/SettingsWallpaperFragment.kt` — theme (light/dark/system), wallpaper effects (darken/color), darkness, color tint, wallpaper select
 - `app/src/main/java/com/avox/launcher/SettingsAnimationsFragment.kt` — sidebar animation style with per-style controls (wave/highlight/fade)
 - `app/src/main/java/com/avox/launcher/SettingsSystemFragment.kt` — notification mode, swipe toggle, favorites management (picker with icons, reorder), widget management (add, remove, resize, full-width, controls), quick actions setup
 - `app/src/main/java/com/avox/launcher/AlphabetSidebar.kt` — sidebar with wave/highlight/fade animation styles and configurable intensity/radius

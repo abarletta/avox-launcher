@@ -10,19 +10,18 @@ This file maps each visible part of Avox to the code and resources that control 
 - Main screen behavior: `app/src/main/java/com/avox/launcher/MainActivity.kt`
   - `onCreate(...)` wires every visual element.
   - `updateBottomButton()` and `updateBottomButtonImmediate()` switch the bottom button icon and show or hide widgets depending on launcher mode.
-  - `applySettings()` updates wallpaper dimming, blur, and color tint.
+  - `applySettings()` updates wallpaper dimming and color tint.
   - `applyLayoutPrefs()` updates horizontal margins and widget area sizing.
   - `applyStatusBarPref()` controls immersive status bar visibility.
 
 ## Wallpaper Look
 
 - Wallpaper effect settings UI: `app/src/main/java/com/avox/launcher/SettingsWallpaperFragment.kt`
-  - Controls theme mode, wallpaper effect type, darkness, blur radius, and color tint preferences.
+  - Controls theme mode, wallpaper effect type, darkness, and color tint preferences.
 - Wallpaper settings layout: `app/src/main/res/layout/fragment_settings_wallpaper.xml`
   - Defines the visible controls for theme and wallpaper options.
 - Live wallpaper overlay rendering: `app/src/main/java/com/avox/launcher/MainActivity.kt`
-  - `applySettings()` reads the saved wallpaper preferences and applies either darkening, blur, or color tint to `darkOverlay`.
-  - `getBlurredWallpaper(...)` builds the fallback blur bitmap for older Android versions.
+  - `applySettings()` reads the saved wallpaper preferences and applies either darkening or color tint to `darkOverlay`.
 
 ## App List Rows
 

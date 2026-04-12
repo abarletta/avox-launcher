@@ -30,6 +30,7 @@ class SettingsWallpaperFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val prefs = requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val settingsActivity = activity as? SettingsActivity
         val themeOptions = listOf(
             "light" to getString(R.string.option_light),
             "dark" to getString(R.string.option_dark),
@@ -37,7 +38,6 @@ class SettingsWallpaperFragment : Fragment() {
         )
         val wallpaperEffectOptions = listOf(
             MainActivity.WALLPAPER_EFFECT_DARKEN to getString(R.string.option_darken),
-            MainActivity.WALLPAPER_EFFECT_BLUR to getString(R.string.option_blur),
             MainActivity.WALLPAPER_EFFECT_COLOR to getString(R.string.color_tint_label)
         )
         val colorTintOptions = listOf(
@@ -61,12 +61,10 @@ class SettingsWallpaperFragment : Fragment() {
 
         // Wallpaper effect controls
         val darkenControls = view.findViewById<View>(R.id.darkenControlsContainer)
-        val blurControls = view.findViewById<View>(R.id.blurControlsContainer)
         val colorControls = view.findViewById<View>(R.id.colorControlsContainer)
 
         fun updateEffectControls(effect: String) {
-            darkenControls.visibility = if (effect != MainActivity.WALLPAPER_EFFECT_BLUR) View.VISIBLE else View.GONE
-            blurControls.visibility = if (effect == MainActivity.WALLPAPER_EFFECT_BLUR) View.VISIBLE else View.GONE
+            darkenControls.visibility = View.VISIBLE
             colorControls.visibility = if (effect == MainActivity.WALLPAPER_EFFECT_COLOR) View.VISIBLE else View.GONE
         }
 
@@ -80,6 +78,7 @@ class SettingsWallpaperFragment : Fragment() {
             val effect = wallpaperEffectOptions[pos].first
             prefs.edit().putString(MainActivity.PREF_WALLPAPER_EFFECT, effect).apply()
             updateEffectControls(effect)
+            settingsActivity?.applyWallpaperOverlay()
         }
 
         // Darkness seekbar
@@ -92,21 +91,7 @@ class SettingsWallpaperFragment : Fragment() {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 darknessValue.text = getString(R.string.settings_value_percent, progress)
                 prefs.edit().putInt(MainActivity.PREF_DARKNESS, progress).apply()
-            }
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
-
-        // Blur radius seekbar
-        val blurRadiusSeekBar = view.findViewById<SeekBar>(R.id.blurRadiusSeekBar)
-        val blurRadiusValue = view.findViewById<TextView>(R.id.blurRadiusValue)
-        val currentBlur = prefs.getInt(MainActivity.PREF_BLUR_RADIUS, MainActivity.DEFAULT_BLUR_RADIUS)
-        blurRadiusSeekBar.progress = currentBlur
-        blurRadiusValue.text = currentBlur.toString()
-        blurRadiusSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                blurRadiusValue.text = progress.toString()
-                prefs.edit().putInt(MainActivity.PREF_BLUR_RADIUS, progress).apply()
+                settingsActivity?.applyWallpaperOverlay()
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
@@ -119,6 +104,7 @@ class SettingsWallpaperFragment : Fragment() {
                 .coerceAtLeast(0)
         ) { pos ->
             prefs.edit().putString(MainActivity.PREF_COLOR_TINT, colorTintOptions[pos].first).apply()
+            settingsActivity?.applyWallpaperOverlay()
         }
 
         // Wallpaper select
@@ -146,26 +132,9 @@ class SettingsWallpaperFragment : Fragment() {
                     WallpaperManager.FLAG_SYSTEM
                 )
             } ?: error("Unable to open selected wallpaper")
-            cacheSelectedWallpaper(uri, wallpaperManager.getWallpaperId(WallpaperManager.FLAG_SYSTEM))
         } catch (exception: Exception) {
             android.util.Log.e("Avox", "Failed to apply selected wallpaper", exception)
         }
-    }
-
-    private fun cacheSelectedWallpaper(uri: Uri, wallpaperId: Int) {
-        requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
-            MainActivity.resolveWallpaperCacheFile(requireContext())
-                .outputStream()
-                .buffered()
-                .use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-        } ?: error("Unable to cache selected wallpaper")
-
-        requireContext().getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
-            .edit()
-            .putInt(MainActivity.PREF_WALLPAPER_CACHE_ID, wallpaperId)
-            .apply()
     }
 
     private fun setupSpinner(spinner: Spinner, items: List<String>, selection: Int, onSelected: (Int) -> Unit) {

@@ -92,7 +92,7 @@
     <string name="settings_appearance">Ulkoasu</string>
     <string name="settings_appearance_summary">Fontti, koko, väli, tasaus, marginaalit</string>
     <string name="settings_wallpaper">Taustakuva</string>
-    <string name="settings_wallpaper_summary">Teema, tehosteet, tummuus, sumennus</string>
+    <string name="settings_wallpaper_summary">Teema, tehosteet, tummuus</string>
     <string name="settings_animations">Animaatiot</string>
     <string name="settings_animations_summary">Sivupalkin animaatiotyyli ja säätimet</string>
     <string name="settings_notifications">Ilmoitukset</string>

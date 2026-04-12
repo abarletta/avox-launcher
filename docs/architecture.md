@@ -29,11 +29,11 @@ The product is apps-first, not widget-first.
 
 ### Source files
 
-- `MainActivity.kt` — launcher screen, app list adapter (with icon mode: regular/nerd/none), widget lifecycle (host stays active, deferred finalization via onResume), wallpaper effects (darken/blur/color), notification data, swipe gestures, sidebar setup, heading letter animation, list/widget transition animations
+- `MainActivity.kt` — launcher screen, app list adapter (with icon mode: regular/nerd/none), widget lifecycle (host stays active, deferred finalization via onResume), wallpaper effects (darken/color), notification data, swipe gestures, sidebar setup, heading letter animation, list/widget transition animations
 - `SettingsActivity.kt` — fragment host activity with back navigation and theme application
 - `SettingsMenuFragment.kt` — top-level menu with category cards (Appearance, Wallpaper, Animations, Notifications, Widgets)
 - `SettingsAppearanceFragment.kt` — font, font size, spacing, alignment, margins, block count, icon mode (regular/nerd/none), icon size, icon pack, nerd font picker
-- `SettingsWallpaperFragment.kt` — theme, wallpaper effects (darken/blur/color), darkness, blur radius, color tint, wallpaper select
+- `SettingsWallpaperFragment.kt` — theme, wallpaper effects (darken/color), darkness, color tint, wallpaper select
 - `SettingsAnimationsFragment.kt` — sidebar animation style with per-style controls (wave/highlight/fade)
 - `SettingsSystemFragment.kt` — notification mode, swipe toggle, favorites management (picker with icons, reorder), widget management (add, remove, resize, full-width, controls), quick actions setup
 - `AlphabetSidebar.kt` — custom View with wave/highlight/fade animation styles and configurable intensity/radius
@@ -92,7 +92,7 @@ Implemented:
 - Multi-widget slots with horizontal swipe navigation between widgets in the same slot
 - Widget management in settings (list, remove, height adjustment, full-width toggle, controls)
 - Settings activity with wallpaper-matched background and fragment-based navigation
-- Wallpaper effects: darken, blur (downscale-upscale), color tint
+- Wallpaper effects: darken, color tint
 - Notification badges (count) and inline text
 - Swipe-to-dismiss notifications
 - Three sidebar animation styles with per-style controls

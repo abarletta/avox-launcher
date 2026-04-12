@@ -90,7 +90,7 @@
     <string name="settings_appearance">Udseende</string>
     <string name="settings_appearance_summary">Skrifttype, størrelse, afstand, justering, margener</string>
     <string name="settings_wallpaper">Baggrund</string>
-    <string name="settings_wallpaper_summary">Tema, effekter, mørke, sløring</string>
+    <string name="settings_wallpaper_summary">Tema, effekter, mørke</string>
     <string name="settings_animations">Animationer</string>
     <string name="settings_animations_summary">Sidebjælkeanimation og kontroller</string>
     <string name="settings_notifications">Notifikationer</string>

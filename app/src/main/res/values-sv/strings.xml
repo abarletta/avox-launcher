@@ -92,7 +92,7 @@
     <string name="settings_appearance">Utseende</string>
     <string name="settings_appearance_summary">Teckensnitt, storlek, avstånd, justering, marginaler</string>
     <string name="settings_wallpaper">Bakgrund</string>
-    <string name="settings_wallpaper_summary">Tema, effekter, mörker, oskärpa</string>
+    <string name="settings_wallpaper_summary">Tema, effekter, mörker</string>
     <string name="settings_animations">Animationer</string>
     <string name="settings_animations_summary">Sidofältets animationsstil och kontroller</string>
     <string name="settings_notifications">Notifieringar</string>
