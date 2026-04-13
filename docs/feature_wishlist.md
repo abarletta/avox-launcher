@@ -224,3 +224,24 @@ Add support for customizable gestures on the home screen and app drawer, allowin
   1. Customize the long-press action on the home screen (currently opens the launcher settings).
   2. Add new gestures (e.g., swipe up, swipe down, double tap) that can be assigned to different actions.
 - Optionally, and only after careful consideration of the added complexity, available actions could include screen lock. This requires the app to request the `DEVICE_ADMIN` permission.
+
+## L - Folder Support
+
+### Description
+Add support for folders in the favorites section of the home screen, allowing users to group apps together for better organization.
+
+### Implementation Details
+- Users can create folders in the favorites section by dragging one app icon onto another.
+- Folders can be renamed and, if Feature J is implemented, customized with different icons.
+- Folder customization should also be available in the settings menu, allowing users to manage folder contents and appearance from a centralized location.
+
+## M - Widget Horizontal Resizing and Stacking
+
+### Description
+Add support for horizontal resizing of widgets and stacking multiple widgets in the same slot.
+
+### Implementation Details
+- Users can resize widgets in the same slot horizontally by dragging the edges of the widget OR via the settings menu.
+- Rezising should be implemented as a simple modification of the horizontal margins of the slot.
+- Horizontal stacking should be offered as an alternative to swiping between multiple widgets in the same slot (Feature D).
+- If possible it should be possible to select between the two modes (swipe vs horizontal resizing) on a per‑widget basis. For example, if there are 3 widgets in the same slot, the user may choose to have one widget that is horizontally resizable and occupies any desired portion of the slot, while the other two widgets are stacked and can be switched between with a swipe gesture.
