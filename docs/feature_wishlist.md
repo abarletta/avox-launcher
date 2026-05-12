@@ -16,6 +16,9 @@ Items are added without any particular order, and without consideration for thei
 | [H](#h--advanced-controls-for-favorites-and-widgets) | Advanced controls for favorites and widgets | Implemented | [7848c68](https://github.com/abarletta/avox-launcher/commit/7848c680a568476774f2f042daebdd82b8625e12) |
 | [I](#i--multilangual-support) | Multilangual support | Implemented | [0c587fe](https://github.com/abarletta/avox-launcher/commit/0c587fedf7246e4a5329a76ae13836491bb75ce2) |  
 | [J](#j--better-icon-pack-support) | Better Icon Pack Support | Not started | |
+| [K](#k--gesture-support) | Gesture Support | Not started | |
+| [L](#l--folder-support)  | Folder Support | Not started | |
+| [M](#m--widget-horizontal-resizing-and-stacking) | Widget Horizontal Resizing and Stacking | Not started | |
 
 ---
 
@@ -245,3 +248,15 @@ Add support for horizontal resizing of widgets and stacking multiple widgets in 
 - Rezising should be implemented as a simple modification of the horizontal margins of the slot.
 - Horizontal stacking should be offered as an alternative to swiping between multiple widgets in the same slot (Feature D).
 - If possible it should be possible to select between the two modes (swipe vs horizontal resizing) on a per‑widget basis. For example, if there are 3 widgets in the same slot, the user may choose to have one widget that is horizontally resizable and occupies any desired portion of the slot, while the other two widgets are stacked and can be switched between with a swipe gesture.
+
+# N - Colored Notification Text
+
+## Description
+Add support for colored text in notifications under the icon in the home screen and app drawer.
+
+## Implementation Details
+- Users can enable colored notification text in the settings menu.
+- Users can customize the color of the notification text for each app.
+- The setting must apply consistently to all notification text in the launcher (i.e., app drawer notification badges, widget notification badges, etc.).
+- If feasible, add a separate setting to change the color of the notification count on top of the icon (the badge). This setting should be independent of the notification text color. Currently, the notification count on top of the icon is red and cannot be changed. If it is not feasible to implement this, do not attempt it.
+- The colors should use the same color picker as the other color settings in the launcher.

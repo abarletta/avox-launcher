@@ -199,7 +199,7 @@ class SettingsAppearanceFragment : Fragment() {
 
         // Icon pack
         val installedPacks = IconPackResolver.getInstalledPacks(requireContext())
-    val iconPackOptions = mutableListOf("" to getString(R.string.option_default))
+        val iconPackOptions = mutableListOf("" to getString(R.string.option_default))
         iconPackOptions.addAll(installedPacks)
         val currentPack = prefs.getString(MainActivity.PREF_ICON_PACK, "") ?: ""
         setupSpinner(
@@ -207,6 +207,42 @@ class SettingsAppearanceFragment : Fragment() {
             iconPackOptions.indexOfFirst { it.first == currentPack }.coerceAtLeast(0)
         ) { pos ->
             prefs.edit().putString(MainActivity.PREF_ICON_PACK, iconPackOptions[pos].first).apply()
+            UnifiedIconPipeline.init(requireContext(), prefs)
+        }
+
+        // Built-in pack style
+        val builtinStyleOptions = listOf(
+            "rounded" to getString(R.string.option_rounded),
+            "square" to getString(R.string.option_square),
+            "outline" to getString(R.string.option_outline),
+            "full" to getString(R.string.option_full)
+        )
+        val currentStyle = prefs.getString("builtin_icon_style", "rounded") ?: "rounded"
+        setupSpinner(
+            view.findViewById(R.id.builtinStyleSpinner), builtinStyleOptions.map { it.second },
+            builtinStyleOptions.indexOfFirst { it.first == currentStyle }.coerceAtLeast(0)
+        ) { pos ->
+            prefs.edit().putString("builtin_icon_style", builtinStyleOptions[pos].first).apply()
+            UnifiedIconPipeline.init(requireContext(), prefs)
+        }
+
+        // Built-in pack color
+        val builtinColorOptions = listOf(
+            "dark" to getString(R.string.option_dark),
+            "light" to getString(R.string.option_light),
+            "blue" to getString(R.string.option_blue),
+            "red" to getString(R.string.option_red),
+            "green" to getString(R.string.option_green),
+            "yellow" to getString(R.string.option_yellow),
+            "violet" to getString(R.string.option_violet)
+        )
+        val currentColor = prefs.getString("builtin_icon_color", "dark") ?: "dark"
+        setupSpinner(
+            view.findViewById(R.id.builtinColorSpinner), builtinColorOptions.map { it.second },
+            builtinColorOptions.indexOfFirst { it.first == currentColor }.coerceAtLeast(0)
+        ) { pos ->
+            prefs.edit().putString("builtin_icon_color", builtinColorOptions[pos].first).apply()
+            UnifiedIconPipeline.init(requireContext(), prefs)
         }
 
         // Nerd font picker

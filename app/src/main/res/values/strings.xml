@@ -17,6 +17,7 @@
     <string name="custom_font_label">Load Custom Font (TTF)</string>
     <string name="wallpaper_select_label">Select Wallpaper</string>
     <string name="action_app_info">App info</string>
+    <string name="action_edit_icon">Edit Icon</string>
     <string name="action_play_store">Play Store</string>
     <string name="action_uninstall">Uninstall</string>
     <string name="notification_access_title">Notification Access</string>
@@ -78,7 +79,9 @@
     <string name="notification_not_granted">Notification access not granted. Tap to enable.</string>
     <string name="action_uninstall_failed">Unable to uninstall app.</string>
     <string name="icon_size_label">Icon Size</string>
-    <string name="icon_pack_label">Icon Pack</string>
+    <string name="icon_pack_label">Third-party Icon Pack</string>
+    <string name="builtin_icon_style_label">Built-in Pack Style</string>
+    <string name="builtin_icon_color_label">Built-in Pack Color</string>
     <string name="nerd_font_label">Nerd Font Icons</string>
     <string name="nerd_font_pick_label">Select Nerd Font (TTF)</string>
     <string name="icon_mode_label">Icon Display</string>
@@ -163,6 +166,13 @@
     <string name="restore_settings_confirm_action">Restore</string>
     <string name="restore_settings_selected_file">the selected backup</string>
     <string name="option_default">Default</string>
+    <string name="option_full">Full</string>
+    <string name="option_outline">Outline</string>
+    <string name="option_rounded">Rounded</string>
+    <string name="option_square">Square</string>
+    <string name="option_blue">Blue</string>
+    <string name="option_yellow">Yellow</string>
+    <string name="option_violet">Violet</string>
     <string name="option_light">Light</string>
     <string name="option_thin">Thin</string>
     <string name="option_condensed">Condensed</string>

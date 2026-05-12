@@ -45,6 +45,12 @@ class AppActionsSheet(
             dialog.dismiss()
         }
 
+        // Edit Icon
+        view.findViewById<View>(R.id.actionEditIcon).setOnClickListener {
+            dialog.dismiss()
+            showIconOverrideDialog()
+        }
+
         // Play Store
         view.findViewById<View>(R.id.actionPlayStore).apply {
             val storeIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName"))
@@ -127,5 +133,34 @@ class AppActionsSheet(
             dialog.dismiss()
         }
         container.addView(row)
+    }
+
+    private fun showIconOverrideDialog() {
+        val prefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+        val options = mutableListOf<Pair<String, String?>>()
+        options.add("Default" to null)
+        
+        val installedPacks = IconPackResolver.getInstalledPacks(context)
+        for (pack in installedPacks) {
+            options.add("Pack: ${pack.second}" to "pack:${pack.first}")
+        }
+        
+        for (cat in UnifiedIconPipeline.CATEGORIES) {
+            val cap = cat.replaceFirstChar { if (it.isLowerCase()) it.titlecase(java.util.Locale.getDefault()) else it.toString() }
+            options.add("Built-in: $cap" to "builtin:$cat")
+        }
+
+        val adapter = android.widget.ArrayAdapter(context, android.R.layout.simple_list_item_1, options.map { it.first })
+        androidx.appcompat.app.AlertDialog.Builder(context)
+            .setTitle(context.getString(R.string.action_edit_icon))
+            .setAdapter(adapter) { _, which ->
+                UnifiedIconPipeline.setOverride(context, prefs, packageName, options[which].second)
+                // We need to refresh the UI. Broadcasting a package change is an easy way.
+                context.sendBroadcast(Intent("com.avox.launcher.APP_ICON_CHANGED").apply {
+                    setPackage(context.packageName)
+                })
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 }

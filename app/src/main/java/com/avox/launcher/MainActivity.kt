@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var footerActionsContainer: LinearLayout
     private lateinit var searchBar: EditText
     private lateinit var widgetContainer: LinearLayout
-    private var loadedIconPackPackage: String? = null
     private var navigationBarInsetBottom = 0
     private var footerActionsBaseBottomMargin = 0
     private var bottomButtonBaseBottomMargin = 0
@@ -128,7 +127,13 @@ class MainActivity : AppCompatActivity() {
 
     private val packageReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            appsDirty = true
+            if (intent.action == "com.avox.launcher.APP_ICON_CHANGED") {
+                UnifiedIconPipeline.init(context, getSharedPreferences(PREFS_NAME, MODE_PRIVATE))
+                refreshList()
+                renderFooterActions()
+            } else {
+                appsDirty = true
+            }
         }
     }
 
@@ -298,8 +303,11 @@ class MainActivity : AppCompatActivity() {
             addAction(Intent.ACTION_PACKAGE_ADDED)
             addAction(Intent.ACTION_PACKAGE_REMOVED)
             addAction(Intent.ACTION_PACKAGE_CHANGED)
+            addAction("com.avox.launcher.APP_ICON_CHANGED")
             addDataScheme("package")
         }
+        val iconFilter = IntentFilter("com.avox.launcher.APP_ICON_CHANGED")
+        registerReceiver(packageReceiver, iconFilter, RECEIVER_NOT_EXPORTED)
         registerReceiver(packageReceiver, packageFilter, RECEIVER_NOT_EXPORTED)
     }
 
@@ -576,8 +584,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var iconPackResolver: IconPackResolver? = null
-
     private fun refreshList() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         val fontFamily = prefs.getString(PREF_FONT, DEFAULT_FONT) ?: DEFAULT_FONT
@@ -588,7 +594,7 @@ class MainActivity : AppCompatActivity() {
         val iconSize = prefs.getInt(PREF_ICON_SIZE, DEFAULT_ICON_SIZE)
         val typeface = resolveTypeface(fontFamily)
 
-        updateIconPackResolver(prefs)
+        UnifiedIconPipeline.init(this, prefs)
         val iconMode = resolveIconMode(prefs)
         val nerdTypeface = resolveNerdTypeface(iconMode)
         val showFavoritesGrid = !isExpandedView && isAdaptiveFavoritesLayoutEnabled(prefs)
@@ -596,7 +602,7 @@ class MainActivity : AppCompatActivity() {
         appList.adapter = AppListAdapter(
             layoutInflater, displayedApps, typeface, spacing, fontSize,
             notificationData, notifMode, alignment == "center",
-            iconSize, iconPackResolver, nerdTypeface, iconMode,
+            iconSize, nerdTypeface, iconMode,
             showHeaders = isExpandedView
         )
 
@@ -612,7 +618,6 @@ class MainActivity : AppCompatActivity() {
                 notifMode,
                 alignment == "center",
                 iconSize,
-                iconPackResolver,
                 nerdTypeface,
                 iconMode
             )
@@ -843,7 +848,7 @@ class MainActivity : AppCompatActivity() {
         val iconMode = resolveIconMode(prefs)
         val iconSize = prefs.getInt(PREF_ICON_SIZE, DEFAULT_ICON_SIZE)
         val nerdTypeface = resolveNerdTypeface(iconMode)
-        updateIconPackResolver(prefs)
+        UnifiedIconPipeline.init(this, prefs)
         val actions = (0 until LauncherQuickActions.SLOT_COUNT).mapNotNull { index ->
             LauncherQuickActions.resolveAction(this, LauncherQuickActions.getSpec(prefs, index))?.let { index to it }
         }
@@ -1031,19 +1036,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, SettingsActivity::class.java))
     }
 
-    private fun updateIconPackResolver(prefs: android.content.SharedPreferences) {
-        val iconPack = prefs.getString(PREF_ICON_PACK, "") ?: ""
-        if (iconPack.isBlank()) {
-            iconPackResolver = null
-            loadedIconPackPackage = null
-            return
-        }
-        if (iconPackResolver == null || loadedIconPackPackage != iconPack) {
-            iconPackResolver = IconPackResolver(this).apply { load(iconPack) }
-            loadedIconPackPackage = iconPack
-        }
-    }
-
     private fun resolveIconMode(prefs: android.content.SharedPreferences): String {
         return prefs.getString(PREF_ICON_MODE, null)
             ?: if (prefs.getBoolean(PREF_NERD_FONT, false)) ICON_MODE_NERD else ICON_MODE_REGULAR
@@ -1139,7 +1131,7 @@ class MainActivity : AppCompatActivity() {
         return when (iconMode) {
             ICON_MODE_REGULAR -> {
                 val drawable = if (action.packageName != null) {
-                    iconPackResolver?.resolve(action.packageName) ?: action.icon
+                    UnifiedIconPipeline.resolveIcon(this, action.packageName, action.intent) ?: action.icon
                 } else {
                     action.icon
                 }
@@ -2496,7 +2488,6 @@ private class AppListAdapter(
     private val notifMode: String,
     private val centerAlign: Boolean,
     private val iconSizeDp: Int = 36,
-    private val iconPackResolver: IconPackResolver? = null,
     private val nerdTypeface: Typeface? = null,
     private val iconMode: String = MainActivity.ICON_MODE_REGULAR,
     private val showHeaders: Boolean = false
@@ -2546,9 +2537,8 @@ private class AppListAdapter(
 
         // Icon pack or default icon
         val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
-        val packIcon = if (showRegularIcon) iconPackResolver?.resolve(app.packageName) else null
         val displayIcon = if (showRegularIcon) {
-            packIcon ?: app.resolveIcon(view.context.packageManager)
+            UnifiedIconPipeline.resolveIcon(view.context, app.packageName, app.launchIntent)
         } else {
             null
         }
@@ -2678,7 +2668,6 @@ private class FavoriteGridAdapter(
     private val notifMode: String,
     private val centerAlign: Boolean,
     private val iconSizeDp: Int = 36,
-    private val iconPackResolver: IconPackResolver? = null,
     private val nerdTypeface: Typeface? = null,
     private val iconMode: String = MainActivity.ICON_MODE_REGULAR
 ) : BaseAdapter() {
@@ -2716,7 +2705,7 @@ private class FavoriteGridAdapter(
 
         val showRegularIcon = iconMode == MainActivity.ICON_MODE_REGULAR
         val displayIcon = if (showRegularIcon) {
-            iconPackResolver?.resolve(app.packageName) ?: app.resolveIcon(view.context.packageManager)
+            UnifiedIconPipeline.resolveIcon(view.context, app.packageName, app.launchIntent)
         } else {
             null
         }
